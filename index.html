@@ -131,18 +131,29 @@
     .thin-scroll::-webkit-scrollbar-thumb { background: rgba(244, 185, 62, 0.35); border-radius: 4px; }
 
     .hero-bg {
-      background-image: url('Brick8.jpgcopy.jpg');
+      background-image: url('Gallery/Brick8.jpg');
       background-size: cover;
       background-position: center 30%;
       background-repeat: no-repeat;
     }
+    
+    /* ============================================================ */
+    /* MODIFIED HERO OVERLAY: Fade from left to right smoothly        */
+    /* ============================================================ */
     .hero-overlay {
-      background: linear-gradient(135deg, rgba(10, 11, 13, 0.92) 0%, rgba(10, 11, 13, 0.6) 45%, rgba(10, 11, 13, 0.2) 75%, rgba(10, 11, 13, 0.05) 100%);
+      background: linear-gradient(
+        115deg, 
+        rgba(10, 11, 13, 0.95) 15%, 
+        rgba(10, 11, 13, 0.5) 45%, 
+        rgba(10, 11, 13, 0.1) 75%, 
+        rgba(10, 11, 13, 0.05) 100%
+      );
     }
+
     @media (max-width: 768px) {
       .hero-bg { background-position: 40% 20%; }
       .hero-overlay {
-        background: linear-gradient(135deg, rgba(10, 11, 13, 0.92) 0%, rgba(10, 11, 13, 0.7) 60%, rgba(10, 11, 13, 0.3) 100%);
+        background: linear-gradient(135deg, rgba(10, 11, 13, 0.95) 0%, rgba(10, 11, 13, 0.8) 50%, rgba(10, 11, 13, 0.4) 100%);
       }
     }
 
@@ -313,6 +324,186 @@
       0% { opacity: 0; transform: translateY(-20px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+
+    /* Cart Sidebar */
+    #cartSidebar {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      max-width: 400px;
+      width: 100%;
+    }
+    #cartSidebar.translate-x-full {
+      transform: translateX(100%);
+    }
+    
+    .cart-item {
+      transition: all 0.2s ease;
+    }
+    .cart-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .quantity-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      color: #f5f0e6;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .quantity-btn:hover {
+      background: rgba(244, 185, 62, 0.2);
+      border-color: #f4b93e;
+      color: #f4b93e;
+    }
+    .quantity-btn:active {
+      transform: scale(0.92);
+    }
+
+    .pickup-badge {
+      background: rgba(200, 16, 46, 0.2);
+      color: #c8102e;
+      border: 1px solid rgba(200, 16, 46, 0.3);
+      border-radius: 9999px;
+      padding: 0.25rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .pickup-only-banner {
+      background: linear-gradient(135deg, rgba(200, 16, 46, 0.15), rgba(200, 16, 46, 0.05));
+      border: 1px solid rgba(200, 16, 46, 0.25);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .pickup-only-banner svg {
+      flex-shrink: 0;
+    }
+
+    .empty-cart-emoji {
+      font-size: 4rem;
+      opacity: 0.3;
+    }
+
+    /* Order success animation */
+    .order-success-popup {
+      animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ---------- NEW GALLERY STYLES (Modified for HOVER + AUTO SLIDE) ---------- */
+    .gallery-main {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 2rem;
+      border: 1px solid rgba(244, 185, 62, 0.15);
+      background: #0a0b0d;
+    }
+    .gallery-track {
+      display: flex;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Slower transition for smoothness */
+      will-change: transform;
+    }
+    .gallery-slide {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+    .gallery-slide img {
+      width: 100%;
+      max-height: 520px;
+      object-fit: cover;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8);
+      transition: transform 0.6s ease, opacity 0.6s ease;
+      transform: scale(0.92);
+      opacity: 0.6;
+      filter: grayscale(0.4);
+    }
+    .gallery-slide.active img {
+      transform: scale(1);
+      opacity: 1;
+      filter: grayscale(0);
+      box-shadow: 0 0 0 1px rgba(244, 185, 62, 0.2), 0 30px 50px -20px rgba(244, 185, 62, 0.25);
+    }
+    .gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .gallery-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+    .gallery-dot.active {
+      background: #f4b93e;
+      width: 28px;
+      box-shadow: 0 0 12px rgba(244, 185, 62, 0.4);
+    }
+    .gallery-dot:hover {
+      background: rgba(244, 185, 62, 0.5);
+    }
+    .gallery-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(10, 11, 13, 0.7);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(244, 185, 62, 0.2);
+      color: #f5f0e6;
+      width: 44px;
+      height: 44px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+      font-size: 1.25rem;
+    }
+    .gallery-btn:hover {
+      background: rgba(244, 185, 62, 0.2);
+      border-color: #f4b93e;
+      transform: translateY(-50%) scale(1.05);
+    }
+    .gallery-btn.prev { left: 1rem; }
+    .gallery-btn.next { right: 1rem; }
+    @media (max-width: 640px) {
+      .gallery-slide { padding: 1rem; }
+      .gallery-slide img { max-height: 300px; }
+      .gallery-btn { width: 36px; height: 36px; font-size: 1rem; }
+      .gallery-btn.prev { left: 0.5rem; }
+      .gallery-btn.next { right: 0.5rem; }
+    }
   </style>
 </head>
 
@@ -336,9 +527,9 @@
 
       <div class="flex items-center gap-2 sm:gap-3">
         <!-- Cart -->
-        <button class="relative w-9 h-9 flex items-center justify-center rounded-full bg-char/70 border border-gold/20 hover:border-gold/50 transition-colors" aria-label="View cart">
+        <button id="cartTrigger" class="relative w-9 h-9 flex items-center justify-center rounded-full bg-char/70 border border-gold/20 hover:border-gold/50 transition-colors" aria-label="View cart">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-          <span id="cartCount" class="absolute -top-1.5 -right-1.5 bg-crimson text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+          <span id="cartCount" class="absolute -top-1.5 -right-1.5 bg-crimson text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
         </button>
 
         <!-- Profile Trigger -->
@@ -387,7 +578,7 @@
     <div class="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 pt-32 pb-20 w-full">
       <div class="max-w-xl">
         <span class="inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-gold/90 border border-gold/30 rounded-full px-3 py-1 mb-6 bg-ink/40 backdrop-blur-sm">
-          All-Day Bites & Brews in the CBD.
+          COFFEE SHOP
         </span>
         <h1 class="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] mb-6">
           Coffee & toast,<br /><span class="italic text-gold">brick by brick.</span>
@@ -520,13 +711,26 @@
 
         <input required type="date" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
         <input required type="time" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
-        <select required class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
-          <option value="1 Guest">1 Guest</option>
-          <option value="2 Guests" selected>2 Guests</option>
-          <option value="3 Guests">3 Guests</option>
-          <option value="4 Guests">4 Guests</option>
-          <option value="5+ Guests">5+ Guests</option>
-        </select>
+        
+        <!-- Guests Select with custom 'Type here' option -->
+        <div class="relative sm:col-span-2">
+          <select id="guestsSelect" class="w-full bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60 appearance-none">
+            <option value="1 Guest">1 Guest</option>
+            <option value="2 Guests" selected>2 Guests</option>
+            <option value="3 Guests">3 Guests</option>
+            <option value="4 Guests">4 Guests</option>
+            <option value="5 Guests">5 Guests</option>
+            <option value="6 Guests">6 Guests</option>
+            <option value="7 Guests">7 Guests</option>
+            <option value="8 Guests">8 Guests</option>
+            <option value="9 Guests">9 Guests</option>
+            <option value="10 Guests">10 Guests</option>
+            <option value="custom">✏️ Type here…</option>
+          </select>
+          <div id="customGuestsWrapper" class="hidden mt-2">
+            <input type="number" id="customGuestsInput" min="1" max="20" placeholder="Enter number of guests" class="w-full bg-ink border border-gold/40 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+          </div>
+        </div>
 
         <div class="booking-extra-row sm:col-span-2">
           <div class="select-wrapper">
@@ -578,16 +782,24 @@
   </section>
 
   <!-- =========================================================
-  GALLERY
+  GALLERY — NEW SLIDER WITH DOTS & SCALE EFFECT & HOVER PAUSE
   ========================================================= -->
   <section id="gallery" class="py-24 border-t border-brickline overflow-hidden">
     <div class="max-w-6xl mx-auto px-6 sm:px-10 mb-10 text-center">
       <span class="text-xs tracking-[0.25em] uppercase text-gold/80">Gallery</span>
       <h2 class="font-display text-4xl sm:text-5xl mt-3">Snapped by Customers</h2>
     </div>
-    <div class="relative">
-      <div id="galleryTrack" class="flex gap-4 no-scrollbar overflow-x-hidden px-6 sm:px-10"></div>
+
+    <div class="gallery-main relative max-w-5xl mx-auto px-4" id="galleryContainer">
+      <div class="gallery-track" id="galleryTrack">
+        <!-- slides injected by JS -->
+      </div>
+
+      <button class="gallery-btn prev" id="galleryPrev" aria-label="Previous">‹</button>
+      <button class="gallery-btn next" id="galleryNext" aria-label="Next">›</button>
     </div>
+
+    <div class="gallery-dots" id="galleryDots"></div>
   </section>
 
   <!-- =========================================================
@@ -632,6 +844,62 @@
       <span>Melbourne, Australia</span>
     </div>
   </footer>
+
+  <!-- =========================================================
+  CART SIDEBAR
+  ========================================================= -->
+  <div id="cartOverlay" class="hidden fixed inset-0 z-[100] bg-ink/70 backdrop-blur-sm"></div>
+  <aside id="cartSidebar" class="fixed top-0 right-0 h-full w-full sm:max-w-md bg-char2 border-l border-gold/15 z-[101] translate-x-full transition-transform duration-300 thin-scroll overflow-y-auto">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-display text-2xl text-gold">Your Order</h2>
+        <button id="cartClose" class="text-cream/50 hover:text-gold transition">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div id="cartContent">
+        <div id="emptyCart" class="text-center py-12">
+          <div class="empty-cart-emoji mb-4">🍽️</div>
+          <p class="text-cream/40 text-sm">Your basket is empty.</p>
+          <p class="text-cream/30 text-xs mt-1">Add something delicious!</p>
+        </div>
+        <div id="cartItems" class="hidden space-y-3 mb-6"></div>
+        <div id="pickupBanner" class="pickup-only-banner hidden">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c8102e" stroke-width="2">
+            <path d="M12 2v4M12 22v-4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M22 12h-4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <div>
+            <span class="text-xs font-bold text-crimson uppercase tracking-wider">Pick Up Only</span>
+            <p class="text-xs text-cream/50">All orders are for in-store pickup only. No delivery available.</p>
+          </div>
+        </div>
+        <div id="cartSummary" class="hidden border-t border-cream/10 pt-4 space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-cream/60">Subtotal</span>
+            <span id="cartSubtotal" class="font-mono text-cream">$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-cream/60">Service Fee (10%)</span>
+            <span id="cartServiceFee" class="font-mono text-cream">$0.00</span>
+          </div>
+          <div class="flex justify-between text-lg font-semibold pt-2 border-t border-cream/10">
+            <span>TOTAL</span>
+            <span id="cartTotal" class="font-mono text-gold">$0.00</span>
+          </div>
+        </div>
+        <button id="checkoutBtn" class="hidden w-full bg-gold text-ink font-semibold py-3 rounded-full hover:brightness-110 transition mt-4">Proceed to Order</button>
+      </div>
+
+      <div id="orderSuccess" class="hidden text-center py-8 order-success-popup">
+        <div class="text-5xl mb-4">✅</div>
+        <h3 class="font-display text-xl text-gold mb-2">Order Placed!</h3>
+        <p class="text-cream/50 text-sm">Your order has been received. We'll notify you when it's ready for pickup.</p>
+        <button id="orderSuccessClose" class="mt-6 text-gold/70 hover:text-gold text-sm transition">Close</button>
+      </div>
+    </div>
+  </aside>
 
   <!-- =========================================================
   AUTH MODAL
@@ -717,7 +985,7 @@
   </aside>
 
   <!-- =========================================================
-  JAVASCRIPT (Firebase + all logic)
+  JAVASCRIPT (Firebase + all logic + NEW GALLERY)
   ========================================================= -->
   <script>
     // ============================================================
@@ -735,6 +1003,10 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+
+    // Telegram Bot Config
+    const TELEGRAM_BOT_TOKEN = '8808752785:AAGg2qBtXdsLEPaJNw7z9lDZ6pFhMf1qOew';
+    const TELEGRAM_CHAT_ID = '8617382834';
 
     // ============================================================
     // BRANCH DATA
@@ -758,6 +1030,28 @@
     let currentBranchKey = 'melb';
     let currentUser = null;
     let ordersUnsubscribe = null;
+    let cart = [];
+    let cartUnsubscribe = null;
+
+    // ============================================================
+    // LOCALSTORAGE CART FUNCTIONS
+    // ============================================================
+    function loadCartFromLocalStorage() {
+      const savedCart = localStorage.getItem('brickLaneCart');
+      if (savedCart) {
+        try {
+          cart = JSON.parse(savedCart);
+          updateCartUI();
+        } catch (e) {
+          console.error('Error loading cart from localStorage:', e);
+          cart = [];
+        }
+      }
+    }
+
+    function saveCartToLocalStorage() {
+      localStorage.setItem('brickLaneCart', JSON.stringify(cart));
+    }
 
     // ============================================================
     // MELBOURNE TIME HELPERS
@@ -971,7 +1265,7 @@
     // ============================================================
     const MENU_ITEMS = [{
       name: 'Avocado Sourdough',
-      price: '$16',
+      price: 16.00,
       desc: 'Smashed avocado, lemon, chilli flakes, feta.',
       images: [
         'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?q=80&w=700&auto=format&fit=crop',
@@ -981,7 +1275,7 @@
       ]
     }, {
       name: 'Brick Lane Benedict',
-      price: '$20',
+      price: 20.00,
       desc: 'Poached eggs, ham hock, hollandaise, brioche.',
       images: [
         'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=700&auto=format&fit=crop',
@@ -991,7 +1285,7 @@
       ]
     }, {
       name: 'Flat White',
-      price: '$5',
+      price: 5.00,
       desc: 'Small-batch beans, silky microfoam.',
       images: [
         'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=700&auto=format&fit=crop',
@@ -1001,7 +1295,7 @@
       ]
     }, {
       name: 'Corn Fritters',
-      price: '$18',
+      price: 18.00,
       desc: 'Charred corn, haloumi, chilli jam, avo.',
       images: [
         'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=700&auto=format&fit=crop',
@@ -1011,7 +1305,7 @@
       ]
     }, {
       name: 'Shakshuka',
-      price: '$18',
+      price: 18.00,
       desc: 'Baked eggs, tomato, capsicum, whipped feta.',
       images: [
         'https://images.unsplash.com/photo-1590412200988-a436970781fa?q=80&w=700&auto=format&fit=crop',
@@ -1021,7 +1315,7 @@
       ]
     }, {
       name: 'Banana Bread',
-      price: '$9',
+      price: 9.00,
       desc: 'Toasted, salted butter, honey drizzle.',
       images: [
         'https://images.unsplash.com/photo-1606101273945-e9c92e670c72?q=80&w=700&auto=format&fit=crop',
@@ -1056,10 +1350,10 @@
             <div class="p-5">
               <div class="flex justify-between items-start mb-2">
                 <h3 class="font-display text-xl">${item.name}</h3>
-                <span class="font-mono text-gold">${item.price}</span>
+                <span class="font-mono text-gold">$${item.price.toFixed(2)}</span>
               </div>
               <p class="text-cream/60 text-sm mb-4">${item.desc}</p>
-              <button data-item="${item.name}" class="add-to-order w-full bg-gold/10 text-gold border border-gold/30 rounded-full py-2 text-sm font-semibold hover:bg-gold hover:text-ink transition">Add to Order</button>
+              <button data-item='${JSON.stringify(item)}' class="add-to-cart w-full bg-gold/10 text-gold border border-gold/30 rounded-full py-2 text-sm font-semibold hover:bg-gold hover:text-ink transition">Add to Order</button>
             </div>
           `;
         grid.appendChild(card);
@@ -1073,35 +1367,197 @@
         });
       });
 
-      // Add to Order buttons
-      document.querySelectorAll('.add-to-order').forEach(btn => {
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', function() {
-          const itemName = this.dataset.item;
-          const menuItem = MENU_ITEMS.find(item => item.name === itemName);
-          if (menuItem && currentUser) {
-            addOrder(menuItem);
-          } else if (!currentUser) {
-            openAuthModal();
-          }
+          const item = JSON.parse(this.dataset.item);
+          addToCart(item);
         });
       });
     }
 
     // ============================================================
-    // ORDER FUNCTIONS
+    // CART FUNCTIONS
     // ============================================================
-    function addOrder(menuItem) {
+    function addToCart(item) {
+      const existing = cart.find(i => i.name === item.name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          name: item.name,
+          price: item.price,
+          quantity: 1,
+          desc: item.desc
+        });
+      }
+      updateCartUI();
+      saveCartToLocalStorage();
+      saveCartToFirestore();
+    }
+
+    function removeFromCart(itemName) {
+      cart = cart.filter(i => i.name !== itemName);
+      updateCartUI();
+      saveCartToLocalStorage();
+      saveCartToFirestore();
+    }
+
+    function updateQuantity(itemName, delta) {
+      const item = cart.find(i => i.name === itemName);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        removeFromCart(itemName);
+        return;
+      }
+      updateCartUI();
+      saveCartToLocalStorage();
+      saveCartToFirestore();
+    }
+
+    function getCartTotal() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const serviceFee = subtotal * 0.10;
+      return { subtotal, serviceFee, total: subtotal + serviceFee };
+    }
+
+    function updateCartUI() {
+      const cartItems = document.getElementById('cartItems');
+      const emptyCart = document.getElementById('emptyCart');
+      const summary = document.getElementById('cartSummary');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      const cartCount = document.getElementById('cartCount');
+      const pickupBanner = document.getElementById('pickupBanner');
+
+      if (cart.length === 0) {
+        emptyCart.classList.remove('hidden');
+        cartItems.classList.add('hidden');
+        summary.classList.add('hidden');
+        checkoutBtn.classList.add('hidden');
+        pickupBanner.classList.add('hidden');
+        cartCount.classList.add('hidden');
+        return;
+      }
+
+      emptyCart.classList.add('hidden');
+      cartItems.classList.remove('hidden');
+      summary.classList.remove('hidden');
+      checkoutBtn.classList.remove('hidden');
+      pickupBanner.classList.remove('hidden');
+
+      cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item flex items-center gap-3 p-3 rounded-xl bg-char border border-cream/5">
+          <div class="flex-1">
+            <p class="font-medium text-sm">${item.name}</p>
+            <p class="text-cream/50 text-xs">$${item.price.toFixed(2)}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="quantity-btn" onclick="updateQuantity('${item.name}', -1)">−</button>
+            <span class="text-sm font-mono w-6 text-center">${item.quantity}</span>
+            <button class="quantity-btn" onclick="updateQuantity('${item.name}', 1)">+</button>
+          </div>
+          <button onclick="removeFromCart('${item.name}')" class="text-cream/30 hover:text-crimson transition text-sm ml-1">✕</button>
+        </div>
+      `).join('');
+
+      const totals = getCartTotal();
+      document.getElementById('cartSubtotal').textContent = `$${totals.subtotal.toFixed(2)}`;
+      document.getElementById('cartServiceFee').textContent = `$${totals.serviceFee.toFixed(2)}`;
+      document.getElementById('cartTotal').textContent = `$${totals.total.toFixed(2)}`;
+
+      const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+      cartCount.textContent = totalItems;
+      cartCount.classList.remove('hidden');
+    }
+
+    function saveCartToFirestore() {
+      if (!currentUser) return;
+      db.collection('carts').doc(currentUser.uid).set({
+        items: cart,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).catch(err => console.error('Error saving cart:', err));
+    }
+
+    function loadCartFromFirestore() {
+      if (!currentUser) return;
+      db.collection('carts').doc(currentUser.uid).get()
+        .then(doc => {
+          if (doc.exists && doc.data().items) {
+            cart = doc.data().items;
+            saveCartToLocalStorage();
+            updateCartUI();
+          }
+        })
+        .catch(err => console.error('Error loading cart:', err));
+    }
+
+    // ============================================================
+    // TELEGRAM NOTIFICATION
+    // ============================================================
+    function sendTelegramNotification(message) {
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const payload = {
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      };
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(err => console.error('Telegram error:', err));
+    }
+
+    function sendBookingTelegram(bookingData) {
+      const message = `📢 NEW BOOKING ALERT! 📢
+
+📅 New Table Booking!
+
+👤 Name: ${bookingData.name}
+📞 Phone: ${bookingData.phone}
+📆 Date: ${bookingData.date}
+🕐 Time: ${bookingData.time}
+👥 Guests: ${bookingData.guests}
+📝 Special Request: ${bookingData.specialRequest || 'None'}
+📋 Additional Requests: ${bookingData.additionalRequests || 'None'}
+🆔 Booking ID: ${bookingData.bookingId}
+👤 Guest: ${bookingData.guestType || 'Guest'}
+
+⏱️ Status: Pending
+📅 Created: ${bookingData.createdAt}`;
+      sendTelegramNotification(message);
+    }
+
+    // ============================================================
+    // PLACE ORDER
+    // ============================================================
+    function placeOrder() {
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
+      if (cart.length === 0) {
+        showNotification('Cart Empty', 'Add items to your cart before ordering.', '🛒');
+        return;
+      }
+
+      const totals = getCartTotal();
+      const orderItems = cart.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      }));
+
       const orderData = {
         userId: currentUser.uid,
         userEmail: currentUser.email,
-        userName: currentUser.displayName || currentUser.email,
-        items: [{
-          name: menuItem.name,
-          price: menuItem.price,
-          quantity: 1
-        }],
-        total: menuItem.price,
-        status: 'Confirmed', // Confirmed → Packed → Picked Up → Complete
+        userName: currentUser.displayName || currentUser.email || 'Guest',
+        items: orderItems,
+        subtotal: totals.subtotal,
+        serviceFee: totals.serviceFee,
+        total: totals.total,
+        status: 'Confirmed',
+        orderType: 'Pickup',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         statusHistory: [{
@@ -1111,39 +1567,72 @@
       };
 
       db.collection('orders').add(orderData)
-        .then(() => {
-          showNotification('Order Placed', `Your order for ${menuItem.name} has been confirmed!`, '📋');
+        .then((docRef) => {
+          cart = [];
+          updateCartUI();
+          saveCartToLocalStorage();
+          saveCartToFirestore();
+
+          document.getElementById('cartContent').classList.add('hidden');
+          document.getElementById('orderSuccess').classList.remove('hidden');
+
+          const itemsList = orderItems.map(i => `${i.name} x${i.quantity}`).join('\n');
+          const message = `
+🛎️ <b>New Order at Brick Lane!</b>
+
+👤 <b>Customer:</b> ${orderData.userName}
+📧 <b>Email:</b> ${orderData.userEmail}
+📋 <b>Order ID:</b> ${docRef.id}
+
+<b>Items:</b>
+${itemsList}
+
+💰 <b>Subtotal:</b> $${totals.subtotal.toFixed(2)}
+💵 <b>Service Fee (10%):</b> $${totals.serviceFee.toFixed(2)}
+🟡 <b>TOTAL:</b> $${totals.total.toFixed(2)}
+
+📦 <b>Type:</b> Pick Up Only
+📍 <b>Location:</b> ${BRANCHES[currentBranchKey].address}
+
+🔔 <i>Please prepare this order for pickup.</i>
+          `;
+          sendTelegramNotification(message);
+
+          setTimeout(() => {
+            document.getElementById('orderSuccess').classList.add('hidden');
+            document.getElementById('cartContent').classList.remove('hidden');
+            closeCart();
+          }, 5000);
         })
-        .catch(err => console.error('Error adding order:', err));
+        .catch(err => {
+          console.error('Error placing order:', err);
+          showNotification('Error', 'Failed to place order. Please try again.', '❌');
+        });
     }
 
     // ============================================================
-    // GALLERY
+    // CART SIDEBAR CONTROLS
     // ============================================================
-    function renderGallery() {
-      const track = document.getElementById('galleryTrack');
-      const seeds = Array.from({ length: 15 }, (_, i) => i + 1);
-      const imgs = seeds.map(s => `https://picsum.photos/seed/bricklane${s}/500/650`);
-      const full = [...imgs, ...imgs];
-      track.innerHTML = full.map(src => `
-          <div class="shrink-0 w-56 h-72 rounded-2xl overflow-hidden border border-gold/10">
-            <img src="${src}" class="w-full h-full object-cover" alt="Brick Lane gallery shot">
-          </div>
-        `).join('');
-
-      let offset = 0;
-      const speed = 0.4;
-
-      function step() {
-        offset += speed;
-        const resetPoint = track.scrollWidth / 2;
-        if (offset >= resetPoint) offset = 0;
-        track.style.transform = `translateX(-${offset}px)`;
-        requestAnimationFrame(step);
-      }
-      track.style.willChange = 'transform';
-      requestAnimationFrame(step);
+    function openCart() {
+      document.getElementById('cartOverlay').classList.remove('hidden');
+      document.getElementById('cartSidebar').classList.remove('translate-x-full');
     }
+
+    function closeCart() {
+      document.getElementById('cartOverlay').classList.add('hidden');
+      document.getElementById('cartSidebar').classList.add('translate-x-full');
+      document.getElementById('orderSuccess').classList.add('hidden');
+      document.getElementById('cartContent').classList.remove('hidden');
+    }
+
+    document.getElementById('cartTrigger').addEventListener('click', openCart);
+    document.getElementById('cartClose').addEventListener('click', closeCart);
+    document.getElementById('cartOverlay').addEventListener('click', closeCart);
+    document.getElementById('orderSuccessClose').addEventListener('click', () => {
+      document.getElementById('orderSuccess').classList.add('hidden');
+      document.getElementById('cartContent').classList.remove('hidden');
+    });
+    document.getElementById('checkoutBtn').addEventListener('click', placeOrder);
 
     // ============================================================
     // NOTIFICATION SYSTEM
@@ -1300,16 +1789,17 @@
     document.getElementById('logoutBtn').addEventListener('click', () => {
       auth.signOut().then(() => {
         closeProfileDrawer();
+        cart = [];
+        updateCartUI();
+        saveCartToLocalStorage();
       });
     });
 
     // ============================================================
-    // LOAD USER ORDERS & BOOKINGS FROM FIRESTORE
+    // LOAD USER ORDERS & BOOKINGS
     // ============================================================
     function loadUserOrders() {
       if (!currentUser) return;
-
-      // Load bookings
       db.collection('bookings')
         .where('uid', '==', currentUser.uid)
         .orderBy('createdAt', 'desc')
@@ -1333,7 +1823,6 @@
         })
         .catch(err => console.error('Error loading bookings:', err));
 
-      // Load orders with real-time listener
       if (ordersUnsubscribe) {
         ordersUnsubscribe();
         ordersUnsubscribe = null;
@@ -1359,31 +1848,24 @@
           renderOrders(activeOrders, 'drawerOrders');
           renderCompletedOrders(completedOrders, 'drawerCompletedOrders');
 
-          // Check for status changes to show notifications
           snapshot.docChanges().forEach(change => {
             if (change.type === 'modified') {
               const data = change.doc.data();
-              const oldData = change.doc.data(); // Firestore doesn't give old data directly
-              // We'll track status changes in a separate listener approach
               checkOrderStatusChange(change.doc.id, data);
             }
           });
         }, err => console.error('Error loading orders:', err));
     }
 
-    // Track previous order statuses to detect changes
     let previousOrderStatuses = {};
 
     function checkOrderStatusChange(orderId, data) {
       const prevStatus = previousOrderStatuses[orderId];
       const currentStatus = data.status;
-
       if (prevStatus && prevStatus !== currentStatus) {
-        // Status changed!
         let message = '';
         let icon = '📦';
         let title = 'Order Update';
-
         switch (currentStatus) {
           case 'Packed':
             message = 'Your order has been packed and is ready for pickup!';
@@ -1401,10 +1883,8 @@
           default:
             message = `Your order status is now: ${currentStatus}`;
         }
-
         showNotification(title, message, icon);
       }
-
       previousOrderStatuses[orderId] = currentStatus;
     }
 
@@ -1414,19 +1894,17 @@
         container.innerHTML = '<p class="text-cream/40 text-sm">No active orders.</p>';
         return;
       }
-
       container.innerHTML = orders.map(order => {
         const statusClass = getStatusClass(order.status);
         const itemsList = order.items ? order.items.map(item =>
           `${item.name} (${item.quantity || 1})`
         ).join(', ') : 'Order items';
-
         return `
           <div class="bg-char rounded-xl p-3 text-sm border border-cream/5">
             <div class="flex justify-between items-start">
               <div>
                 <p class="font-semibold">${itemsList}</p>
-                <p class="text-cream/50 text-xs">${order.total || '$0'}</p>
+                <p class="text-cream/50 text-xs">$${(order.total || 0).toFixed(2)}</p>
               </div>
               <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${statusClass}">
                 ${order.status}
@@ -1448,32 +1926,24 @@
         container.innerHTML = '<p class="text-cream/40 text-sm">No completed orders.</p>';
         return;
       }
-
       container.innerHTML = orders.map(order => {
         const itemsList = order.items ? order.items.map(item =>
           `${item.name} (${item.quantity || 1})`
         ).join(', ') : 'Order items';
         const orderDate = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Recent';
-
         return `
           <div class="bg-char rounded-xl p-3 text-sm border border-cream/5">
             <div class="flex justify-between items-start">
               <div>
                 <p class="font-semibold">${itemsList}</p>
-                <p class="text-cream/50 text-xs">${order.total || '$0'} · ${orderDate}</p>
+                <p class="text-cream/50 text-xs">$${(order.total || 0).toFixed(2)} · ${orderDate}</p>
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full status-complete">
-                Complete
-              </span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full status-complete">Complete</span>
             </div>
-            <button class="buy-again-btn mt-2 text-gold text-xs font-semibold hover:underline" data-order-id="${order.id}">
-              Buy Again →
-            </button>
+            <button class="buy-again-btn mt-2 text-gold text-xs font-semibold hover:underline" data-order-id="${order.id}">Buy Again →</button>
           </div>
         `;
       }).join('');
-
-      // Add Buy Again functionality
       container.querySelectorAll('.buy-again-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const orderId = this.dataset.orderId;
@@ -1482,10 +1952,9 @@
             const firstItem = order.items[0];
             const menuItem = MENU_ITEMS.find(item => item.name === firstItem.name);
             if (menuItem) {
-              addOrder(menuItem);
+              addToCart(menuItem);
             } else {
-              // If item not found in menu, create a generic order
-              addOrder({ name: firstItem.name, price: firstItem.price });
+              addToCart({ name: firstItem.name, price: firstItem.price, desc: '' });
             }
           }
         });
@@ -1505,19 +1974,74 @@
     // ============================================================
     // BOOKING FORM
     // ============================================================
+    const guestsSelect = document.getElementById('guestsSelect');
+    const customGuestsWrapper = document.getElementById('customGuestsWrapper');
+    const customGuestsInput = document.getElementById('customGuestsInput');
+
+    guestsSelect.addEventListener('change', function() {
+      if (this.value === 'custom') {
+        customGuestsWrapper.classList.remove('hidden');
+        customGuestsInput.focus();
+      } else {
+        customGuestsWrapper.classList.add('hidden');
+      }
+    });
+
     document.getElementById('bookingForm').addEventListener('submit', (e) => {
       e.preventDefault();
+      const form = e.target;
+      const name = form.querySelector('input[type="text"]').value;
+      const phoneInput = form.querySelector('input[type="tel"]');
+      const countryCode = form.querySelector('#countryCode').value;
+      const phone = countryCode + phoneInput.value;
+      const dateInput = form.querySelector('input[type="date"]');
+      const timeInput = form.querySelector('input[type="time"]');
+      let guestsValue = guestsSelect.value;
+      if (guestsSelect.value === 'custom') {
+        const customVal = customGuestsInput.value.trim();
+        guestsValue = customVal ? `${customVal} Guests` : '2 Guests';
+      }
+      const specialRequest = form.querySelector('#bookingSpecialRequests').value || 'None';
+      const additionalRequests = form.querySelector('textarea').value || 'None';
+      const bookingId = 'BK-' + Date.now().toString().slice(-6);
+      const createdAt = new Date().toLocaleString('en-AU', {
+        timeZone: 'Australia/Melbourne',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      const userEmail = currentUser ? currentUser.email : 'guest@example.com';
+      const userName = currentUser ? (currentUser.displayName || currentUser.email || 'Guest') : name;
       const uid = currentUser ? currentUser.uid : 'guest';
+
+      const bookingData = {
+        name, phone, date: dateInput.value, time: timeInput.value, guests: guestsValue,
+        specialRequest, additionalRequests, bookingId, guestType: currentUser ? 'Logged In User' : 'Guest',
+        createdAt, userEmail, userName
+      };
+
       db.collection('bookings').add({
-        uid,
-        branch: currentBranchKey,
+        uid, name, email: userEmail, phone, date: dateInput.value, time: timeInput.value,
+        guests: guestsValue, specialRequest, additionalRequests, bookingId,
+        branch: currentBranchKey, guestType: currentUser ? 'Logged In User' : 'Guest',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }).catch(() => {});
+      }).then(() => {
+        sendBookingTelegram(bookingData);
+      }).catch((err) => {
+        console.error('Booking error:', err);
+        sendBookingTelegram(bookingData);
+      });
+
       document.getElementById('bookingSuccess').classList.remove('hidden');
       setTimeout(() => {
         document.getElementById('bookingSuccess').classList.add('hidden');
       }, 5000);
-      e.target.reset();
+      form.reset();
+      customGuestsWrapper.classList.add('hidden');
+      guestsSelect.value = '2 Guests';
     });
 
     // ============================================================
@@ -1537,7 +2061,7 @@
         document.getElementById('drawerName').textContent = displayName;
         document.getElementById('drawerEmail').textContent = user.email || '';
 
-        // Load orders when user logs in
+        loadCartFromFirestore();
         loadUserOrders();
       } else {
         icon.classList.remove('hidden');
@@ -1546,11 +2070,119 @@
           ordersUnsubscribe();
           ordersUnsubscribe = null;
         }
-        // Clear order displays
+        loadCartFromLocalStorage();
         document.getElementById('drawerOrders').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see orders.</p>';
         document.getElementById('drawerCompletedOrders').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see completed orders.</p>';
         document.getElementById('drawerBookings').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see bookings.</p>';
       }
+    });
+
+    // ============================================================
+    // NEW GALLERY SLIDER — WITH LOCAL FOLDER IMAGES, AUTO SLIDE & HOVER PAUSE
+    // ============================================================
+    // ** මෙතන ඔබේ Gallery ෆෝල්ඩරයේ ඇති පින්තූර වල නම් දාන්න **
+    const GALLERY_IMAGES = [
+      'Gallery/Brick8.jpg',
+      'Gallery/Brick9.jpg',
+      'Gallery/Brick10.jpg',
+      'Gallery/Brick11.jpg',
+      'Gallery/Brick12.jpg',
+      'Gallery/Brick13.jpg',
+      'Gallery/Brick14.jpg'
+    ];
+
+    const galleryTrack = document.getElementById('galleryTrack');
+    const galleryDots = document.getElementById('galleryDots');
+    const prevBtn = document.getElementById('galleryPrev');
+    const nextBtn = document.getElementById('galleryNext');
+    const galleryContainer = document.getElementById('galleryContainer');
+
+    let currentSlide = 0;
+    let galleryInterval = null;
+
+    function renderGallerySlides() {
+      galleryTrack.innerHTML = GALLERY_IMAGES.map((src, index) => `
+        <div class="gallery-slide" data-index="${index}">
+          <img src="${src}" alt="Gallery ${index + 1}" loading="lazy" />
+        </div>
+      `).join('');
+
+      // Dots
+      galleryDots.innerHTML = GALLERY_IMAGES.map((_, index) => `
+        <button class="gallery-dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="Go to slide ${index + 1}"></button>
+      `).join('');
+
+      // Set active first
+      updateGallery(currentSlide);
+
+      // Dot clicks
+      document.querySelectorAll('.gallery-dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          goToSlide(index);
+          resetGalleryInterval();
+        });
+      });
+    }
+
+    function updateGallery(index) {
+      const slides = document.querySelectorAll('.gallery-slide');
+      const dots = document.querySelectorAll('.gallery-dot');
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+
+      // Move track
+      const offset = -index * 100;
+      galleryTrack.style.transform = `translateX(${offset}%)`;
+    }
+
+    function goToSlide(index) {
+      const total = GALLERY_IMAGES.length;
+      currentSlide = (index + total) % total;
+      updateGallery(currentSlide);
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    function resetGalleryInterval() {
+      if (galleryInterval) {
+        clearInterval(galleryInterval);
+        galleryInterval = null;
+      }
+      galleryInterval = setInterval(nextSlide, 4000); // 4 seconds per slide
+    }
+
+    // Hover පාලනය (Mouse enter -> pause, Mouse leave -> resume)
+    galleryContainer.addEventListener('mouseenter', () => {
+      if (galleryInterval) {
+        clearInterval(galleryInterval);
+        galleryInterval = null;
+      }
+    });
+
+    galleryContainer.addEventListener('mouseleave', () => {
+      resetGalleryInterval();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      prevSlide();
+      resetGalleryInterval();
+    });
+    nextBtn.addEventListener('click', () => {
+      nextSlide();
+      resetGalleryInterval();
+    });
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { prevSlide(); resetGalleryInterval(); }
+      if (e.key === 'ArrowRight') { nextSlide(); resetGalleryInterval(); }
     });
 
     // ============================================================
@@ -1561,10 +2193,14 @@
     document.getElementById('branchLabelHours').textContent = b.name;
     document.getElementById('branchLabelBook').textContent = b.name;
 
+    loadCartFromLocalStorage();
     renderStatus();
     renderDailySpecial();
     renderMenu();
-    renderGallery();
+    renderGallerySlides();  // new gallery init
+
+    // Start automatic slideshow
+    resetGalleryInterval();
 
     setInterval(renderStatus, 1000);
   </script>
