@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brick Lane · Book a Table</title>
+  <meta name="description" content="Brick Lane — a laneway café at 33 Guildford Ln, Melbourne. Book a table, browse the menu, and check today's hours." />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0b0d',
+            char: '#15171b',
+            char2: '#1b1e23',
+            brickline: '#2a2118',
+            gold: '#f4b93e',
+            crimson: '#c8102e',
+            cream: '#f5f0e6',
+            smoke: '#9a9a9f',
+          },
+          fontFamily: {
+            display: ['"Fraunces"', 'serif'],
+            body: ['"Manrope"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Firebase v10 Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --ink: #0a0b0d;
+      --char: #15171b;
+      --char2: #1b1e23;
+      --brickline: #2a2118;
+      --gold: #f4b93e;
+      --crimson: #c8102e;
+      --cream: #f5f0e6;
+      --smoke: #9a9a9f;
+    }
+    * {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: var(--ink);
+      font-family: 'Manrope', sans-serif;
+      color: var(--cream);
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Fraunces', serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Subtle brick texture overlay */
+    .brick-texture {
+      background-image:
+        repeating-linear-gradient(0deg, rgba(244, 185, 62, 0.03) 0px, rgba(244, 185, 62, 0.03) 1px, transparent 1px, transparent 34px),
+        repeating-linear-gradient(90deg, rgba(244, 185, 62, 0.03) 0px, rgba(244, 185, 62, 0.03) 1px, transparent 1px, transparent 64px);
+      background-position: 0 0, 32px 17px;
+    }
+
+    /* Glassmorphism nav */
+    .glass-nav {
+      background: rgba(10, 11, 13, 0.55);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid rgba(244, 185, 62, 0.15);
+    }
+
+    .glow-gold {
+      box-shadow: 0 0 0 1px rgba(244, 185, 62, 0.4), 0 0 30px -4px rgba(244, 185, 62, 0.35);
+    }
+    .glow-crimson {
+      box-shadow: 0 0 0 1px rgba(200, 16, 46, 0.5), 0 0 30px -4px rgba(200, 16, 46, 0.45);
+    }
+
+    .pulse-dot {
+      animation: pulseDot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .45; transform: scale(.75); }
+    }
+
+    .clock-digit {
+      text-shadow: 0 0 18px rgba(244, 185, 62, 0.45), 0 0 40px rgba(244, 185, 62, 0.15);
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .snap-x-cards { scroll-snap-type: x mandatory; }
+    .snap-card { scroll-snap-align: start; }
+
+    .fade-el { transition: opacity .6s ease; }
+
+    @keyframes drift {
+      0% { transform: translateX(-10%); }
+      100% { transform: translateX(10%); }
+    }
+    .footer-drift {
+      animation: drift 14s ease-in-out infinite alternate;
+      background: radial-gradient(ellipse at 30% 50%, rgba(244, 185, 62, 0.10), transparent 60%),
+                  radial-gradient(ellipse at 75% 40%, rgba(200, 16, 46, 0.10), transparent 55%);
+    }
+
+    input:focus, button:focus, a:focus {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+
+    .thin-scroll::-webkit-scrollbar { width: 6px; }
+    .thin-scroll::-webkit-scrollbar-thumb { background: rgba(244, 185, 62, 0.35); border-radius: 4px; }
+
+    /* Hero with your local image — updated background + gradient overlay */
+    .hero-bg {
+      background-image: url('Brick8.jpgcopy.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      background-repeat: no-repeat;
+    }
+    /* Updated overlay: left side dark gradient → right side lighter to let shop show */
+    .hero-overlay {
+      background: linear-gradient(135deg, rgba(10, 11, 13, 0.92) 0%, rgba(10, 11, 13, 0.6) 45%, rgba(10, 11, 13, 0.2) 75%, rgba(10, 11, 13, 0.05) 100%);
+    }
+    @media (max-width: 768px) {
+      .hero-bg { background-position: 40% 20%; }
+      .hero-overlay {
+        background: linear-gradient(135deg, rgba(10, 11, 13, 0.92) 0%, rgba(10, 11, 13, 0.7) 60%, rgba(10, 11, 13, 0.3) 100%);
+      }
+    }
+
+    /* Nav link underline animation */
+    .nav-link {
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-link:hover {
+      color: var(--gold);
+    }
+
+    /* Footer links with hover */
+    .footer-link {
+      transition: color 0.2s ease, transform 0.2s ease;
+      display: inline-block;
+    }
+    .footer-link:hover {
+      color: var(--gold);
+      transform: translateX(4px);
+    }
+
+    /* Mobile menu slide-in */
+    #mobileMenu {
+      transition: all 0.3s ease;
+      transform-origin: top;
+    }
+    #mobileMenu.hidden {
+      opacity: 0;
+      transform: scaleY(0.95);
+      pointer-events: none;
+    }
+    #mobileMenu:not(.hidden) {
+      opacity: 1;
+      transform: scaleY(1);
+      pointer-events: auto;
+    }
+
+    /* Drawer smooth transition */
+    #profileDrawer {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #profileDrawer.translate-x-full {
+      transform: translateX(100%);
+    }
+
+    /* Schedule card hover */
+    .schedule-card {
+      transition: all 0.2s ease;
+    }
+    .schedule-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(244, 185, 62, 0.4);
+    }
+
+    /* Menu card image carousel arrows */
+    .carousel-arrow {
+      transition: all 0.2s ease;
+    }
+    .carousel-arrow:hover {
+      background: rgba(10, 11, 13, 0.85);
+      transform: scale(1.05);
+    }
+
+    /* Booking extras row (matching screenshot) */
+    .booking-extra-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .booking-extra-row select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: #1c1f24;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.75rem;
+      color: #f5f0e6;
+      outline: none;
+      transition: border 0.3s;
+      font-size: 0.9rem;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+    .booking-extra-row select:focus { border-color: #f4b93e; }
+    .booking-extra-row select option { background: #141619; color: #f5f0e6; }
+    .booking-extra-row label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: #b0a99b;
+      display: block;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+    }
+    .booking-extra-row .select-wrapper { position: relative; }
+    .booking-extra-row .select-wrapper::after {
+      content: '▾';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #b0a99b;
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+    @media (max-width: 480px) {
+      .booking-extra-row { grid-template-columns: 1fr; gap: 0.75rem; }
+    }
+
+    .location-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+    }
+    .location-card:hover {
+      border-color: rgba(244,185,62,0.3);
+      transform: translateY(-4px);
+    }
+    .location-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(200,16,46,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+    @keyframes iconPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .social-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .social-icon:hover {
+      background: rgba(200,16,46,0.2);
+      border-color: #f4b93e;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+
+<body class="bg-ink text-cream antialiased">
+
+  <!-- =========================================================
+  NAVIGATION
+  ========================================================= -->
+  <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl">
+    <nav class="glass-nav rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-2 shrink-0">
+        <span class="font-display text-xl tracking-wide text-gold">Brick Lane</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-8 font-medium text-sm text-cream/80">
+        <a href="#about" class="nav-link">About Us</a>
+        <a href="#menu" class="nav-link">Menu</a>
+        <a href="#book" class="nav-link">Book a Table</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Cart -->
+        <button class="relative w-9 h-9 flex items-center justify-center rounded-full bg-char/70 border border-gold/20 hover:border-gold/50 transition-colors" aria-label="View cart">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cartCount" class="absolute -top-1.5 -right-1.5 bg-crimson text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+        </button>
+
+        <!-- Profile Trigger -->
+        <button id="profileTrigger" class="w-9 h-9 rounded-full bg-gradient-to-br from-gold to-crimson flex items-center justify-center font-bold text-ink text-sm hover:opacity-90 transition-opacity">
+          <svg id="profileIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a0b0d" stroke-width="2.4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="profileInitial" class="hidden"></span>
+        </button>
+
+        <!-- Mobile Toggle -->
+        <button id="mobileToggle" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-char/70 border border-gold/20 transition hover:border-gold/50">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden lg:hidden glass-nav mt-2 rounded-2xl px-6 py-4 flex flex-col gap-4 text-sm font-medium">
+      <a href="#about" class="nav-link">About Us</a>
+      <a href="#menu" class="nav-link">Menu</a>
+      <a href="#book" class="nav-link">Book a Table</a>
+      <a href="#gallery" class="nav-link">Gallery</a>
+    </div>
+  </header>
+
+  <!-- =========================================================
+  HERO — local image with left-to-right gradient (dark to transparent)
+  ========================================================= -->
+  <section id="home" class="relative min-h-screen flex items-center overflow-hidden hero-bg">
+    <div class="absolute inset-0 hero-overlay"></div>
+    <div class="absolute inset-0 brick-texture opacity-20"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 pt-32 pb-20 w-full">
+      <div class="max-w-xl">
+        <span class="inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-gold/90 border border-gold/30 rounded-full px-3 py-1 mb-6 bg-ink/40 backdrop-blur-sm">
+          All-Day Bites & Brews in the CBD.
+        </span>
+        <h1 class="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] mb-6">
+          Coffee & toast,<br /><span class="italic text-gold">brick by brick.</span>
+        </h1>
+        <p class="text-cream/80 text-base sm:text-lg mb-8 leading-relaxed max-w-lg">
+          A laneway café slinging honest breakfasts and slow-drip coffee from a hidden corner of the CBD. No pretense — just brick walls, good light, and a kitchen that opens early.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#book" class="bg-gold text-ink font-semibold px-6 py-3 rounded-full hover:brightness-110 transition glow-gold">Book a Table</a>
+          <a href="#menu" class="border border-cream/25 text-cream px-6 py-3 rounded-full hover:border-gold/60 hover:text-gold transition">View Menu</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  LIVE STATUS / COUNTDOWN / WEEKLY SCHEDULE
+  ========================================================= -->
+  <section id="hours" class="relative py-24 px-6 sm:px-10 brick-texture border-t border-brickline">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-xs tracking-[0.25em] uppercase text-gold/80">
+          Live at <span id="branchLabelHours" class="font-semibold text-gold">Melbourne CBD</span>
+        </span>
+        <h2 class="font-display text-4xl sm:text-5xl mt-3">Are we open right now?</h2>
+      </div>
+
+      <div class="bg-char rounded-3xl border border-gold/15 p-8 sm:p-12 text-center mb-8">
+        <div id="statusBadge" class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-sm font-semibold">
+          <span id="statusDot" class="w-2.5 h-2.5 rounded-full pulse-dot"></span>
+          <span id="statusText">Checking hours…</span>
+        </div>
+        <div id="countdownClock" class="font-mono clock-digit text-6xl sm:text-8xl font-bold tracking-tight text-gold">--:--:--</div>
+        <p id="countdownLabel" class="text-cream/50 mt-3 text-sm uppercase tracking-widest">loading</p>
+      </div>
+
+      <!-- Weekly Schedule Grid -->
+      <div id="scheduleGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  FLASH DEAL BANNER
+  ========================================================= -->
+  <section id="flashDeal" class="hidden relative overflow-hidden border-y border-crimson/30">
+    <div class="absolute inset-0 bg-gradient-to-r from-crimson/25 via-ink to-gold/15"></div>
+    <div class="relative max-w-6xl mx-auto px-6 sm:px-10 py-6 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="w-2.5 h-2.5 rounded-full bg-crimson pulse-dot"></span>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-crimson/90 font-semibold">Early Bird Flash Deal</p>
+          <p id="flashDealText" class="font-display text-lg sm:text-xl">15% off all coffee, before 9:30 AM</p>
+        </div>
+      </div>
+      <div class="font-mono text-2xl sm:text-3xl font-bold text-gold" id="flashDealClock">--:--:--</div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  ABOUT
+  ========================================================= -->
+  <section id="about" class="py-24 px-6 sm:px-10 border-t border-brickline">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
+      <div>
+        <span class="text-xs tracking-[0.25em] uppercase text-gold/80">About Us</span>
+        <h2 class="font-display text-4xl sm:text-5xl mt-3 mb-6">A corner of the lane<br />we made our own.</h2>
+        <p class="text-cream/70 leading-relaxed mb-4">Brick Lane is the ultimate bakery-café destination in Melbourne’s CBD. With a beautiful brick facade, lush greenery and neon signage, our contemporary menu is designed to change with the seasons.</p>
+        <p class="text-cream/70 leading-relaxed mb-4">Using fresh and sustainable local produce, everything on the Brick Lane menu is full of flavour and prepared directly on site, so you enjoy it when it is at its best.</p>
+        <p class="text-cream/70 leading-relaxed">We roast in small batches, bake daily, and keep the menu tight so everything on it is done properly. Come early, the good tables go fast.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <img src="Gallery/Brick13.jpg" class="rounded-2xl object-cover h-64 w-full" alt="cafe interior">
+        <img src="Gallery/Brick15.jpg" class="rounded-2xl object-cover h-64 w-full mt-8" alt="coffee">
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  DAILY SPECIAL
+  ========================================================= -->
+  <section class="py-16 px-6 sm:px-10 border-t border-brickline">
+    <div class="max-w-6xl mx-auto bg-char rounded-3xl border border-crimson/20 p-8 sm:p-10 grid md:grid-cols-[1fr_1.3fr] gap-8 items-center">
+      <img id="specialImg" src="" alt="" class="rounded-2xl object-cover h-56 w-full fade-el">
+      <div>
+        <span class="text-xs tracking-[0.25em] uppercase text-crimson">Today's Special · <span id="specialDay"></span></span>
+        <h3 id="specialName" class="font-display text-3xl sm:text-4xl mt-2 mb-3 fade-el">—</h3>
+        <p id="specialDesc" class="text-cream/70 mb-4 fade-el">—</p>
+        <span id="specialPrice" class="font-mono text-2xl text-gold">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  MENU
+  ========================================================= -->
+  <section id="menu" class="py-24 px-6 sm:px-10 border-t border-brickline brick-texture">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-xs tracking-[0.25em] uppercase text-gold/80">The Menu</span>
+        <h2 class="font-display text-4xl sm:text-5xl mt-3">Small menu, done right.</h2>
+      </div>
+      <div id="menuGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  BOOK A TABLE — with Google Maps embed + enhanced booking extras
+  ========================================================= -->
+  <section id="book" class="py-24 px-6 sm:px-10 border-t border-brickline">
+    <div class="max-w-6xl mx-auto text-center mb-10">
+      <span class="text-xs tracking-[0.25em] uppercase text-gold/80">Reservations</span>
+      <h2 class="font-display text-4xl sm:text-5xl mt-3">Book a table.</h2>
+      <p class="text-cream/60 mt-3">Save a seat at <span id="branchLabelBook">Melbourne CBD</span>. We'll confirm by email.</p>
+    </div>
+
+    <div class="max-w-5xl mx-auto grid lg:grid-cols-5 gap-6 items-start">
+      <!-- Booking Form (enhanced with extra row) -->
+      <form id="bookingForm" class="lg:col-span-3 bg-char border border-gold/15 rounded-3xl p-8 grid sm:grid-cols-2 gap-4">
+        <input required type="text" placeholder="Full name" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60 sm:col-span-2">
+        
+        <div class="sm:col-span-2 flex gap-2">
+          <select id="countryCode" class="bg-ink border border-cream/15 rounded-xl px-2 py-3 text-sm focus:border-gold/60 w-1/3">
+            <option value="+61" selected>🇦🇺 +61</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+86">🇨🇳 +86</option>
+          </select>
+          <input required type="tel" placeholder="Phone number" class="flex-1 bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        </div>
+
+        <input required type="date" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <input required type="time" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <select required class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+          <option value="1 Guest">1 Guest</option>
+          <option value="2 Guests" selected>2 Guests</option>
+          <option value="3 Guests">3 Guests</option>
+          <option value="4 Guests">4 Guests</option>
+          <option value="5+ Guests">5+ Guests</option>
+        </select>
+
+        <!-- Extra row: seating + special requests (matches screenshot) -->
+        <div class="booking-extra-row sm:col-span-2">
+          <div class="select-wrapper">
+            <label for="bookingSpecialRequests">Special Requests (optional)</label>
+            <select id="bookingSpecialRequests" class="w-full">
+              <option value="">— Select —</option>
+              <option value="High Chair">High Chair</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Catch-up">Catch-up</option>
+              <option value="Dietary Requirement">Dietary Requirement</option>
+              <option value="Disabled Access">Disabled Access</option>
+            </select>
+          </div>
+        </div>
+
+        <textarea rows="2" placeholder="Additional requests (allergies, booth preference…)" class="sm:col-span-2 bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60 resize-none"></textarea>
+
+        <button type="submit" class="sm:col-span-2 bg-gold text-ink font-semibold py-3 rounded-full hover:brightness-110 transition">Confirm Booking</button>
+        <p id="bookingSuccess" class="hidden sm:col-span-2 text-center text-gold text-sm">✓ Table request received — we'll text you a confirmation shortly.</p>
+      </form>
+
+      <!-- Google Maps Embed + Hours & Contact -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-char border border-gold/15 rounded-3xl p-6">
+          <h3 class="font-display text-xl text-gold mb-3">Hours & Contact</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-cream/10 pb-1"><span class="text-cream/60">Mon – Thu</span><span>8:00 AM – 10:00 PM</span></div>
+            <div class="flex justify-between border-b border-cream/10 pb-1"><span class="text-cream/60">Fri – Sat</span><span>8:00 AM – 11:30 PM</span></div>
+            <div class="flex justify-between"><span class="text-cream/60">Sunday</span><span>9:00 AM – 9:00 PM</span></div>
+          </div>
+          <div class="mt-4 space-y-1 text-sm text-cream/70">
+            <p>📍 33 Guildford Ln, Melbourne VIC 3000</p>
+            <p>📞 <a href="tel:+61370239333" class="hover:text-gold transition">+61 3 7023 9333</a></p>
+            <p>✉️ hello@bricklane.com</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden border border-gold/20 shadow-2xl shadow-gold/10 h-56">
+          <iframe
+            class="w-full h-full"
+            style="border:0;"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12608.234009628668!2d144.96522350268552!3d-37.81209865910803!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d355ff1028d%3A0x22562049e5a0a09b!2sBrick%20Lane%20Melbourne!5e0!3m2!1sen!2sus!4v1783693813942!5m2!1sen!2sus">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  GALLERY
+  ========================================================= -->
+  <section id="gallery" class="py-24 border-t border-brickline overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 sm:px-10 mb-10 text-center">
+      <span class="text-xs tracking-[0.25em] uppercase text-gold/80">Gallery</span>
+      <h2 class="font-display text-4xl sm:text-5xl mt-3">Snapped by Customers</h2>
+    </div>
+    <div class="relative">
+      <div id="galleryTrack" class="flex gap-4 no-scrollbar overflow-x-hidden px-6 sm:px-10"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+  FOOTER
+  ========================================================= -->
+  <footer class="relative border-t border-brickline pt-16 pb-8 px-6 sm:px-10 overflow-hidden">
+    <div class="footer-drift absolute inset-0 pointer-events-none"></div>
+    <div class="relative max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="font-display text-2xl text-gold">Brick Lane</span>
+        </div>
+        <p class="text-cream/50 text-sm leading-relaxed">33 Guildford Ln, Melbourne VIC 3000, Australia</p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4 text-sm uppercase tracking-widest text-gold/80">Explore</h4>
+        <ul class="space-y-2 text-sm text-cream/60">
+          <li><a href="#about" class="footer-link">About Us</a></li>
+          <li><a href="#menu" class="footer-link">Menu</a></li>
+          <li><a href="#book" class="footer-link">Book a Table</a></li>
+          <li><a href="#gallery" class="footer-link">Gallery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4 text-sm uppercase tracking-widest text-gold/80">Legal</h4>
+        <ul class="space-y-2 text-sm text-cream/60">
+          <li><a href="#" class="footer-link">Privacy Policy</a></li>
+          <li><a href="#" class="footer-link">Terms of Service</a></li>
+          <li><a href="#" class="footer-link">Allergen Info</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4 text-sm uppercase tracking-widest text-gold/80">Follow</h4>
+        <ul class="space-y-2 text-sm text-cream/60">
+          <li><a href="#" class="footer-link">Instagram</a></li>
+          <li><a href="#" class="footer-link">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="relative max-w-6xl mx-auto border-t border-cream/10 pt-6 text-xs text-cream/40 flex flex-wrap justify-between gap-2">
+      <span>© <span id="year"></span> Brick Lane. All rights reserved.</span>
+      <span>Melbourne, Australia</span>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+  AUTH MODAL
+  ========================================================= -->
+  <div id="authOverlay" class="hidden fixed inset-0 z-[100] bg-ink/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-nav w-full max-w-md rounded-3xl p-8 relative thin-scroll max-h-[90vh] overflow-y-auto">
+      <button id="authClose" class="absolute top-5 right-5 text-cream/50 hover:text-gold" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="flex gap-2 mb-6 bg-char/60 rounded-full p-1">
+        <button id="tabLogin" class="flex-1 py-2 rounded-full text-sm font-semibold bg-gold text-ink transition">Log In</button>
+        <button id="tabSignup" class="flex-1 py-2 rounded-full text-sm font-semibold text-cream/70 transition">Sign Up</button>
+      </div>
+
+      <p id="authError" class="hidden text-crimson text-sm bg-crimson/10 border border-crimson/30 rounded-xl px-4 py-2 mb-4"></p>
+
+      <form id="loginForm" class="space-y-3">
+        <input required type="email" id="loginEmail" placeholder="Email" class="w-full bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <input required type="password" id="loginPassword" placeholder="Password" class="w-full bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <button type="submit" class="w-full bg-gold text-ink font-semibold py-3 rounded-full hover:brightness-110 transition">Log In</button>
+      </form>
+
+      <form id="signupForm" class="hidden space-y-3">
+        <input required type="text" id="suName" placeholder="Full name" class="w-full bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <div class="flex gap-2">
+          <select id="suCountryCode" class="bg-char border border-cream/15 rounded-xl px-2 py-3 text-sm focus:border-gold/60 w-24">
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+94">🇱🇰 +94</option>
+            <option value="+91">🇮🇳 +91</option>
+          </select>
+          <input required type="tel" id="suPhone" placeholder="Phone number" class="flex-1 bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        </div>
+        <input required type="email" id="suEmail" placeholder="Email" class="w-full bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <input required type="password" id="suPassword" placeholder="Password" class="w-full bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <input required type="password" id="suPasswordConfirm" placeholder="Re-type password" class="w-full bg-char border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
+        <button type="submit" class="w-full bg-gold text-ink font-semibold py-3 rounded-full hover:brightness-110 transition">Create Account</button>
+      </form>
+
+      <div class="flex items-center gap-3 my-6">
+        <div class="flex-1 h-px bg-cream/10"></div>
+        <span class="text-xs text-cream/40 uppercase tracking-widest">or</span>
+        <div class="flex-1 h-px bg-cream/10"></div>
+      </div>
+
+      <button id="googleAuthBtn" class="w-full flex items-center justify-center gap-3 bg-cream text-ink font-semibold py-3 rounded-full hover:brightness-95 transition">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4c-7.4 0-13.8 4.2-17 10.4z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.5C29.5 34.7 26.9 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.6 5.1C9.1 39.6 16 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.5 5.5C40.5 36.6 44 30.8 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+  PROFILE DRAWER
+  ========================================================= -->
+  <div id="drawerOverlay" class="hidden fixed inset-0 z-[100] bg-ink/70 backdrop-blur-sm"></div>
+  <aside id="profileDrawer" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-char2 border-l border-gold/15 z-[101] translate-x-full transition-transform duration-300 thin-scroll overflow-y-auto">
+    <div class="p-6">
+      <button id="drawerClose" class="mb-6 text-cream/50 hover:text-gold flex items-center gap-1 text-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg> Close
+      </button>
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gold to-crimson flex items-center justify-center font-display font-bold text-ink text-xl" id="drawerAvatar">B</div>
+        <div>
+          <p id="drawerName" class="font-semibold">—</p>
+          <p id="drawerEmail" class="text-cream/50 text-xs">—</p>
+        </div>
+      </div>
+
+      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Active Table Bookings</h4>
+      <div id="drawerBookings" class="space-y-3 mb-8"></div>
+
+      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Past Order Records</h4>
+      <div id="drawerOrders" class="space-y-3 mb-8"></div>
+
+      <button id="logoutBtn" class="w-full border border-crimson/40 text-crimson font-semibold py-3 rounded-full hover:bg-crimson/10 transition">Log Out</button>
+    </div>
+  </aside>
+
+  <!-- =========================================================
+  JAVASCRIPT (Firebase + all logic)
+  ========================================================= -->
+  <script>
+    // ============================================================
+    // FIREBASE INITIALISATION
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBQLWEuZ_ydmR7Xe9vNDYxvZiWMme4wj0M",
+      authDomain: "bricklane-28f56.firebaseapp.com",
+      projectId: "bricklane-28f56",
+      storageBucket: "bricklane-28f56.firebasestorage.app",
+      messagingSenderId: "767079384468",
+      appId: "1:767079384468:web:e76e47f6e151169b4efb81",
+      measurementId: "G-H5RMLCQD7W"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ============================================================
+    // BRANCH DATA (only Melbourne CBD, branch selector removed)
+    // ============================================================
+    const BRANCHES = {
+      melb: {
+        name: 'Melbourne CBD',
+        address: '33 Guildford Ln, Melbourne VIC 3000',
+        schedule: {
+          Mon: { open: '07:30', close: '14:30' },
+          Tue: { open: '07:30', close: '14:30' },
+          Wed: { open: '07:30', close: '14:30' },
+          Thu: { open: '07:30', close: '14:30' },
+          Fri: { open: '07:30', close: '14:30' },
+          Sat: { open: '08:00', close: '14:30' },
+          Sun: { open: '08:00', close: '14:30' },
+        }
+      },
+    };
+
+    let currentBranchKey = 'melb';
+
+    // ============================================================
+    // MELBOURNE TIME HELPERS
+    // ============================================================
+    const DAY_KEYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const DAY_LABELS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    function getMelbourneNow() {
+      const parts = new Intl.DateTimeFormat('en-AU', {
+        timeZone: 'Australia/Melbourne',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }).formatToParts(new Date());
+      const get = (t) => parseInt(parts.find(p => p.type === t).value, 10);
+      let hour = get('hour');
+      if (hour === 24) hour = 0;
+      return {
+        year: get('year'),
+        month: get('month'),
+        day: get('day'),
+        hour,
+        minute: get('minute'),
+        second: get('second'),
+        date: new Date(get('year'), get('month') - 1, get('day'), hour, get('minute'), get('second')),
+      };
+    }
+
+    function dayKeyFromDate(d) { return DAY_KEYS[d.getDay()]; }
+
+    function timeStrToMinutes(str) {
+      const [h, m] = str.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function fmtCountdown(totalSeconds) {
+      totalSeconds = Math.max(0, totalSeconds);
+      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const s = String(Math.floor(totalSeconds % 60)).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function fmtClock12(hhmm) {
+      const [h, m] = hhmm.split(':').map(Number);
+      const period = h >= 12 ? 'PM' : 'AM';
+      let h12 = h % 12;
+      if (h12 === 0) h12 = 12;
+      return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+    }
+
+    // ============================================================
+    // MAIN COUNTDOWN + STATUS BADGE
+    // ============================================================
+    function computeStatus(schedule) {
+      const now = getMelbourneNow();
+      const nowMinutes = now.hour * 60 + now.minute + now.second / 60;
+      const todayKey = dayKeyFromDate(now.date);
+      const today = schedule[todayKey];
+      const openMin = timeStrToMinutes(today.open);
+      const closeMin = timeStrToMinutes(today.close);
+
+      if (nowMinutes >= openMin && nowMinutes < closeMin) {
+        const secsToClose = Math.round((closeMin - nowMinutes) * 60);
+        return { isOpen: true, secondsRemaining: secsToClose, targetLabel: `Closes at ${fmtClock12(today.close)}` };
+      }
+
+      if (nowMinutes < openMin) {
+        const secsToOpen = Math.round((openMin - nowMinutes) * 60);
+        return { isOpen: false, secondsRemaining: secsToOpen, targetLabel: `Opens today at ${fmtClock12(today.open)}` };
+      }
+
+      const tomorrow = new Date(now.date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowKey = dayKeyFromDate(tomorrow);
+      const tomorrowOpen = schedule[tomorrowKey].open;
+      const minutesUntilMidnight = (24 * 60) - nowMinutes;
+      const secsToOpen = Math.round((minutesUntilMidnight + timeStrToMinutes(tomorrowOpen)) * 60);
+      return { isOpen: false, secondsRemaining: secsToOpen, targetLabel: `Opens tomorrow at ${fmtClock12(tomorrowOpen)}` };
+    }
+
+    function renderStatus() {
+      const schedule = BRANCHES[currentBranchKey].schedule;
+      const status = computeStatus(schedule);
+
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      const badge = document.getElementById('statusBadge');
+      const clock = document.getElementById('countdownClock');
+      const label = document.getElementById('countdownLabel');
+
+      clock.textContent = fmtCountdown(status.secondsRemaining);
+      label.textContent = status.targetLabel;
+
+      if (status.isOpen) {
+        dot.className = 'w-2.5 h-2.5 rounded-full pulse-dot bg-emerald-400';
+        text.textContent = 'OPEN NOW';
+        badge.className =
+          'inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-sm font-semibold bg-emerald-400/10 text-emerald-300 border border-emerald-400/30';
+      } else {
+        dot.className = 'w-2.5 h-2.5 rounded-full pulse-dot bg-crimson';
+        text.textContent = 'CLOSED';
+        badge.className =
+          'inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-sm font-semibold bg-crimson/10 text-crimson border border-crimson/30';
+      }
+
+      renderScheduleGrid(schedule, status.isOpen);
+      renderFlashDeal(schedule);
+    }
+
+    // ============================================================
+    // WEEKLY SCHEDULE CARDS
+    // ============================================================
+    function renderScheduleGrid(schedule, isOpenNow) {
+      const now = getMelbourneNow();
+      const todayKey = dayKeyFromDate(now.date);
+
+      const jsDay = now.date.getDay();
+      const diffToMonday = (jsDay === 0) ? -6 : 1 - jsDay;
+      const monday = new Date(now.date);
+      monday.setDate(monday.getDate() + diffToMonday);
+
+      const order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const grid = document.getElementById('scheduleGrid');
+      grid.innerHTML = '';
+
+      order.forEach((key, i) => {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const isToday = key === todayKey;
+        const hours = schedule[key];
+        const monthDay = d.toLocaleDateString('en-AU', { month: 'long', day: 'numeric' });
+        const weekdayFull = DAY_LABELS[d.getDay()].toUpperCase();
+
+        const card = document.createElement('div');
+        card.className = `schedule-card rounded-2xl p-4 border transition-all ${isToday ? 'bg-char border-gold glow-gold' : 'bg-char/60 border-cream/10'}`;
+        card.innerHTML = `
+            <p class="text-[10px] tracking-widest uppercase ${isToday ? 'text-gold' : 'text-cream/40'} mb-1">${weekdayFull}</p>
+            <p class="text-xs text-cream/50 mb-3">${monthDay}</p>
+            <p class="font-mono text-sm ${isToday ? 'text-cream' : 'text-cream/70'}">${fmtClock12(hours.open)}</p>
+            <p class="font-mono text-sm ${isToday ? 'text-cream' : 'text-cream/70'}">${fmtClock12(hours.close)}</p>
+            ${isToday
+            ? `<span class="inline-block mt-3 text-[10px] font-bold px-2 py-0.5 rounded-full ${isOpenNow ? 'bg-emerald-400/15 text-emerald-300' : 'bg-crimson/15 text-crimson'}">● ${isOpenNow ? 'OPEN NOW' : 'CLOSED'}</span>`
+            : ''
+          }
+          `;
+        grid.appendChild(card);
+      });
+    }
+
+    // ============================================================
+    // FLASH DEAL BANNER
+    // ============================================================
+    function renderFlashDeal(schedule) {
+      const now = getMelbourneNow();
+      const todayKey = dayKeyFromDate(now.date);
+      const today = schedule[todayKey];
+      const nowMinutes = now.hour * 60 + now.minute + now.second / 60;
+      const openMin = timeStrToMinutes(today.open);
+      const dealEndMin = timeStrToMinutes('09:30');
+
+      const section = document.getElementById('flashDeal');
+      const clockEl = document.getElementById('flashDealClock');
+
+      if (nowMinutes >= openMin && nowMinutes < dealEndMin) {
+        section.classList.remove('hidden');
+        const secsLeft = Math.round((dealEndMin - nowMinutes) * 60);
+        clockEl.textContent = fmtCountdown(secsLeft);
+      } else {
+        section.classList.add('hidden');
+      }
+    }
+
+    // ============================================================
+    // DAILY SPECIAL
+    // ============================================================
+    const DAILY_SPECIALS = {
+      Sunday: { name: 'Sunday Brick Stack', desc: 'Triple-stacked buttermilk pancakes, burnt-butter maple, seasonal fruit.',
+        price: '$19', img: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?q=80&w=800&auto=format&fit=crop' },
+      Monday: { name: 'Monday Miso Mushroom Toast', desc: 'Charred sourdough, miso-glazed mushrooms, soft egg, chilli oil.',
+        price: '$17', img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=800&auto=format&fit=crop' },
+      Tuesday: { name: 'Tuesday Shakshuka', desc: 'Slow-cooked tomato and capsicum, baked eggs, whipped feta, flatbread.',
+        price: '$18', img: 'https://images.unsplash.com/photo-1590412200988-a436970781fa?q=80&w=800&auto=format&fit=crop' },
+      Wednesday: { name: 'Wednesday Brick Benny', desc: 'Poached eggs, smoked ham hock, hollandaise, toasted brioche.',
+        price: '$20', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=800&auto=format&fit=crop' },
+      Thursday: { name: 'Thursday Corn Fritters', desc: 'Charred corn, haloumi, avocado smash, chilli jam.', price: '$18',
+        img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=800&auto=format&fit=crop' },
+      Friday: { name: 'Friday Big Breakfast', desc: 'Eggs your way, bacon, chorizo, roasted tomato, sourdough.', price: '$22',
+        img: 'https://images.unsplash.com/photo-1533920379810-6bedac9e31f5?q=80&w=800&auto=format&fit=crop' },
+      Saturday: { name: 'Saturday Laneway Fry-Up', desc: 'The full works — eggs, bacon, sausage, beans, mushroom, toast.',
+        price: '$24', img: 'https://images.unsplash.com/photo-1533920379810-6bedac9e31f5?q=80&w=800&auto=format&fit=crop' },
+    };
+
+    function renderDailySpecial() {
+      const now = getMelbourneNow();
+      const weekday = DAY_LABELS[now.date.getDay()];
+      const special = DAILY_SPECIALS[weekday];
+      document.getElementById('specialDay').textContent = weekday;
+      document.getElementById('specialName').textContent = special.name;
+      document.getElementById('specialDesc').textContent = special.desc;
+      document.getElementById('specialPrice').textContent = special.price;
+      document.getElementById('specialImg').src = special.img;
+    }
+
+    // ============================================================
+    // MENU DATA + CAROUSEL
+    // ============================================================
+    const MENU_ITEMS = [{
+      name: 'Avocado Sourdough',
+      price: '$16',
+      desc: 'Smashed avocado, lemon, chilli flakes, feta.',
+      images: [
+        'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=700&auto=format&fit=crop',
+      ]
+    }, {
+      name: 'Brick Lane Benedict',
+      price: '$20',
+      desc: 'Poached eggs, ham hock, hollandaise, brioche.',
+      images: [
+        'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1481070555726-e2fe8357725c?q=80&w=700&auto=format&fit=crop',
+      ]
+    }, {
+      name: 'Flat White',
+      price: '$5',
+      desc: 'Small-batch beans, silky microfoam.',
+      images: [
+        'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=700&auto=format&fit=crop',
+      ]
+    }, {
+      name: 'Corn Fritters',
+      price: '$18',
+      desc: 'Charred corn, haloumi, chilli jam, avo.',
+      images: [
+        'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=700&auto=format&fit=crop',
+      ]
+    }, {
+      name: 'Shakshuka',
+      price: '$18',
+      desc: 'Baked eggs, tomato, capsicum, whipped feta.',
+      images: [
+        'https://images.unsplash.com/photo-1590412200988-a436970781fa?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1585937421612-70a008356c36?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1607532941433-304659e8198a?q=80&w=700&auto=format&fit=crop',
+      ]
+    }, {
+      name: 'Banana Bread',
+      price: '$9',
+      desc: 'Toasted, salted butter, honey drizzle.',
+      images: [
+        'https://images.unsplash.com/photo-1606101273945-e9c92e670c72?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1605286658387-38dbe6d6ff54?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1622480916113-9000ac49b79d?q=80&w=700&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?q=80&w=700&auto=format&fit=crop',
+      ]
+    }, ];
+
+    function renderMenu() {
+      const grid = document.getElementById('menuGrid');
+      grid.innerHTML = '';
+      MENU_ITEMS.forEach((item, itemIndex) => {
+        const card = document.createElement('div');
+        card.className = 'bg-char rounded-3xl border border-gold/10 overflow-hidden group';
+        card.innerHTML = `
+            <div class="relative">
+              <div id="carousel-${itemIndex}" class="flex overflow-x-auto no-scrollbar snap-x-cards">
+                ${item.images.map(src => `
+                  <div class="snap-card shrink-0 w-full h-56">
+                    <img src="${src}" class="w-full h-full object-cover" alt="${item.name}">
+                  </div>
+                `).join('')}
+              </div>
+              <button data-dir="-1" data-target="${itemIndex}" class="carousel-arrow absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-ink/60 backdrop-blur flex items-center justify-center hover:bg-ink/90 transition">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f5f0e6" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button data-dir="1" data-target="${itemIndex}" class="carousel-arrow absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-ink/60 backdrop-blur flex items-center justify-center hover:bg-ink/90 transition">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f5f0e6" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="font-display text-xl">${item.name}</h3>
+                <span class="font-mono text-gold">${item.price}</span>
+              </div>
+              <p class="text-cream/60 text-sm mb-4">${item.desc}</p>
+              <button class="w-full bg-gold/10 text-gold border border-gold/30 rounded-full py-2 text-sm font-semibold hover:bg-gold hover:text-ink transition">Add to Order</button>
+            </div>
+          `;
+        grid.appendChild(card);
+      });
+
+      document.querySelectorAll('.carousel-arrow').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const track = document.getElementById(`carousel-${btn.dataset.target}`);
+          const cardWidth = track.firstElementChild.offsetWidth;
+          track.scrollBy({ left: cardWidth * Number(btn.dataset.dir), behavior: 'smooth' });
+        });
+      });
+    }
+
+    // ============================================================
+    // GALLERY
+    // ============================================================
+    function renderGallery() {
+      const track = document.getElementById('galleryTrack');
+      const seeds = Array.from({ length: 15 }, (_, i) => i + 1);
+      const imgs = seeds.map(s => `https://picsum.photos/seed/bricklane${s}/500/650`);
+      const full = [...imgs, ...imgs];
+      track.innerHTML = full.map(src => `
+          <div class="shrink-0 w-56 h-72 rounded-2xl overflow-hidden border border-gold/10">
+            <img src="${src}" class="w-full h-full object-cover" alt="Brick Lane gallery shot">
+          </div>
+        `).join('');
+
+      let offset = 0;
+      const speed = 0.4;
+
+      function step() {
+        offset += speed;
+        const resetPoint = track.scrollWidth / 2;
+        if (offset >= resetPoint) offset = 0;
+        track.style.transform = `translateX(-${offset}px)`;
+        requestAnimationFrame(step);
+      }
+      track.style.willChange = 'transform';
+      requestAnimationFrame(step);
+    }
+
+    // ============================================================
+    // MOBILE NAV TOGGLE
+    // ============================================================
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    // ============================================================
+    // AUTH MODAL LOGIC
+    // ============================================================
+    const authOverlay = document.getElementById('authOverlay');
+    const profileTrigger = document.getElementById('profileTrigger');
+    const authClose = document.getElementById('authClose');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabSignup = document.getElementById('tabSignup');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const authError = document.getElementById('authError');
+
+    function showAuthError(msg) {
+      authError.textContent = msg;
+      authError.classList.remove('hidden');
+    }
+
+    function clearAuthError() { authError.classList.add('hidden'); }
+
+    function openAuthModal() {
+      authOverlay.classList.remove('hidden');
+      clearAuthError();
+    }
+
+    function closeAuthModal() { authOverlay.classList.add('hidden'); }
+
+    profileTrigger.addEventListener('click', () => {
+      if (auth.currentUser) {
+        openProfileDrawer();
+      } else {
+        openAuthModal();
+      }
+    });
+    authClose.addEventListener('click', closeAuthModal);
+    authOverlay.addEventListener('click', (e) => { if (e.target === authOverlay) closeAuthModal(); });
+
+    function setAuthTab(mode) {
+      clearAuthError();
+      if (mode === 'login') {
+        tabLogin.className = 'flex-1 py-2 rounded-full text-sm font-semibold bg-gold text-ink transition';
+        tabSignup.className = 'flex-1 py-2 rounded-full text-sm font-semibold text-cream/70 transition';
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+      } else {
+        tabSignup.className = 'flex-1 py-2 rounded-full text-sm font-semibold bg-gold text-ink transition';
+        tabLogin.className = 'flex-1 py-2 rounded-full text-sm font-semibold text-cream/70 transition';
+        signupForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+      }
+    }
+    tabLogin.addEventListener('click', () => setAuthTab('login'));
+    tabSignup.addEventListener('click', () => setAuthTab('signup'));
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearAuthError();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => closeAuthModal())
+        .catch(err => showAuthError(err.message));
+    });
+
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearAuthError();
+      const name = document.getElementById('suName').value;
+      const countryCode = document.getElementById('suCountryCode').value;
+      const phone = countryCode + document.getElementById('suPhone').value;
+      const email = document.getElementById('suEmail').value;
+      const password = document.getElementById('suPassword').value;
+      const confirm = document.getElementById('suPasswordConfirm').value;
+
+      if (password !== confirm) { showAuthError('Passwords do not match.'); return; }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((cred) => {
+          return cred.user.updateProfile({ displayName: name }).then(() => {
+            return db.collection('users').doc(cred.user.uid).set({ name, phone, email }, { merge: true });
+          });
+        })
+        .then(() => closeAuthModal())
+        .catch(err => showAuthError(err.message));
+    });
+
+    document.getElementById('googleAuthBtn').addEventListener('click', () => {
+      clearAuthError();
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => closeAuthModal())
+        .catch(err => showAuthError(err.message));
+    });
+
+    // ============================================================
+    // PROFILE DRAWER
+    // ============================================================
+    const profileDrawer = document.getElementById('profileDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+
+    function openProfileDrawer() {
+      drawerOverlay.classList.remove('hidden');
+      profileDrawer.classList.remove('translate-x-full');
+    }
+
+    function closeProfileDrawer() {
+      drawerOverlay.classList.add('hidden');
+      profileDrawer.classList.add('translate-x-full');
+    }
+    document.getElementById('drawerClose').addEventListener('click', closeProfileDrawer);
+    drawerOverlay.addEventListener('click', closeProfileDrawer);
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(closeProfileDrawer);
+    });
+
+    function renderMockDrawerData() {
+      document.getElementById('drawerBookings').innerHTML = `
+          <div class="bg-char rounded-xl p-3 text-sm">
+            <p class="font-semibold">Table for 2</p>
+            <p class="text-cream/50 text-xs">Sat, 8:30 AM · Melbourne CBD</p>
+          </div>`;
+      document.getElementById('drawerOrders').innerHTML = `
+          <div class="bg-char rounded-xl p-3 text-sm">
+            <p class="font-semibold">Flat White, Avocado Sourdough</p>
+            <p class="text-cream/50 text-xs">Last Tuesday · $21.00</p>
+          </div>`;
+    }
+
+    auth.onAuthStateChanged((user) => {
+      const icon = document.getElementById('profileIcon');
+      const initial = document.getElementById('profileInitial');
+      if (user) {
+        const displayName = user.displayName || user.email || 'Guest';
+        icon.classList.add('hidden');
+        initial.classList.remove('hidden');
+        initial.textContent = displayName.charAt(0).toUpperCase();
+        document.getElementById('drawerAvatar').textContent = displayName.charAt(0).toUpperCase();
+        document.getElementById('drawerName').textContent = displayName;
+        document.getElementById('drawerEmail').textContent = user.email || '';
+        renderMockDrawerData();
+      } else {
+        icon.classList.remove('hidden');
+        initial.classList.add('hidden');
+      }
+    });
+
+    // ============================================================
+    // BOOKING FORM (enhanced with extra row)
+    // ============================================================
+    document.getElementById('bookingForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const uid = auth.currentUser ? auth.currentUser.uid : 'guest';
+      db.collection('bookings').add({
+        uid,
+        branch: currentBranchKey,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }).catch(() => {});
+      document.getElementById('bookingSuccess').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('bookingSuccess').classList.add('hidden');
+      }, 5000);
+      e.target.reset();
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.getElementById('year').textContent = new Date().getFullYear();
+    // Always set branch to Melbourne CBD (no selector)
+    const b = BRANCHES[currentBranchKey];
+    document.getElementById('branchLabelHours').textContent = b.name;
+    document.getElementById('branchLabelBook').textContent = b.name;
+
+    renderStatus();
+    renderDailySpecial();
+    renderMenu();
+    renderGallery();
+
+    setInterval(renderStatus, 1000);
+  </script>
+</body>
+</html>
