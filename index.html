@@ -67,7 +67,6 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Subtle brick texture overlay */
     .brick-texture {
       background-image:
         repeating-linear-gradient(0deg, rgba(244, 185, 62, 0.03) 0px, rgba(244, 185, 62, 0.03) 1px, transparent 1px, transparent 34px),
@@ -75,7 +74,6 @@
       background-position: 0 0, 32px 17px;
     }
 
-    /* Glassmorphism nav */
     .glass-nav {
       background: rgba(10, 11, 13, 0.55);
       backdrop-filter: blur(20px) saturate(160%);
@@ -132,14 +130,12 @@
     .thin-scroll::-webkit-scrollbar { width: 6px; }
     .thin-scroll::-webkit-scrollbar-thumb { background: rgba(244, 185, 62, 0.35); border-radius: 4px; }
 
-    /* Hero with your local image — updated background + gradient overlay */
     .hero-bg {
       background-image: url('Brick8.jpgcopy.jpg');
       background-size: cover;
       background-position: center 30%;
       background-repeat: no-repeat;
     }
-    /* Updated overlay: left side dark gradient → right side lighter to let shop show */
     .hero-overlay {
       background: linear-gradient(135deg, rgba(10, 11, 13, 0.92) 0%, rgba(10, 11, 13, 0.6) 45%, rgba(10, 11, 13, 0.2) 75%, rgba(10, 11, 13, 0.05) 100%);
     }
@@ -150,7 +146,6 @@
       }
     }
 
-    /* Nav link underline animation */
     .nav-link {
       position: relative;
       transition: color 0.2s ease;
@@ -172,7 +167,6 @@
       color: var(--gold);
     }
 
-    /* Footer links with hover */
     .footer-link {
       transition: color 0.2s ease, transform 0.2s ease;
       display: inline-block;
@@ -182,7 +176,6 @@
       transform: translateX(4px);
     }
 
-    /* Mobile menu slide-in */
     #mobileMenu {
       transition: all 0.3s ease;
       transform-origin: top;
@@ -198,7 +191,6 @@
       pointer-events: auto;
     }
 
-    /* Drawer smooth transition */
     #profileDrawer {
       transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -206,7 +198,6 @@
       transform: translateX(100%);
     }
 
-    /* Schedule card hover */
     .schedule-card {
       transition: all 0.2s ease;
     }
@@ -215,7 +206,6 @@
       border-color: rgba(244, 185, 62, 0.4);
     }
 
-    /* Menu card image carousel arrows */
     .carousel-arrow {
       transition: all 0.2s ease;
     }
@@ -224,7 +214,6 @@
       transform: scale(1.05);
     }
 
-    /* Booking extras row (matching screenshot) */
     .booking-extra-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -310,6 +299,20 @@
       border-color: #f4b93e;
       transform: scale(1.1);
     }
+
+    /* Order status badges */
+    .status-confirmed { background: rgba(244, 185, 62, 0.15); color: #f4b93e; border-color: rgba(244, 185, 62, 0.3); }
+    .status-packed { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+    .status-picked { background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3); }
+    .status-complete { background: rgba(107, 114, 128, 0.15); color: #9ca3af; border-color: rgba(107, 114, 128, 0.3); }
+
+    .notification-banner {
+      animation: slideDown 0.4s ease;
+    }
+    @keyframes slideDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
@@ -361,7 +364,21 @@
   </header>
 
   <!-- =========================================================
-  HERO — local image with left-to-right gradient (dark to transparent)
+  NOTIFICATION BANNER (for order status updates)
+  ========================================================= -->
+  <div id="notificationBanner" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg hidden">
+    <div class="bg-char2 border border-gold/30 rounded-2xl p-4 shadow-2xl notification-banner flex items-center gap-3">
+      <div id="notificationIcon" class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-xl">📦</div>
+      <div class="flex-1">
+        <p id="notificationTitle" class="font-semibold text-sm">Order Status Updated</p>
+        <p id="notificationMessage" class="text-cream/60 text-xs">Your order is ready for pickup!</p>
+      </div>
+      <button id="notificationClose" class="text-cream/40 hover:text-gold transition">✕</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+  HERO
   ========================================================= -->
   <section id="home" class="relative min-h-screen flex items-center overflow-hidden hero-bg">
     <div class="absolute inset-0 hero-overlay"></div>
@@ -437,7 +454,7 @@
       <div>
         <span class="text-xs tracking-[0.25em] uppercase text-gold/80">About Us</span>
         <h2 class="font-display text-4xl sm:text-5xl mt-3 mb-6">A corner of the lane<br />we made our own.</h2>
-        <p class="text-cream/70 leading-relaxed mb-4">Brick Lane is the ultimate bakery-café destination in Melbourne’s CBD. With a beautiful brick facade, lush greenery and neon signage, our contemporary menu is designed to change with the seasons.</p>
+        <p class="text-cream/70 leading-relaxed mb-4">Brick Lane is the ultimate bakery-café destination in Melbourne's CBD. With a beautiful brick facade, lush greenery and neon signage, our contemporary menu is designed to change with the seasons.</p>
         <p class="text-cream/70 leading-relaxed mb-4">Using fresh and sustainable local produce, everything on the Brick Lane menu is full of flavour and prepared directly on site, so you enjoy it when it is at its best.</p>
         <p class="text-cream/70 leading-relaxed">We roast in small batches, bake daily, and keep the menu tight so everything on it is done properly. Come early, the good tables go fast.</p>
       </div>
@@ -477,7 +494,7 @@
   </section>
 
   <!-- =========================================================
-  BOOK A TABLE — with Google Maps embed + enhanced booking extras
+  BOOK A TABLE
   ========================================================= -->
   <section id="book" class="py-24 px-6 sm:px-10 border-t border-brickline">
     <div class="max-w-6xl mx-auto text-center mb-10">
@@ -487,7 +504,6 @@
     </div>
 
     <div class="max-w-5xl mx-auto grid lg:grid-cols-5 gap-6 items-start">
-      <!-- Booking Form (enhanced with extra row) -->
       <form id="bookingForm" class="lg:col-span-3 bg-char border border-gold/15 rounded-3xl p-8 grid sm:grid-cols-2 gap-4">
         <input required type="text" placeholder="Full name" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60 sm:col-span-2">
         
@@ -512,7 +528,6 @@
           <option value="5+ Guests">5+ Guests</option>
         </select>
 
-        <!-- Extra row: seating + special requests (matches screenshot) -->
         <div class="booking-extra-row sm:col-span-2">
           <div class="select-wrapper">
             <label for="bookingSpecialRequests">Special Requests (optional)</label>
@@ -533,7 +548,6 @@
         <p id="bookingSuccess" class="hidden sm:col-span-2 text-center text-gold text-sm">✓ Table request received — we'll text you a confirmation shortly.</p>
       </form>
 
-      <!-- Google Maps Embed + Hours & Contact -->
       <div class="lg:col-span-2 space-y-6">
         <div class="bg-char border border-gold/15 rounded-3xl p-6">
           <h3 class="font-display text-xl text-gold mb-3">Hours & Contact</h3>
@@ -692,8 +706,11 @@
       <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Active Table Bookings</h4>
       <div id="drawerBookings" class="space-y-3 mb-8"></div>
 
-      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Past Order Records</h4>
+      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Order Records</h4>
       <div id="drawerOrders" class="space-y-3 mb-8"></div>
+
+      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Completed Orders</h4>
+      <div id="drawerCompletedOrders" class="space-y-3 mb-8"></div>
 
       <button id="logoutBtn" class="w-full border border-crimson/40 text-crimson font-semibold py-3 rounded-full hover:bg-crimson/10 transition">Log Out</button>
     </div>
@@ -720,7 +737,7 @@
     const db = firebase.firestore();
 
     // ============================================================
-    // BRANCH DATA (only Melbourne CBD, branch selector removed)
+    // BRANCH DATA
     // ============================================================
     const BRANCHES = {
       melb: {
@@ -739,6 +756,8 @@
     };
 
     let currentBranchKey = 'melb';
+    let currentUser = null;
+    let ordersUnsubscribe = null;
 
     // ============================================================
     // MELBOURNE TIME HELPERS
@@ -1040,7 +1059,7 @@
                 <span class="font-mono text-gold">${item.price}</span>
               </div>
               <p class="text-cream/60 text-sm mb-4">${item.desc}</p>
-              <button class="w-full bg-gold/10 text-gold border border-gold/30 rounded-full py-2 text-sm font-semibold hover:bg-gold hover:text-ink transition">Add to Order</button>
+              <button data-item="${item.name}" class="add-to-order w-full bg-gold/10 text-gold border border-gold/30 rounded-full py-2 text-sm font-semibold hover:bg-gold hover:text-ink transition">Add to Order</button>
             </div>
           `;
         grid.appendChild(card);
@@ -1053,6 +1072,49 @@
           track.scrollBy({ left: cardWidth * Number(btn.dataset.dir), behavior: 'smooth' });
         });
       });
+
+      // Add to Order buttons
+      document.querySelectorAll('.add-to-order').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const itemName = this.dataset.item;
+          const menuItem = MENU_ITEMS.find(item => item.name === itemName);
+          if (menuItem && currentUser) {
+            addOrder(menuItem);
+          } else if (!currentUser) {
+            openAuthModal();
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // ORDER FUNCTIONS
+    // ============================================================
+    function addOrder(menuItem) {
+      const orderData = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: currentUser.displayName || currentUser.email,
+        items: [{
+          name: menuItem.name,
+          price: menuItem.price,
+          quantity: 1
+        }],
+        total: menuItem.price,
+        status: 'Confirmed', // Confirmed → Packed → Picked Up → Complete
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        statusHistory: [{
+          status: 'Confirmed',
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }]
+      };
+
+      db.collection('orders').add(orderData)
+        .then(() => {
+          showNotification('Order Placed', `Your order for ${menuItem.name} has been confirmed!`, '📋');
+        })
+        .catch(err => console.error('Error adding order:', err));
     }
 
     // ============================================================
@@ -1082,6 +1144,33 @@
       track.style.willChange = 'transform';
       requestAnimationFrame(step);
     }
+
+    // ============================================================
+    // NOTIFICATION SYSTEM
+    // ============================================================
+    let notificationTimeout = null;
+
+    function showNotification(title, message, icon = '📦') {
+      const banner = document.getElementById('notificationBanner');
+      const titleEl = document.getElementById('notificationTitle');
+      const messageEl = document.getElementById('notificationMessage');
+      const iconEl = document.getElementById('notificationIcon');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      iconEl.textContent = icon;
+
+      banner.classList.remove('hidden');
+      clearTimeout(notificationTimeout);
+      notificationTimeout = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 8000);
+    }
+
+    document.getElementById('notificationClose').addEventListener('click', () => {
+      document.getElementById('notificationBanner').classList.add('hidden');
+      clearTimeout(notificationTimeout);
+    });
 
     // ============================================================
     // MOBILE NAV TOGGLE
@@ -1117,7 +1206,7 @@
     function closeAuthModal() { authOverlay.classList.add('hidden'); }
 
     profileTrigger.addEventListener('click', () => {
-      if (auth.currentUser) {
+      if (currentUser) {
         openProfileDrawer();
       } else {
         openAuthModal();
@@ -1192,56 +1281,233 @@
     function openProfileDrawer() {
       drawerOverlay.classList.remove('hidden');
       profileDrawer.classList.remove('translate-x-full');
+      if (currentUser) {
+        loadUserOrders();
+      }
     }
 
     function closeProfileDrawer() {
       drawerOverlay.classList.add('hidden');
       profileDrawer.classList.add('translate-x-full');
+      if (ordersUnsubscribe) {
+        ordersUnsubscribe();
+        ordersUnsubscribe = null;
+      }
     }
     document.getElementById('drawerClose').addEventListener('click', closeProfileDrawer);
     drawerOverlay.addEventListener('click', closeProfileDrawer);
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      auth.signOut().then(closeProfileDrawer);
-    });
-
-    function renderMockDrawerData() {
-      document.getElementById('drawerBookings').innerHTML = `
-          <div class="bg-char rounded-xl p-3 text-sm">
-            <p class="font-semibold">Table for 2</p>
-            <p class="text-cream/50 text-xs">Sat, 8:30 AM · Melbourne CBD</p>
-          </div>`;
-      document.getElementById('drawerOrders').innerHTML = `
-          <div class="bg-char rounded-xl p-3 text-sm">
-            <p class="font-semibold">Flat White, Avocado Sourdough</p>
-            <p class="text-cream/50 text-xs">Last Tuesday · $21.00</p>
-          </div>`;
-    }
-
-    auth.onAuthStateChanged((user) => {
-      const icon = document.getElementById('profileIcon');
-      const initial = document.getElementById('profileInitial');
-      if (user) {
-        const displayName = user.displayName || user.email || 'Guest';
-        icon.classList.add('hidden');
-        initial.classList.remove('hidden');
-        initial.textContent = displayName.charAt(0).toUpperCase();
-        document.getElementById('drawerAvatar').textContent = displayName.charAt(0).toUpperCase();
-        document.getElementById('drawerName').textContent = displayName;
-        document.getElementById('drawerEmail').textContent = user.email || '';
-        renderMockDrawerData();
-      } else {
-        icon.classList.remove('hidden');
-        initial.classList.add('hidden');
-      }
+      auth.signOut().then(() => {
+        closeProfileDrawer();
+      });
     });
 
     // ============================================================
-    // BOOKING FORM (enhanced with extra row)
+    // LOAD USER ORDERS & BOOKINGS FROM FIRESTORE
+    // ============================================================
+    function loadUserOrders() {
+      if (!currentUser) return;
+
+      // Load bookings
+      db.collection('bookings')
+        .where('uid', '==', currentUser.uid)
+        .orderBy('createdAt', 'desc')
+        .limit(5)
+        .get()
+        .then(snapshot => {
+          const container = document.getElementById('drawerBookings');
+          if (snapshot.empty) {
+            container.innerHTML = '<p class="text-cream/40 text-sm">No active bookings.</p>';
+            return;
+          }
+          container.innerHTML = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return `
+              <div class="bg-char rounded-xl p-3 text-sm">
+                <p class="font-semibold">Table Booking</p>
+                <p class="text-cream/50 text-xs">${data.branch || 'Melbourne CBD'}</p>
+              </div>
+            `;
+          }).join('');
+        })
+        .catch(err => console.error('Error loading bookings:', err));
+
+      // Load orders with real-time listener
+      if (ordersUnsubscribe) {
+        ordersUnsubscribe();
+        ordersUnsubscribe = null;
+      }
+
+      ordersUnsubscribe = db.collection('orders')
+        .where('userId', '==', currentUser.uid)
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(snapshot => {
+          const activeOrders = [];
+          const completedOrders = [];
+
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const orderWithId = { ...data, id: doc.id };
+            if (data.status === 'Complete') {
+              completedOrders.push(orderWithId);
+            } else {
+              activeOrders.push(orderWithId);
+            }
+          });
+
+          renderOrders(activeOrders, 'drawerOrders');
+          renderCompletedOrders(completedOrders, 'drawerCompletedOrders');
+
+          // Check for status changes to show notifications
+          snapshot.docChanges().forEach(change => {
+            if (change.type === 'modified') {
+              const data = change.doc.data();
+              const oldData = change.doc.data(); // Firestore doesn't give old data directly
+              // We'll track status changes in a separate listener approach
+              checkOrderStatusChange(change.doc.id, data);
+            }
+          });
+        }, err => console.error('Error loading orders:', err));
+    }
+
+    // Track previous order statuses to detect changes
+    let previousOrderStatuses = {};
+
+    function checkOrderStatusChange(orderId, data) {
+      const prevStatus = previousOrderStatuses[orderId];
+      const currentStatus = data.status;
+
+      if (prevStatus && prevStatus !== currentStatus) {
+        // Status changed!
+        let message = '';
+        let icon = '📦';
+        let title = 'Order Update';
+
+        switch (currentStatus) {
+          case 'Packed':
+            message = 'Your order has been packed and is ready for pickup!';
+            icon = '📦';
+            break;
+          case 'Picked Up':
+            message = 'Thank you for picking up your order!';
+            icon = '✅';
+            break;
+          case 'Complete':
+            message = 'Your order is complete. Thanks for visiting Brick Lane!';
+            icon = '🎉';
+            title = 'Order Complete';
+            break;
+          default:
+            message = `Your order status is now: ${currentStatus}`;
+        }
+
+        showNotification(title, message, icon);
+      }
+
+      previousOrderStatuses[orderId] = currentStatus;
+    }
+
+    function renderOrders(orders, containerId) {
+      const container = document.getElementById(containerId);
+      if (orders.length === 0) {
+        container.innerHTML = '<p class="text-cream/40 text-sm">No active orders.</p>';
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const statusClass = getStatusClass(order.status);
+        const itemsList = order.items ? order.items.map(item =>
+          `${item.name} (${item.quantity || 1})`
+        ).join(', ') : 'Order items';
+
+        return `
+          <div class="bg-char rounded-xl p-3 text-sm border border-cream/5">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold">${itemsList}</p>
+                <p class="text-cream/50 text-xs">${order.total || '$0'}</p>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${statusClass}">
+                ${order.status}
+              </span>
+            </div>
+            <div class="mt-2 text-xs text-cream/40 flex gap-3">
+              <span>${order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Recent'}</span>
+              <span>•</span>
+              <span>Pickup</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCompletedOrders(orders, containerId) {
+      const container = document.getElementById(containerId);
+      if (orders.length === 0) {
+        container.innerHTML = '<p class="text-cream/40 text-sm">No completed orders.</p>';
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const itemsList = order.items ? order.items.map(item =>
+          `${item.name} (${item.quantity || 1})`
+        ).join(', ') : 'Order items';
+        const orderDate = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Recent';
+
+        return `
+          <div class="bg-char rounded-xl p-3 text-sm border border-cream/5">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold">${itemsList}</p>
+                <p class="text-cream/50 text-xs">${order.total || '$0'} · ${orderDate}</p>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full status-complete">
+                Complete
+              </span>
+            </div>
+            <button class="buy-again-btn mt-2 text-gold text-xs font-semibold hover:underline" data-order-id="${order.id}">
+              Buy Again →
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      // Add Buy Again functionality
+      container.querySelectorAll('.buy-again-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const orderId = this.dataset.orderId;
+          const order = orders.find(o => o.id === orderId);
+          if (order && order.items && order.items.length > 0) {
+            const firstItem = order.items[0];
+            const menuItem = MENU_ITEMS.find(item => item.name === firstItem.name);
+            if (menuItem) {
+              addOrder(menuItem);
+            } else {
+              // If item not found in menu, create a generic order
+              addOrder({ name: firstItem.name, price: firstItem.price });
+            }
+          }
+        });
+      });
+    }
+
+    function getStatusClass(status) {
+      switch (status) {
+        case 'Confirmed': return 'status-confirmed';
+        case 'Packed': return 'status-packed';
+        case 'Picked Up': return 'status-picked';
+        case 'Complete': return 'status-complete';
+        default: return '';
+      }
+    }
+
+    // ============================================================
+    // BOOKING FORM
     // ============================================================
     document.getElementById('bookingForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const uid = auth.currentUser ? auth.currentUser.uid : 'guest';
+      const uid = currentUser ? currentUser.uid : 'guest';
       db.collection('bookings').add({
         uid,
         branch: currentBranchKey,
@@ -1255,10 +1521,42 @@
     });
 
     // ============================================================
+    // AUTH STATE LISTENER
+    // ============================================================
+    auth.onAuthStateChanged((user) => {
+      currentUser = user;
+      const icon = document.getElementById('profileIcon');
+      const initial = document.getElementById('profileInitial');
+
+      if (user) {
+        const displayName = user.displayName || user.email || 'Guest';
+        icon.classList.add('hidden');
+        initial.classList.remove('hidden');
+        initial.textContent = displayName.charAt(0).toUpperCase();
+        document.getElementById('drawerAvatar').textContent = displayName.charAt(0).toUpperCase();
+        document.getElementById('drawerName').textContent = displayName;
+        document.getElementById('drawerEmail').textContent = user.email || '';
+
+        // Load orders when user logs in
+        loadUserOrders();
+      } else {
+        icon.classList.remove('hidden');
+        initial.classList.add('hidden');
+        if (ordersUnsubscribe) {
+          ordersUnsubscribe();
+          ordersUnsubscribe = null;
+        }
+        // Clear order displays
+        document.getElementById('drawerOrders').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see orders.</p>';
+        document.getElementById('drawerCompletedOrders').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see completed orders.</p>';
+        document.getElementById('drawerBookings').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see bookings.</p>';
+      }
+    });
+
+    // ============================================================
     // INIT
     // ============================================================
     document.getElementById('year').textContent = new Date().getFullYear();
-    // Always set branch to Melbourne CBD (no selector)
     const b = BRANCHES[currentBranchKey];
     document.getElementById('branchLabelHours').textContent = b.name;
     document.getElementById('branchLabelBook').textContent = b.name;
