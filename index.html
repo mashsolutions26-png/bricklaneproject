@@ -51,6 +51,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
+  <!-- Font Awesome (Icons for Footer) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
     :root {
       --ink: #0a0b0d;
@@ -664,6 +667,186 @@
         width: 30px;
       }
     }
+
+    /* ============================================
+       NEW FOOTER STYLES (Added)
+       ============================================ */
+    .minimal-footer {
+      background: #1A1A1A;
+      color: white;
+      padding: 80px 0 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    /* Logo + Coffee Animation */
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .coffee-animation {
+      position: relative;
+      display: inline-block;
+      margin-right: 12px;
+    }
+
+    .coffee-icon {
+      font-size: 32px;
+      color: #D4A574;
+      animation: coffeeFloat 3s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .coffee-steam {
+      position: absolute;
+      width: 4px;
+      background: rgba(212, 165, 116, 0.5);
+      border-radius: 2px;
+      animation: steamRise 2.5s ease-in-out infinite;
+    }
+
+    .steam-1 { height: 16px; top: -10px; left: 6px; animation-delay: 0s; }
+    .steam-2 { height: 12px; top: -7px; left: 18px; animation-delay: 0.8s; }
+    .steam-3 { height: 14px; top: -8px; left: 30px; animation-delay: 1.6s; }
+
+    @keyframes coffeeFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    @keyframes steamRise {
+      0% { opacity: 0; transform: translateY(0) scale(0.8); }
+      30% { opacity: 0.8; transform: translateY(-10px) scale(1); }
+      70% { opacity: 0.5; transform: translateY(-20px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-30px) scale(1.2); }
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 2px;
+    }
+
+    .footer-description {
+      font-size: 14px;
+      color: #999;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* Social Links */
+    .social-links {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      background: #D4A574;
+      transform: translateY(-3px);
+    }
+
+    /* Footer Headings */
+    .footer-heading {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a,
+    .footer-link-btn {
+      color: #999;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      text-align: left;
+      padding: 0;
+    }
+
+    .footer-links a:hover,
+    .footer-link-btn:hover {
+      color: #D4A574;
+      padding-left: 8px;
+    }
+
+    .footer-links i {
+      margin-right: 8px;
+      color: #D4A574;
+    }
+
+    /* Footer Bottom */
+    .footer-bottom {
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .footer-bottom a {
+      color: #D4A574;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-bottom a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -674,9 +857,11 @@
   ========================================================= -->
   <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl">
     <nav class="glass-nav rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
+      <!-- Updated Logo Section Starts Here -->
       <a href="#home" class="flex items-center gap-2 shrink-0">
-        <span class="font-display text-xl tracking-wide text-gold">Brick Lane</span>
+        <img src="gallery2/logo.png" alt="Brick Lane Logo" class="h-8 w-auto sm:h-10 object-contain rounded-md bg-transparent">
       </a>
+      <!-- Updated Logo Section Ends Here -->
 
       <div class="hidden lg:flex items-center gap-8 font-medium text-sm text-cream/80">
         <a href="#about" class="nav-link">About Us</a>
@@ -999,45 +1184,77 @@
   </section>
 
   <!-- =========================================================
-  FOOTER
+  FOOTER - BRICK LANE (NEW)
   ========================================================= -->
-  <footer class="relative border-t border-brickline pt-16 pb-8 px-6 sm:px-10 overflow-hidden">
-    <div class="footer-drift absolute inset-0 pointer-events-none"></div>
-    <div class="relative max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
-      <div>
-        <div class="flex items-center gap-2 mb-4">
-          <span class="font-display text-2xl text-gold">Brick Lane</span>
+  <footer class="minimal-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+
+        <!-- Column 1: Logo + BRICK LANE -->
+        <div>
+          <div class="footer-logo">
+            <!-- Coffee Animation -->
+            <div class="coffee-animation">
+              <i class="fas fa-mug-hot coffee-icon"></i>
+              <div class="coffee-steam steam-1"></div>
+              <div class="coffee-steam steam-2"></div>
+              <div class="coffee-steam steam-3"></div>
+            </div>
+            <span class="logo-text">BRICK LANE</span>
+          </div>
+          <p class="footer-description">
+            A laneway café slinging honest breakfasts and slow-drip coffee from a hidden corner of the CBD. No pretense — just brick walls, good light, and a kitchen that opens early.
+          </p>
+          <div class="social-links">
+            <a href="#" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" target="_blank" class="social-link"><i class="fab fa-pinterest"></i></a>
+            <a href="#" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+          </div>
         </div>
-        <p class="text-cream/50 text-sm leading-relaxed">33 Guildford Ln, Melbourne VIC 3000, Australia</p>
+
+        <!-- Column 2: Explore (ඔබේ පැරණි Footer එකේ තිබූ ලින්ක්) -->
+        <div>
+          <h4 class="footer-heading">Explore</h4>
+          <ul class="footer-links">
+            <li><a href="#about" class="footer-link-btn">About Us</a></li>
+            <li><a href="#menu" class="footer-link-btn">Menu</a></li>
+            <li><a href="#book" class="footer-link-btn">Book a Table</a></li>
+            <li><a href="#gallery" class="footer-link-btn">Gallery</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Legal (ඔබේ පැරණි Footer එකේ තිබූ Legal කොටස) -->
+        <div>
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#" class="footer-link-btn">Privacy Policy</a></li>
+            <li><a href="#" class="footer-link-btn">Terms of Service</a></li>
+            <li><a href="#" class="footer-link-btn">Allergen Info</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Follow + Contact Info (ඔබේ පැරණි Footer එකේ තිබූ Follow කොටස) -->
+        <div>
+          <h4 class="footer-heading">Follow</h4>
+          <ul class="footer-links" style="list-style: none; color: #999;">
+            <li><a href="#" class="footer-link-btn">Instagram</a></li>
+            <li><a href="#" class="footer-link-btn">Facebook</a></li>
+            <li><i class="fas fa-map-marker-alt"></i> 33 Guildford Ln, Melbourne</li>
+            <li><i class="fas fa-phone"></i> +61 3 7023 9333</li>
+            <li><i class="fas fa-envelope"></i> hello@bricklane.com</li>
+          </ul>
+        </div>
+
       </div>
-      <div>
-        <h4 class="font-semibold mb-4 text-sm uppercase tracking-widest text-gold/80">Explore</h4>
-        <ul class="space-y-2 text-sm text-cream/60">
-          <li><a href="#about" class="footer-link">About Us</a></li>
-          <li><a href="#menu" class="footer-link">Menu</a></li>
-          <li><a href="#book" class="footer-link">Book a Table</a></li>
-          <li><a href="#gallery" class="footer-link">Gallery</a></li>
-        </ul>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p>
+          &copy; <span id="year"></span> Brick Lane. All rights reserved. |
+          DESIGNED & DEVELOPED BY <a href="#" target="_blank">MASH SOLUTIONS</a>
+        </p>
       </div>
-      <div>
-        <h4 class="font-semibold mb-4 text-sm uppercase tracking-widest text-gold/80">Legal</h4>
-        <ul class="space-y-2 text-sm text-cream/60">
-          <li><a href="#" class="footer-link">Privacy Policy</a></li>
-          <li><a href="#" class="footer-link">Terms of Service</a></li>
-          <li><a href="#" class="footer-link">Allergen Info</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-semibold mb-4 text-sm uppercase tracking-widest text-gold/80">Follow</h4>
-        <ul class="space-y-2 text-sm text-cream/60">
-          <li><a href="#" class="footer-link">Instagram</a></li>
-          <li><a href="#" class="footer-link">Facebook</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="relative max-w-6xl mx-auto border-t border-cream/10 pt-6 text-xs text-cream/40 flex flex-wrap justify-between gap-2">
-      <span>© <span id="year"></span> Brick Lane. All rights reserved.</span>
-      <span>Melbourne, Australia</span>
     </div>
   </footer>
 
