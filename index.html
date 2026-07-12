@@ -131,15 +131,12 @@
     .thin-scroll::-webkit-scrollbar-thumb { background: rgba(244, 185, 62, 0.35); border-radius: 4px; }
 
     .hero-bg {
-      background-image: url('Gallery/Brick8.jpg');
+      background-image: url('gallery2/Brick8.webp');
       background-size: cover;
       background-position: center 30%;
       background-repeat: no-repeat;
     }
     
-    /* ============================================================ */
-    /* MODIFIED HERO OVERLAY: Fade from left to right smoothly        */
-    /* ============================================================ */
     .hero-overlay {
       background: linear-gradient(
         115deg, 
@@ -311,7 +308,6 @@
       transform: scale(1.1);
     }
 
-    /* Order status badges */
     .status-confirmed { background: rgba(244, 185, 62, 0.15); color: #f4b93e; border-color: rgba(244, 185, 62, 0.3); }
     .status-packed { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
     .status-picked { background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3); }
@@ -325,7 +321,6 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cart Sidebar */
     #cartSidebar {
       transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       max-width: 400px;
@@ -388,16 +383,12 @@
       gap: 0.75rem;
       margin-bottom: 1rem;
     }
-    .pickup-only-banner svg {
-      flex-shrink: 0;
-    }
 
     .empty-cart-emoji {
       font-size: 4rem;
       opacity: 0.3;
     }
 
-    /* Order success animation */
     .order-success-popup {
       animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -406,7 +397,6 @@
       100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    /* ---------- NEW GALLERY STYLES (Modified for HOVER + AUTO SLIDE) ---------- */
     .gallery-main {
       position: relative;
       width: 100%;
@@ -419,7 +409,7 @@
     }
     .gallery-track {
       display: flex;
-      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Slower transition for smoothness */
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform;
     }
     .gallery-slide {
@@ -504,6 +494,44 @@
       .gallery-btn.prev { left: 0.5rem; }
       .gallery-btn.next { right: 0.5rem; }
     }
+    
+    /* Mobile Account Icon Styling */
+    .mobile-account-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f4b93e, #c8102e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0a0b0d;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      flex-shrink: 0;
+    }
+    .mobile-account-icon:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(244, 185, 62, 0.3);
+    }
+    
+    /* Mobile Location Selector */
+    .mobile-location-selector {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .mobile-location-selector:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(244, 185, 62, 0.3);
+    }
   </style>
 </head>
 
@@ -545,17 +573,40 @@
       </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden lg:hidden glass-nav mt-2 rounded-2xl px-6 py-4 flex flex-col gap-4 text-sm font-medium">
-      <a href="#about" class="nav-link">About Us</a>
-      <a href="#menu" class="nav-link">Menu</a>
-      <a href="#book" class="nav-link">Book a Table</a>
-      <a href="#gallery" class="nav-link">Gallery</a>
+    <!-- =========================================================
+    MOBILE MENU (UPDATED WITH LOCATION & ACCOUNT)
+    ========================================================= -->
+    <div id="mobileMenu" class="hidden lg:hidden glass-nav mt-2 rounded-2xl px-6 py-6 flex flex-col gap-5 text-sm font-medium">
+      
+
+      <!-- Navigation Links -->
+      <div class="flex flex-col gap-4 mt-2">
+        <a href="#menu" class="nav-link">Menu</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#hours" class="nav-link">Hours</a>
+        <a href="#book" class="nav-link">Book a Table</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+      </div>
+
+      <div class="h-px bg-cream/10 my-2"></div>
+
+      <!-- Account / Login Section (Added as per screenshot) -->
+      <div class="flex items-center justify-between mt-2">
+        <button id="mobileProfileTrigger" class="flex items-center gap-3 text-cream/80 hover:text-gold transition">
+          <div class="mobile-account-icon" id="mobileProfileIcon">M</div>
+          <span id="mobileProfileText">Login</span>
+        </button>
+        
+        <!-- Order Now Button -->
+        <button id="mobileOrderBtn" class="bg-crimson text-white font-bold px-6 py-2.5 rounded-full hover:brightness-110 transition shadow-lg shadow-crimson/20">
+          Order Now
+        </button>
+      </div>
     </div>
   </header>
 
   <!-- =========================================================
-  NOTIFICATION BANNER (for order status updates)
+  NOTIFICATION BANNER
   ========================================================= -->
   <div id="notificationBanner" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg hidden">
     <div class="bg-char2 border border-gold/30 rounded-2xl p-4 shadow-2xl notification-banner flex items-center gap-3">
@@ -650,8 +701,8 @@
         <p class="text-cream/70 leading-relaxed">We roast in small batches, bake daily, and keep the menu tight so everything on it is done properly. Come early, the good tables go fast.</p>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <img src="Gallery/Brick13.jpg" class="rounded-2xl object-cover h-64 w-full" alt="cafe interior">
-        <img src="Gallery/Brick15.jpg" class="rounded-2xl object-cover h-64 w-full mt-8" alt="coffee">
+        <img src="gallery2/Brick13.webp" class="rounded-2xl object-cover h-64 w-full" alt="cafe interior">
+        <img src="gallery2/Brick15.webp" class="rounded-2xl object-cover h-64 w-full mt-8" alt="coffee">
       </div>
     </div>
   </section>
@@ -712,7 +763,6 @@
         <input required type="date" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
         <input required type="time" class="bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60">
         
-        <!-- Guests Select with custom 'Type here' option -->
         <div class="relative sm:col-span-2">
           <select id="guestsSelect" class="w-full bg-ink border border-cream/15 rounded-xl px-4 py-3 text-sm focus:border-gold/60 appearance-none">
             <option value="1 Guest">1 Guest</option>
@@ -782,7 +832,7 @@
   </section>
 
   <!-- =========================================================
-  GALLERY — NEW SLIDER WITH DOTS & SCALE EFFECT & HOVER PAUSE
+  GALLERY
   ========================================================= -->
   <section id="gallery" class="py-24 border-t border-brickline overflow-hidden">
     <div class="max-w-6xl mx-auto px-6 sm:px-10 mb-10 text-center">
@@ -985,7 +1035,7 @@
   </aside>
 
   <!-- =========================================================
-  JAVASCRIPT (Firebase + all logic + NEW GALLERY)
+  JAVASCRIPT
   ========================================================= -->
   <script>
     // ============================================================
@@ -1796,6 +1846,37 @@ ${itemsList}
     });
 
     // ============================================================
+    // MOBILE MENU ACCOUNT & ORDER BUTTON LOGIC
+    // ============================================================
+    document.getElementById('mobileProfileTrigger').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('hidden'); // Close menu automatically
+      if (currentUser) {
+        openProfileDrawer();
+      } else {
+        openAuthModal();
+      }
+    });
+
+    document.getElementById('mobileOrderBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('hidden'); // Close menu automatically
+      openCart();
+    });
+
+    // Update Mobile Account Icon when user logs in/out
+    auth.onAuthStateChanged((user) => {
+        const mobileIcon = document.getElementById('mobileProfileIcon');
+        const mobileText = document.getElementById('mobileProfileText');
+        if (user) {
+            const initial = (user.displayName || user.email || 'G').charAt(0).toUpperCase();
+            mobileIcon.textContent = initial;
+            mobileText.textContent = 'Account';
+        } else {
+            mobileIcon.textContent = 'M';
+            mobileText.textContent = 'Login';
+        }
+    });
+
+    // ============================================================
     // LOAD USER ORDERS & BOOKINGS
     // ============================================================
     function loadUserOrders() {
@@ -2078,17 +2159,16 @@ ${itemsList}
     });
 
     // ============================================================
-    // NEW GALLERY SLIDER — WITH LOCAL FOLDER IMAGES, AUTO SLIDE & HOVER PAUSE
+    // NEW GALLERY SLIDER
     // ============================================================
-    // ** මෙතන ඔබේ Gallery ෆෝල්ඩරයේ ඇති පින්තූර වල නම් දාන්න **
     const GALLERY_IMAGES = [
-      'Gallery/Brick8.jpg',
-      'Gallery/Brick9.jpg',
-      'Gallery/Brick10.jpg',
-      'Gallery/Brick11.jpg',
-      'Gallery/Brick12.jpg',
-      'Gallery/Brick13.jpg',
-      'Gallery/Brick14.jpg'
+      'gallery2/Brick8.webp',
+      'gallery2/Brick9.webp',
+      'gallery2/Brick10.webp',
+      'gallery2/Brick11.webp',
+      'gallery2/Brick12.webp',
+      'gallery2/Brick13.webp',
+      'gallery2/Brick14.webp'
     ];
 
     const galleryTrack = document.getElementById('galleryTrack');
@@ -2107,15 +2187,12 @@ ${itemsList}
         </div>
       `).join('');
 
-      // Dots
       galleryDots.innerHTML = GALLERY_IMAGES.map((_, index) => `
         <button class="gallery-dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="Go to slide ${index + 1}"></button>
       `).join('');
 
-      // Set active first
       updateGallery(currentSlide);
 
-      // Dot clicks
       document.querySelectorAll('.gallery-dot').forEach(dot => {
         dot.addEventListener('click', function() {
           const index = parseInt(this.dataset.index);
@@ -2136,7 +2213,6 @@ ${itemsList}
         dot.classList.toggle('active', i === index);
       });
 
-      // Move track
       const offset = -index * 100;
       galleryTrack.style.transform = `translateX(${offset}%)`;
     }
@@ -2155,10 +2231,9 @@ ${itemsList}
         clearInterval(galleryInterval);
         galleryInterval = null;
       }
-      galleryInterval = setInterval(nextSlide, 4000); // 4 seconds per slide
+      galleryInterval = setInterval(nextSlide, 4000);
     }
 
-    // Hover පාලනය (Mouse enter -> pause, Mouse leave -> resume)
     galleryContainer.addEventListener('mouseenter', () => {
       if (galleryInterval) {
         clearInterval(galleryInterval);
@@ -2179,7 +2254,6 @@ ${itemsList}
       resetGalleryInterval();
     });
 
-    // Keyboard support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') { prevSlide(); resetGalleryInterval(); }
       if (e.key === 'ArrowRight') { nextSlide(); resetGalleryInterval(); }
@@ -2197,9 +2271,8 @@ ${itemsList}
     renderStatus();
     renderDailySpecial();
     renderMenu();
-    renderGallerySlides();  // new gallery init
+    renderGallerySlides();
 
-    // Start automatic slideshow
     resetGalleryInterval();
 
     setInterval(renderStatus, 1000);
