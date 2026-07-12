@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brick Lane · Book a Table</title>
+  <title>Brick Lane</title>
   <meta name="description" content="Brick Lane — a laneway café at 33 Guildford Ln, Melbourne. Book a table, browse the menu, and check today's hours." />
 
 <!-- Google tag (gtag.js) -->
@@ -542,6 +542,128 @@
       background: rgba(255, 255, 255, 0.08);
       border-color: rgba(244, 185, 62, 0.3);
     }
+
+    /* ----------------------------------------------------------------------------
+       NEW AUTO SLIDER (restaurant food slider) — integrated into gallery section
+       ---------------------------------------------------------------------------- */
+    .auto-slider-section {
+      padding: 4vw 0 2vw;
+      border-bottom: 1px solid #2a2a2a;
+      background: #0b0b0b;
+    }
+
+    .auto-slider-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 6vw 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .auto-slider-head h2 {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .auto-slider-head h2 span { color: #d4a42a; }
+    .auto-slider-head p {
+      color: #9a9a94;
+      font-size: 0.85rem;
+      max-width: 28ch;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-top: 1px solid #2a2a2a;
+      border-bottom: 1px solid #2a2a2a;
+      cursor: grab;
+      touch-action: pan-y;
+    }
+    .viewport.dragging {
+      cursor: grabbing;
+    }
+
+    .viewport::before,
+    .viewport::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 90px;
+      pointer-events: none;
+      z-index: 4;
+      transition: opacity 0.2s;
+    }
+    .viewport::before {
+      left: 0;
+      background: linear-gradient(to right, #0b0b0b 20%, transparent 90%);
+    }
+    .viewport::after {
+      right: 0;
+      background: linear-gradient(to left, #0b0b0b 20%, transparent 90%);
+    }
+
+    .viewport .track {
+      display: flex;
+      gap: 16px;
+      padding: 16px 6vw;
+      width: max-content;
+      will-change: transform;
+      user-select: none;
+    }
+
+    .slide {
+      flex: 0 0 auto;
+      width: 260px;
+      height: 340px;
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.25s;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      -webkit-user-drag: none;
+      transition: transform 0.7s ease;
+    }
+    .slide:hover img {
+      transform: scale(1.04);
+    }
+    .slide:hover {
+      border-color: #d4a42a;
+    }
+
+    @media (max-width: 700px) {
+      .slide {
+        width: 190px;
+        height: 250px;
+      }
+      .viewport .track {
+        gap: 12px;
+        padding: 12px 5vw;
+      }
+      .viewport::before,
+      .viewport::after {
+        width: 40px;
+      }
+    }
+    @media (max-width: 480px) {
+      .slide {
+        width: 150px;
+        height: 200px;
+      }
+      .viewport::before,
+      .viewport::after {
+        width: 30px;
+      }
+    }
   </style>
 </head>
 
@@ -584,12 +706,9 @@
     </nav>
 
     <!-- =========================================================
-    MOBILE MENU (UPDATED WITH LOCATION & ACCOUNT)
+    MOBILE MENU
     ========================================================= -->
     <div id="mobileMenu" class="hidden lg:hidden glass-nav mt-2 rounded-2xl px-6 py-6 flex flex-col gap-5 text-sm font-medium">
-      
-
-      <!-- Navigation Links -->
       <div class="flex flex-col gap-4 mt-2">
         <a href="#menu" class="nav-link">Menu</a>
         <a href="#about" class="nav-link">About</a>
@@ -600,14 +719,12 @@
 
       <div class="h-px bg-cream/10 my-2"></div>
 
-      <!-- Account / Login Section (Added as per screenshot) -->
       <div class="flex items-center justify-between mt-2">
         <button id="mobileProfileTrigger" class="flex items-center gap-3 text-cream/80 hover:text-gold transition">
           <div class="mobile-account-icon" id="mobileProfileIcon">M</div>
           <span id="mobileProfileText">Login</span>
         </button>
         
-        <!-- Order Now Button -->
         <button id="mobileOrderBtn" class="bg-crimson text-white font-bold px-6 py-2.5 rounded-full hover:brightness-110 transition shadow-lg shadow-crimson/20">
           Order Now
         </button>
@@ -842,24 +959,43 @@
   </section>
 
   <!-- =========================================================
-  GALLERY
+  GALLERY (AUTO SLIDER ONLY - "Snapped by Customers" removed)
   ========================================================= -->
   <section id="gallery" class="py-24 border-t border-brickline overflow-hidden">
-    <div class="max-w-6xl mx-auto px-6 sm:px-10 mb-10 text-center">
-      <span class="text-xs tracking-[0.25em] uppercase text-gold/80">Gallery</span>
-      <h2 class="font-display text-4xl sm:text-5xl mt-3">Snapped by Customers</h2>
-    </div>
-
-    <div class="gallery-main relative max-w-5xl mx-auto px-4" id="galleryContainer">
-      <div class="gallery-track" id="galleryTrack">
-        <!-- slides injected by JS -->
+    <!-- ===== AUTO SLIDER (food/restaurant) ===== -->
+    <div class="auto-slider-section mt-16">
+      <div class="auto-slider-head">
       </div>
 
-      <button class="gallery-btn prev" id="galleryPrev" aria-label="Previous">‹</button>
-      <button class="gallery-btn next" id="galleryNext" aria-label="Next">›</button>
+      <div class="viewport" id="autoSliderViewport">
+        <div class="track" id="autoSliderTrack">
+          <!-- slides: images from gallery2 + loremflickr fallback -->
+          <div class="slide"><img src="gallery2/Brick8.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick9.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick10.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick11.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick12.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick13.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B10.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick15.webp" alt="dish"></div>
+          <!-- fallback extras to keep loop full -->
+          <div class="slide"><img src="gallery2/B2.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B3.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B5.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B4.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B6.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B7.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B8.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/B9.webp" alt="dish"></div>
+          <!-- duplicate first few to make seamless loop -->
+          <div class="slide"><img src="gallery2/Brick8.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick9.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick10.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick11.webp" alt="dish"></div>
+          <div class="slide"><img src="gallery2/Brick12.webp" alt="dish"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="gallery-dots" id="galleryDots"></div>
   </section>
 
   <!-- =========================================================
@@ -1859,7 +1995,7 @@ ${itemsList}
     // MOBILE MENU ACCOUNT & ORDER BUTTON LOGIC
     // ============================================================
     document.getElementById('mobileProfileTrigger').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.add('hidden'); // Close menu automatically
+      document.getElementById('mobileMenu').classList.add('hidden');
       if (currentUser) {
         openProfileDrawer();
       } else {
@@ -1868,11 +2004,10 @@ ${itemsList}
     });
 
     document.getElementById('mobileOrderBtn').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.add('hidden'); // Close menu automatically
+      document.getElementById('mobileMenu').classList.add('hidden');
       openCart();
     });
 
-    // Update Mobile Account Icon when user logs in/out
     auth.onAuthStateChanged((user) => {
         const mobileIcon = document.getElementById('mobileProfileIcon');
         const mobileText = document.getElementById('mobileProfileText');
@@ -2169,105 +2304,98 @@ ${itemsList}
     });
 
     // ============================================================
-    // NEW GALLERY SLIDER
+    // NEW GALLERY SLIDER (ORIGINAL) - REMOVED PER REQUEST
     // ============================================================
-    const GALLERY_IMAGES = [
-      'gallery2/Brick8.webp',
-      'gallery2/Brick9.webp',
-      'gallery2/Brick10.webp',
-      'gallery2/Brick11.webp',
-      'gallery2/Brick12.webp',
-      'gallery2/Brick13.webp',
-      'gallery2/Brick14.webp'
-    ];
+    // (Gallery slider code removed entirely)
 
-    const galleryTrack = document.getElementById('galleryTrack');
-    const galleryDots = document.getElementById('galleryDots');
-    const prevBtn = document.getElementById('galleryPrev');
-    const nextBtn = document.getElementById('galleryNext');
-    const galleryContainer = document.getElementById('galleryContainer');
+    // ============================================================
+    // NEW AUTO SLIDER (FOOD SLIDER) — integrated with drag & scroll
+    // ============================================================
+    (function autoSlider() {
+      const track = document.getElementById('autoSliderTrack');
+      const viewport = document.getElementById('autoSliderViewport');
 
-    let currentSlide = 0;
-    let galleryInterval = null;
+      let setWidth = track.scrollWidth / 2;
 
-    function renderGallerySlides() {
-      galleryTrack.innerHTML = GALLERY_IMAGES.map((src, index) => `
-        <div class="gallery-slide" data-index="${index}">
-          <img src="${src}" alt="Gallery ${index + 1}" loading="lazy" />
-        </div>
-      `).join('');
-
-      galleryDots.innerHTML = GALLERY_IMAGES.map((_, index) => `
-        <button class="gallery-dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="Go to slide ${index + 1}"></button>
-      `).join('');
-
-      updateGallery(currentSlide);
-
-      document.querySelectorAll('.gallery-dot').forEach(dot => {
-        dot.addEventListener('click', function() {
-          const index = parseInt(this.dataset.index);
-          goToSlide(index);
-          resetGalleryInterval();
-        });
-      });
-    }
-
-    function updateGallery(index) {
-      const slides = document.querySelectorAll('.gallery-slide');
-      const dots = document.querySelectorAll('.gallery-dot');
-
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === index);
-      });
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
+      window.addEventListener('resize', () => {
+        setWidth = track.scrollWidth / 2;
       });
 
-      const offset = -index * 100;
-      galleryTrack.style.transform = `translateX(${offset}%)`;
-    }
+      let autoOffset = 0;
+      let scrollOffset = 0;
+      const autoSpeed = 0.55; // px per frame
 
-    function goToSlide(index) {
-      const total = GALLERY_IMAGES.length;
-      currentSlide = (index + total) % total;
-      updateGallery(currentSlide);
-    }
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartScrollOffset = 0;
+      let isPaused = false;
 
-    function nextSlide() { goToSlide(currentSlide + 1); }
-    function prevSlide() { goToSlide(currentSlide - 1); }
-
-    function resetGalleryInterval() {
-      if (galleryInterval) {
-        clearInterval(galleryInterval);
-        galleryInterval = null;
+      function wrap(val) {
+        while (val >= setWidth) val -= setWidth;
+        while (val < 0) val += setWidth;
+        return val;
       }
-      galleryInterval = setInterval(nextSlide, 4000);
-    }
 
-    galleryContainer.addEventListener('mouseenter', () => {
-      if (galleryInterval) {
-        clearInterval(galleryInterval);
-        galleryInterval = null;
+      function render() {
+        const total = wrap(autoOffset + scrollOffset);
+        track.style.transform = `translateX(${-total}px)`;
       }
-    });
 
-    galleryContainer.addEventListener('mouseleave', () => {
-      resetGalleryInterval();
-    });
+      function animate() {
+        if (!isPaused) {
+          autoOffset += autoSpeed;
+          autoOffset = wrap(autoOffset);
+          render();
+        }
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
 
-    prevBtn.addEventListener('click', () => {
-      prevSlide();
-      resetGalleryInterval();
-    });
-    nextBtn.addEventListener('click', () => {
-      nextSlide();
-      resetGalleryInterval();
-    });
+      let lastScrollY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const delta = window.scrollY - lastScrollY;
+        lastScrollY = window.scrollY;
+        scrollOffset += delta * 0.9;
+        scrollOffset = wrap(scrollOffset);
+      }, { passive: true });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') { prevSlide(); resetGalleryInterval(); }
-      if (e.key === 'ArrowRight') { nextSlide(); resetGalleryInterval(); }
-    });
+      function getPointerX(e) {
+        return e.touches ? e.touches[0].clientX : e.clientX;
+      }
+
+      function dragStart(e) {
+        isDragging = true;
+        isPaused = true;
+        viewport.classList.add('dragging');
+        dragStartX = getPointerX(e);
+        dragStartScrollOffset = scrollOffset;
+      }
+
+      function dragMove(e) {
+        if (!isDragging) return;
+        const x = getPointerX(e);
+        const delta = dragStartX - x;
+        scrollOffset = wrap(dragStartScrollOffset + delta);
+        render();
+      }
+
+      function dragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        isPaused = false;
+        viewport.classList.remove('dragging');
+      }
+
+      viewport.addEventListener('mousedown', dragStart);
+      window.addEventListener('mousemove', dragMove);
+      window.addEventListener('mouseup', dragEnd);
+      viewport.addEventListener('mouseleave', dragEnd);
+
+      viewport.addEventListener('touchstart', dragStart, { passive: true });
+      viewport.addEventListener('touchmove', dragMove, { passive: true });
+      viewport.addEventListener('touchend', dragEnd);
+      viewport.addEventListener('touchcancel', dragEnd);
+    })();
 
     // ============================================================
     // INIT
@@ -2281,9 +2409,6 @@ ${itemsList}
     renderStatus();
     renderDailySpecial();
     renderMenu();
-    renderGallerySlides();
-
-    resetGalleryInterval();
 
     setInterval(renderStatus, 1000);
   </script>
