@@ -249,6 +249,7 @@
       border-radius: 40px;
       transition: background 0.2s;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
     .dropdown-toggle-mobile:hover { background: rgba(255,255,255,0.05); }
     .dropdown-toggle-mobile i { color: var(--gold); }
@@ -766,7 +767,7 @@
     document.addEventListener('click', function(e) {
       const menu = document.getElementById('dropdownMenu');
       const toggle = document.getElementById('dropdownToggle');
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+      if (menu && toggle && !menu.contains(e.target) && !toggle.contains(e.target)) {
         menu.classList.remove('open');
       }
     });
