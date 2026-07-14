@@ -2258,7 +2258,8 @@
       }
       
       const discountPct = activeDiscount.discountPercent || 0;
-      const itemName = activeDiscount.itemName || '';
+      const discountItemName = activeDiscount.itemName || '';
+      const isAllItems = discountItemName.toLowerCase() === 'all items' || discountItemName === '';
       
       document.querySelectorAll('.menu-item-card').forEach(card => {
         const nameEl = card.querySelector('.menu-item-name');
@@ -2268,11 +2269,18 @@
         
         if (nameEl && priceEl) {
           const name = nameEl.textContent.trim();
-          // Check if this item should get the discount
-          const shouldApplyDiscount = !itemName || 
-                                      name.toLowerCase().includes(itemName.toLowerCase()) || 
-                                      itemName === '' ||
-                                      itemName.toLowerCase() === 'all items';
+          // Check if this item should get the discount - EXACT MATCH or ALL ITEMS
+          const shouldApplyDiscount = isAllItems || 
+                                      name.toLowerCase() === discountItemName.toLowerCase();
+          
+          // Remove badge if it exists and shouldn't apply
+          if (!shouldApplyDiscount) {
+            if (discountBadge) discountBadge.style.display = 'none';
+            if (imageBadge) imageBadge.style.display = 'none';
+            priceEl.textContent = `$${parseFloat(priceEl.dataset.originalPrice || priceEl.textContent.replace('$', '')).toFixed(2)}`;
+            priceEl.style.color = '';
+            return;
+          }
           
           if (shouldApplyDiscount) {
             const originalPrice = parseFloat(priceEl.dataset.originalPrice || priceEl.textContent.replace('$', ''));
@@ -2679,11 +2687,10 @@
       // Check if there's an active discount and apply it
       let price = item.price;
       if (activeDiscount) {
-        const itemName = activeDiscount.itemName || '';
-        const shouldApplyDiscount = !itemName || 
-                                    item.name.toLowerCase().includes(itemName.toLowerCase()) || 
-                                    itemName === '' ||
-                                    itemName.toLowerCase() === 'all items';
+        const discountItemName = activeDiscount.itemName || '';
+        const isAllItems = discountItemName.toLowerCase() === 'all items' || discountItemName === '';
+        const shouldApplyDiscount = isAllItems || 
+                                    item.name.toLowerCase() === discountItemName.toLowerCase();
         if (shouldApplyDiscount) {
           price = price * (1 - (activeDiscount.discountPercent || 0) / 100);
           price = Math.round(price * 100) / 100;
