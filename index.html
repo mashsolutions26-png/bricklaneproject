@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brick Lane · discount</title>
+  <title>Brick Lane</title>
   <meta name="description" content="Brick Lane — a laneway café at 33 Guildford Ln, Melbourne. Book a table, browse the menu, and check today's hours." />
   <link rel="icon" type="image/png" sizes="32x32" href="gallery2/logo.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="gallery2/logo.png" />
@@ -1281,6 +1281,96 @@
       }
     }
 
+    /* ============================================
+       FULL MENU BUTTON STYLES
+       ============================================ */
+    .full-menu-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, rgba(244, 185, 62, 0.15), rgba(200, 16, 46, 0.10));
+      border: 1px solid rgba(244, 185, 62, 0.3);
+      border-radius: 9999px;
+      padding: 0.75rem 2rem 0.75rem 1.75rem;
+      color: #f4b93e;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .full-menu-btn:hover {
+      background: linear-gradient(135deg, rgba(244, 185, 62, 0.25), rgba(200, 16, 46, 0.20));
+      transform: translateX(4px);
+      border-color: #f4b93e;
+      box-shadow: 0 0 30px rgba(244, 185, 62, 0.15);
+    }
+    .full-menu-btn .arrow-icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    .full-menu-btn:hover .arrow-icon {
+      transform: translateX(4px);
+    }
+    .menu-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 640px) {
+      .full-menu-btn {
+        padding: 0.6rem 1.25rem 0.6rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Menu page specific styles */
+    .menu-page .menu-item-card {
+      background: #1a1c22;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s ease;
+    }
+    .menu-page .menu-item-card:hover {
+      border-color: rgba(244, 185, 62, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .menu-page .menu-item-card .item-price {
+      color: #f4b93e;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .menu-page .menu-item-card .item-add-btn {
+      background: rgba(244, 185, 62, 0.12);
+      border: 1px solid rgba(244, 185, 62, 0.2);
+      border-radius: 9999px;
+      padding: 0.4rem 1rem;
+      color: #f4b93e;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .menu-page .menu-item-card .item-add-btn:hover {
+      background: #f4b93e;
+      color: #0a0b0d;
+    }
+    .menu-page .menu-item-card .item-option {
+      color: #9a9a9f;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .menu-page .menu-item-card .item-option span {
+      color: #f4b93e;
+    }
   </style>
 </head>
 
@@ -1292,22 +1382,22 @@
   <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl">
     <nav class="glass-nav rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
       <!-- Updated Logo Section Starts Here -->
-      <a href="#home" class="flex items-center gap-2 shrink-0">
+      <a href="index.html" class="flex items-center gap-2 shrink-0">
         <img src="gallery2/logo.png" alt="Brick Lane Logo" class="h-8 w-auto sm:h-10 object-contain rounded-md bg-transparent">
       </a>
       <!-- Updated Logo Section Ends Here -->
 
       <div class="hidden lg:flex items-center gap-8 font-medium text-sm text-cream/80">
-        <a href="#about" class="nav-link">About Us</a>
-        <a href="#menu" class="nav-link">Menu</a>
-        <a href="#book" class="nav-link">Book a Table</a>
-        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="index.html#about" class="nav-link">About Us</a>
+        <a href="index.html#menu" class="nav-link">Menu</a>
+        <a href="index.html#book" class="nav-link">Book a Table</a>
+        <a href="index.html#gallery" class="nav-link">Gallery</a>
         <!-- Discount Nav Banner (visible when active) -->
         <div id="discountNavBanner" class="discount-nav-banner" style="display:none;">
           <span>🔥</span>
           <span id="discountNavLabel">Limited Offer</span>
           <span class="countdown-tag" id="discountNavCountdown">--:--:--</span>
-          <a href="#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
+          <a href="index.html#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
         </div>
       </div>
 
@@ -1336,17 +1426,18 @@
     ========================================================= -->
     <div id="mobileMenu" class="hidden lg:hidden glass-nav mt-2 rounded-2xl px-6 py-6 flex flex-col gap-5 text-sm font-medium">
       <div class="flex flex-col gap-4 mt-2">
-        <a href="#menu" class="nav-link">Menu</a>
-        <a href="#about" class="nav-link">About</a>
-        <a href="#hours" class="nav-link">Hours</a>
-        <a href="#book" class="nav-link">Book a Table</a>
-        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="index.html#menu" class="nav-link">Menu</a>
+        <a href="index.html#about" class="nav-link">About</a>
+        <a href="index.html#hours" class="nav-link">Hours</a>
+        <a href="index.html#book" class="nav-link">Book a Table</a>
+        <a href="index.html#gallery" class="nav-link">Gallery</a>
+        <a href="menu.html" class="nav-link text-gold">Full Menu →</a>
         <!-- Mobile discount banner -->
         <div id="discountNavBannerMobile" class="discount-nav-banner" style="display:none; align-self:flex-start;">
           <span>🔥</span>
           <span id="discountNavLabelMobile">Limited Offer</span>
           <span class="countdown-tag" id="discountNavCountdownMobile">--:--:--</span>
-          <a href="#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
+          <a href="index.html#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
         </div>
       </div>
 
@@ -1398,8 +1489,8 @@
           A laneway café slinging honest breakfasts and slow-drip coffee from a hidden corner of the CBD. No pretense — just brick walls, good light, and a kitchen that opens early.
         </p>
         <div class="flex flex-wrap gap-4">
-          <a href="#book" class="bg-gold text-ink font-semibold px-6 py-3 rounded-full hover:brightness-110 transition glow-gold">Book a Table</a>
-          <a href="#menu" class="border border-cream/25 text-cream px-6 py-3 rounded-full hover:border-gold/60 hover:text-gold transition">View Menu</a>
+          <a href="index.html#book" class="bg-gold text-ink font-semibold px-6 py-3 rounded-full hover:brightness-110 transition glow-gold">Book a Table</a>
+          <a href="index.html#menu" class="border border-cream/25 text-cream px-6 py-3 rounded-full hover:border-gold/60 hover:text-gold transition">View Menu</a>
         </div>
       </div>
     </div>
@@ -1430,10 +1521,6 @@
       <div id="scheduleGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3"></div>
     </div>
   </section>
-
-  <!-- =========================================================
-  FLASH DEAL BANNER — REMOVED
-  ========================================================= -->
 
   <!-- =========================================================
   ABOUT
@@ -1502,17 +1589,25 @@
   </section>
 
   <!-- =========================================================
-  MENU
+  MENU (Landing Page - 6 items + Full Menu button)
   ========================================================= -->
   <section id="menu" class="py-24 px-6 sm:px-10 border-t border-brickline brick-texture">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-14">
         <span class="text-xs tracking-[0.25em] uppercase text-gold/80">The Menu</span>
-        <h2 class="font-display text-4xl sm:text-5xl mt-3">Small menu, done right.</h2>
+        <h2 class="font-display text-4xl sm:text-5xl mt-3">Most Selling Menu Items</h2>
         <!-- Discount indicator on menu -->
         <div id="menuDiscountIndicator" class="mt-3 inline-flex items-center gap-2 bg-crimson/10 border border-crimson/30 rounded-full px-4 py-1.5 text-sm text-crimson" style="display:none;">
           <span>🔥</span>
           <span id="menuDiscountText">Limited time discount!</span>
+        </div>
+        
+        <!-- FULL MENU BUTTON - with arrow -->
+        <div class="mt-8">
+          <a href="menu.html" class="full-menu-btn">
+            View Full Menu
+            <span class="arrow-icon">→</span>
+          </a>
         </div>
       </div>
       <div id="menuGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
@@ -1689,10 +1784,11 @@
         <div>
           <h4 class="footer-heading">Explore</h4>
           <ul class="footer-links">
-            <li><a href="#about" class="footer-link-btn">About Us</a></li>
-            <li><a href="#menu" class="footer-link-btn">Menu</a></li>
-            <li><a href="#book" class="footer-link-btn">Book a Table</a></li>
-            <li><a href="#gallery" class="footer-link-btn">Gallery</a></li>
+            <li><a href="index.html#about" class="footer-link-btn">About Us</a></li>
+            <li><a href="index.html#menu" class="footer-link-btn">Menu</a></li>
+            <li><a href="menu.html" class="footer-link-btn text-gold">Full Menu</a></li>
+            <li><a href="index.html#book" class="footer-link-btn">Book a Table</a></li>
+            <li><a href="index.html#gallery" class="footer-link-btn">Gallery</a></li>
           </ul>
         </div>
 
@@ -2301,7 +2397,7 @@
     }
 
     // ============================================================
-    // MENU DATA + CAROUSEL
+    // MENU DATA + CAROUSEL (Landing page - 6 items)
     // ============================================================
     const MENU_ITEMS = [{
       name: 'Avocado Sourdough',
