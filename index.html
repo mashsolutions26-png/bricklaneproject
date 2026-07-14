@@ -1434,6 +1434,17 @@
       border: 1px solid rgba(255,255,255,0.15);
       pointer-events: none;
     }
+
+    /* "Continue with Google" - coming soon style (matches Apple) */
+    .google-btn.coming-soon {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .google-btn.coming-soon:hover {
+      background: #f5f0e6;
+      transform: none !important;
+    }
   </style>
 </head>
 
@@ -1460,7 +1471,7 @@
           <span>🔥</span>
           <span id="discountNavLabel">Limited Offer</span>
           <span class="countdown-tag" id="discountNavCountdown">--:--:--</span>
-          <a href="index.html#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
+          <a href="index.html#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Order Now</a>
         </div>
       </div>
 
@@ -1500,7 +1511,7 @@
           <span>🔥</span>
           <span id="discountNavLabelMobile">Limited Offer</span>
           <span class="countdown-tag" id="discountNavCountdownMobile">--:--:--</span>
-          <a href="index.html#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
+          <a href="index.html#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Order Now</a>
         </div>
       </div>
 
@@ -1991,10 +2002,11 @@
         <div class="divider-line"></div>
       </div>
 
-      <!-- GOOGLE BUTTON - NOW USING REDIRECT -->
-      <button id="googleAuthBtn" class="google-btn">
+      <!-- GOOGLE BUTTON - NOW WITH "coming soon" styling (matches Apple) -->
+      <button id="googleAuthBtn" class="google-btn coming-soon" disabled>
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4c-7.4 0-13.8 4.2-17 10.4z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.5C29.5 34.7 26.9 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.6 5.1C9.1 39.6 16 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.5 5.5C40.5 36.6 44 30.8 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
         Continue with Google
+        <span class="text-xs opacity-60 ml-1">(coming soon)</span>
       </button>
 
       <!-- APPLE BUTTON (Coming Soon) -->
@@ -3128,51 +3140,11 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
-    // GOOGLE AUTH - UPDATED TO USE REDIRECT
+    // GOOGLE AUTH - NOW DISABLED (coming soon)
     // ============================================================
     document.getElementById('googleAuthBtn').addEventListener('click', () => {
-      clearAuthError();
-      const provider = new firebase.auth.GoogleAuthProvider();
-      // Use redirect instead of popup
-      auth.signInWithRedirect(provider);
+      showOrderNotification('Coming Soon', 'Google Sign-In will be available in a future update.', '🔜', false);
     });
-
-    // ============================================================
-    // HANDLE REDIRECT RESULT - This runs when the page loads after redirect
-    // ============================================================
-    function handleRedirectResult() {
-      auth.getRedirectResult()
-        .then((result) => {
-          if (result.user) {
-            // Successfully signed in
-            console.log('✅ Google Sign-In successful via redirect:', result.user.displayName);
-            // Close modal if it's open
-            closeAuthModal();
-            // Show welcome notification
-            showOrderNotification(
-              'Welcome!', 
-              `You're signed in as ${result.user.displayName || result.user.email}`,
-              '👋', 
-              true
-            );
-          } else {
-            // No result (user may have just visited the page normally)
-            console.log('ℹ️ No redirect result found.');
-          }
-        })
-        .catch((error) => {
-          // Handle errors from redirect
-          console.error('❌ Redirect sign-in error:', error);
-          // Show error in auth modal if it's open, or as notification
-          if (authOverlay.classList.contains('hidden') === false) {
-            showAuthError(error.message);
-          } else {
-            showOrderNotification('Sign-in Error', error.message, '❌', false);
-          }
-          // Re-open auth modal if there was an error
-          openAuthModal();
-        });
-    }
 
     // ============================================================
     // APPLE BUTTON "Coming Soon"
@@ -3412,10 +3384,9 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
-    // HANDLE REDIRECT RESULT ON PAGE LOAD
+    // HANDLE REDIRECT RESULT ON PAGE LOAD (no longer used, but kept)
     // ============================================================
-    // Call this immediately after defining auth
-    handleRedirectResult();
+    // Google sign-in is now disabled, so no redirect handling needed.
 
     // ============================================================
     // INIT
@@ -3439,7 +3410,7 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     
     // Log to confirm
     console.log('✅ Brick Lane site initialized with discount support and favourites!');
-    console.log('✅ Google Sign-In now uses redirect method instead of popup.');
+    console.log('✅ Google Sign-In is now "coming soon" (disabled).');
   </script>
 </body>
 </html>
