@@ -651,21 +651,35 @@
     });
 
     // ============================================================
-    // TAB NAVIGATION (hash-routed)
+    // TAB NAVIGATION (hash-routed) — FIXED for mobile clicks
     // ============================================================
     const TABS = ['account', 'orders', 'bookings'];
     function goToTab(tab) {
       if (!TABS.includes(tab)) tab = 'account';
       window.location.hash = tab;
+      // force render after hash change (some mobile browsers need this)
+      setTimeout(renderTab, 10);
+      // close mobile dropdown if open
+      closeDropdown();
     }
     function renderTab() {
       const tab = (window.location.hash || '#account').replace('#', '');
       const finalTab = TABS.includes(tab) ? tab : 'account';
+      // update sidebar tabs (desktop)
       document.querySelectorAll('.side-tab').forEach(el => {
         el.classList.toggle('active', el.dataset.tab === finalTab);
       });
+      // update page sections
       document.querySelectorAll('.page-section').forEach(el => {
         el.classList.toggle('active', el.id === 'page-' + finalTab);
+      });
+      // ensure dropdown menu reflects active tab (visual only)
+      document.querySelectorAll('.dropdown-menu-mobile a').forEach(el => {
+        const tabAttr = el.getAttribute('data-tab');
+        if (tabAttr) {
+          el.style.borderLeftColor = (tabAttr === finalTab) ? 'var(--gold)' : 'transparent';
+          el.style.color = (tabAttr === finalTab) ? 'var(--gold)' : 'rgba(245,240,230,0.8)';
+        }
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
