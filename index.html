@@ -3,21 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brick Lane</title>
+  <title>Brick Lane · discount</title>
   <meta name="description" content="Brick Lane — a laneway café at 33 Guildford Ln, Melbourne. Book a table, browse the menu, and check today's hours." />
-    <link rel="icon" type="image/png" sizes="32x32" href="gallery2/logo.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="gallery2/logo.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="gallery2/logo.png" />
   <link rel="apple-touch-icon" href="gallery2/logo.png" />
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-H5RMLCQD7W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-H5RMLCQD7W');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H5RMLCQD7W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H5RMLCQD7W');
+  </script>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1066,10 +1065,226 @@
       cursor: not-allowed;
       transform: none;
     }
+
+    /* ============================================
+       DISCOUNT UI ADDITIONS
+       ============================================ */
+    /* Discount Nav Banner */
+    .discount-nav-banner {
+      background: linear-gradient(135deg, rgba(200, 16, 46, 0.2), rgba(244, 185, 62, 0.15));
+      border: 1px solid rgba(244, 185, 62, 0.3);
+      border-radius: 9999px;
+      padding: 0.25rem 1.2rem 0.25rem 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #f4b93e;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+      transition: all 0.3s ease;
+    }
+    .discount-nav-banner:hover {
+      background: linear-gradient(135deg, rgba(200, 16, 46, 0.3), rgba(244, 185, 62, 0.25));
+      transform: scale(1.02);
+    }
+    .discount-nav-banner .countdown-tag {
+      background: rgba(0,0,0,0.4);
+      border-radius: 9999px;
+      padding: 0.1rem 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 640px) {
+      .discount-nav-banner { font-size: 0.6rem; padding: 0.2rem 0.8rem 0.2rem 0.5rem; }
+      .discount-nav-banner .countdown-tag { font-size: 0.55rem; padding: 0.05rem 0.4rem; }
+    }
+
+    /* Global Discount Banner (below nav) - now HIDDEN */
+    .global-discount-banner {
+      display: none !important;
+    }
+
+    /* Flash Deal enhancements - REMOVED */
+    /* #flashDeal entirely removed from HTML */
+
+    /* Menu discount badge */
+    .menu-discount-badge {
+      font-size: 0.65rem;
+      background: rgba(200, 16, 46, 0.2);
+      color: #c8102e;
+      border: 1px solid rgba(200, 16, 46, 0.3);
+      border-radius: 9999px;
+      padding: 0.1rem 0.6rem;
+      margin-left: 0.5rem;
+      display: inline-block;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Menu discount indicator */
+    #menuDiscountIndicator {
+      display: none;
+    }
+    #menuDiscountIndicator.active {
+      display: inline-flex;
+    }
+
+    /* ---- NEW: TWO‑COLUMN DISCOUNT SECTION (image + details) ---- */
+    .discount-special-section {
+      padding: 4rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .discount-special-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: stretch;
+      background: #121317;
+      border-radius: 3rem;
+      border: 1px solid rgba(244,185,62,0.2);
+      overflow: hidden;
+    }
+    .discount-special-grid .image-side {
+      position: relative;
+      min-height: 320px;
+      background: #0f1115;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .discount-special-grid .image-side img {
+      width: 100%;
+      height: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border-radius: 2rem;
+      box-shadow: 0 20px 40px -8px rgba(0,0,0,0.8);
+      border: 1px solid rgba(244,185,62,0.15);
+    }
+    .discount-special-grid .details-side {
+      padding: 2rem 2.5rem 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .discount-special-grid .details-side .badge-tag {
+      display: inline-block;
+      background: rgba(200,16,46,0.15);
+      border: 1px solid rgba(200,16,46,0.3);
+      border-radius: 9999px;
+      padding: 0.2rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #c8102e;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      align-self: flex-start;
+    }
+    .discount-special-grid .details-side .dish-name {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      color: #f5f0e6;
+    }
+    .discount-special-grid .details-side .dish-desc {
+      color: #b0b0b0;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      max-width: 90%;
+    }
+    .discount-special-grid .details-side .discount-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .discount-special-grid .details-side .discount-meta .meta-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .discount-special-grid .details-side .discount-meta .meta-item strong {
+      color: #f4b93e;
+      font-weight: 600;
+    }
+    .discount-special-grid .details-side .discount-meta .meta-item .value {
+      font-family: 'JetBrains Mono', monospace;
+      color: #f4b93e;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .discount-special-grid .details-side .countdown-block {
+      background: rgba(244,185,62,0.06);
+      border-radius: 9999px;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid rgba(244,185,62,0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: #f4b93e;
+      margin-top: 0.25rem;
+    }
+    .discount-special-grid .details-side .countdown-block span {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    @media (max-width: 820px) {
+      .discount-special-grid {
+        grid-template-columns: 1fr;
+        border-radius: 2rem;
+      }
+      .discount-special-grid .image-side {
+        min-height: 220px;
+        padding: 1rem;
+      }
+      .discount-special-grid .image-side img {
+        max-height: 280px;
+        border-radius: 1.5rem;
+      }
+      .discount-special-grid .details-side {
+        padding: 1.5rem 1.5rem 2rem;
+      }
+      .discount-special-grid .details-side .dish-name {
+        font-size: 1.8rem;
+      }
+      .discount-special-grid .details-side .dish-desc {
+        max-width: 100%;
+        font-size: 0.95rem;
+      }
+      .discount-special-grid .details-side .discount-meta {
+        gap: 0.8rem 1.5rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .discount-special-grid .details-side .dish-name {
+        font-size: 1.4rem;
+      }
+      .discount-special-grid .details-side .countdown-block {
+        font-size: 0.9rem;
+        padding: 0.3rem 1rem;
+      }
+    }
+
   </style>
 </head>
 
-<body class="bg-ink text-cream antialiased">
+<body>
 
   <!-- =========================================================
   NAVIGATION
@@ -1087,6 +1302,13 @@
         <a href="#menu" class="nav-link">Menu</a>
         <a href="#book" class="nav-link">Book a Table</a>
         <a href="#gallery" class="nav-link">Gallery</a>
+        <!-- Discount Nav Banner (visible when active) -->
+        <div id="discountNavBanner" class="discount-nav-banner" style="display:none;">
+          <span>🔥</span>
+          <span id="discountNavLabel">Limited Offer</span>
+          <span class="countdown-tag" id="discountNavCountdown">--:--:--</span>
+          <a href="#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
+        </div>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
@@ -1119,6 +1341,13 @@
         <a href="#hours" class="nav-link">Hours</a>
         <a href="#book" class="nav-link">Book a Table</a>
         <a href="#gallery" class="nav-link">Gallery</a>
+        <!-- Mobile discount banner -->
+        <div id="discountNavBannerMobile" class="discount-nav-banner" style="display:none; align-self:flex-start;">
+          <span>🔥</span>
+          <span id="discountNavLabelMobile">Limited Offer</span>
+          <span class="countdown-tag" id="discountNavCountdownMobile">--:--:--</span>
+          <a href="#menu" class="text-cream/80 hover:text-gold transition text-xs font-medium">Grab Now</a>
+        </div>
       </div>
 
       <div class="h-px bg-cream/10 my-2"></div>
@@ -1203,21 +1432,8 @@
   </section>
 
   <!-- =========================================================
-  FLASH DEAL BANNER
+  FLASH DEAL BANNER — REMOVED
   ========================================================= -->
-  <section id="flashDeal" class="hidden relative overflow-hidden border-y border-crimson/30">
-    <div class="absolute inset-0 bg-gradient-to-r from-crimson/25 via-ink to-gold/15"></div>
-    <div class="relative max-w-6xl mx-auto px-6 sm:px-10 py-6 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <span class="w-2.5 h-2.5 rounded-full bg-crimson pulse-dot"></span>
-        <div>
-          <p class="text-xs uppercase tracking-widest text-crimson/90 font-semibold">Early Bird Flash Deal</p>
-          <p id="flashDealText" class="font-display text-lg sm:text-xl">15% off all coffee, before 9:30 AM</p>
-        </div>
-      </div>
-      <div class="font-mono text-2xl sm:text-3xl font-bold text-gold" id="flashDealClock">--:--:--</div>
-    </div>
-  </section>
 
   <!-- =========================================================
   ABOUT
@@ -1254,6 +1470,38 @@
   </section>
 
   <!-- =========================================================
+  DISCOUNT SPECIAL — TWO COLUMN (image + details) 
+  ========================================================= -->
+  <section id="discountSpecial" class="discount-special-section border-t border-brickline">
+    <div class="discount-special-grid" id="discountSpecialGrid">
+      <!-- LEFT: IMAGE (rounded corners, from admin/active discount) -->
+      <div class="image-side">
+        <img id="discountSpecialImg" src="gallery2/Brick8.webp" alt="discount dish" class="rounded-[2rem]">
+      </div>
+      <!-- RIGHT: DETAILS -->
+      <div class="details-side">
+        <span class="badge-tag">🔥 Limited Offer</span>
+        <h3 class="dish-name" id="discountSpecialName">Quesadilla with Tomatoes</h3>
+        <p class="dish-desc" id="discountSpecialDesc">Grilled flour tortilla filled with melted cheese, fresh tomatoes, and a hint of chipotle. Served with salsa verde.</p>
+        
+        <div class="discount-meta">
+          <div class="meta-item">
+            <strong>Discount</strong> <span class="value" id="discountSpecialPercent">20%</span>
+          </div>
+          <div class="meta-item">
+            <strong>Ends</strong> <span class="value" id="discountSpecialEnds">2025-06-20 23:59</span>
+          </div>
+        </div>
+
+        <div class="countdown-block">
+          <span>⏳</span> 
+          <span id="discountSpecialCountdown">--:--:--</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
   MENU
   ========================================================= -->
   <section id="menu" class="py-24 px-6 sm:px-10 border-t border-brickline brick-texture">
@@ -1261,6 +1509,11 @@
       <div class="text-center mb-14">
         <span class="text-xs tracking-[0.25em] uppercase text-gold/80">The Menu</span>
         <h2 class="font-display text-4xl sm:text-5xl mt-3">Small menu, done right.</h2>
+        <!-- Discount indicator on menu -->
+        <div id="menuDiscountIndicator" class="mt-3 inline-flex items-center gap-2 bg-crimson/10 border border-crimson/30 rounded-full px-4 py-1.5 text-sm text-crimson" style="display:none;">
+          <span>🔥</span>
+          <span id="menuDiscountText">Limited time discount!</span>
+        </div>
       </div>
       <div id="menuGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </div>
@@ -1642,6 +1895,8 @@
     let ordersUnsubscribe = null;
     let cart = [];
     let cartUnsubscribe = null;
+    let discountsUnsubscribe = null;
+    let activeDiscount = null;
 
     // ============================================================
     // LOCALSTORAGE CART FUNCTIONS
@@ -1718,6 +1973,205 @@
     }
 
     // ============================================================
+    // DISCOUNT LISTENER (real-time from Firestore) - FIXED
+    // ============================================================
+    function listenDiscounts() {
+      if (discountsUnsubscribe) discountsUnsubscribe();
+      
+      discountsUnsubscribe = db.collection('discounts')
+        .where('status', '==', 'Active')
+        .onSnapshot(snap => {
+          const now = new Date();
+          let found = null;
+          
+          snap.forEach(doc => {
+            const d = doc.data();
+            d.id = doc.id;
+            
+            // Check if the discount has start and end dates
+            if (d.startDate && d.endDate) {
+              const start = new Date(d.startDate);
+              const end = new Date(d.endDate);
+              
+              // Check if current time is within the date range
+              if (start <= now && end >= now) {
+                found = d;
+                console.log('✅ Active discount found:', d.name, d.discountPercent + '%');
+              }
+            }
+          });
+          
+          // Update the active discount and refresh UI
+          activeDiscount = found;
+          updateDiscountUI();
+          
+          // Also refresh menu prices if menu is already rendered
+          if (found) {
+            markMenuItemsWithDiscount();
+          } else {
+            unmarkMenuItems();
+          }
+          
+        }, err => {
+          console.error('❌ Discount listener error:', err);
+        });
+    }
+
+    // ============================================================
+    // UPDATE DISCOUNT UI (nav banner, global banner hidden, menu indicator, two‑col special)
+    // ============================================================
+    function updateDiscountUI() {
+      const now = new Date();
+      const navBanner = document.getElementById('discountNavBanner');
+      const navBannerMobile = document.getElementById('discountNavBannerMobile');
+      const menuIndicator = document.getElementById('menuDiscountIndicator');
+      const menuText = document.getElementById('menuDiscountText');
+
+      // TWO‑COLUMN SPECIAL ELEMENTS
+      const specialGrid = document.getElementById('discountSpecialGrid');
+      const specialImg = document.getElementById('discountSpecialImg');
+      const specialName = document.getElementById('discountSpecialName');
+      const specialDesc = document.getElementById('discountSpecialDesc');
+      const specialPercent = document.getElementById('discountSpecialPercent');
+      const specialEnds = document.getElementById('discountSpecialEnds');
+      const specialCountdown = document.getElementById('discountSpecialCountdown');
+
+      if (activeDiscount) {
+        const end = new Date(activeDiscount.endDate);
+        const diff = Math.max(0, Math.floor((end - now) / 1000));
+        const countdown = fmtCountdown(diff);
+        const pct = activeDiscount.discountPercent || 0;
+        const itemName = activeDiscount.itemName || 'select items';
+        const imageUrl = activeDiscount.imageUrl || 'gallery2/Brick8.webp';
+        const desc = activeDiscount.description || 'Delicious special with a limited‑time discount.';
+        
+        console.log('🔥 Showing discount:', pct + '% off', itemName);
+
+        // Nav banner (desktop)
+        navBanner.style.display = 'inline-flex';
+        document.getElementById('discountNavLabel').textContent = `${pct}% OFF ${itemName}`;
+        document.getElementById('discountNavCountdown').textContent = countdown;
+
+        // Nav banner (mobile)
+        navBannerMobile.style.display = 'inline-flex';
+        document.getElementById('discountNavLabelMobile').textContent = `${pct}% OFF`;
+        document.getElementById('discountNavCountdownMobile').textContent = countdown;
+
+        // Menu indicator
+        menuIndicator.style.display = 'inline-flex';
+        menuText.textContent = `🔥 ${pct}% OFF ${itemName} — grab it before the countdown ends!`;
+
+        // ---- UPDATE TWO‑COLUMN DISCOUNT SPECIAL ----
+        specialGrid.style.display = 'grid';
+        specialImg.src = imageUrl;
+        specialImg.alt = itemName;
+        specialName.textContent = itemName;
+        specialDesc.textContent = desc;
+        specialPercent.textContent = pct + '%';
+        specialEnds.textContent = end.toLocaleString('en-AU', { 
+          year: 'numeric', month: 'short', day: 'numeric', 
+          hour: '2-digit', minute: '2-digit' 
+        });
+        specialCountdown.textContent = countdown;
+
+        // Mark menu items with discount
+        markMenuItemsWithDiscount();
+
+      } else {
+        console.log('ℹ️ No active discount found');
+        navBanner.style.display = 'none';
+        navBannerMobile.style.display = 'none';
+        menuIndicator.style.display = 'none';
+        // Hide two‑col special
+        specialGrid.style.display = 'none';
+        // Remove discount marks from menu
+        unmarkMenuItems();
+      }
+    }
+
+    // ============================================================
+    // MARK MENU ITEMS WITH DISCOUNT
+    // ============================================================
+    function markMenuItemsWithDiscount() {
+      if (!activeDiscount) {
+        unmarkMenuItems();
+        return;
+      }
+      
+      const discountPct = activeDiscount.discountPercent || 0;
+      const itemName = activeDiscount.itemName || '';
+      
+      document.querySelectorAll('.menu-item-card').forEach(card => {
+        const nameEl = card.querySelector('.menu-item-name');
+        const priceEl = card.querySelector('.menu-item-price');
+        let discountBadge = card.querySelector('.menu-discount-badge');
+        
+        if (nameEl && priceEl) {
+          const name = nameEl.textContent.trim();
+          // Check if this item should get the discount
+          const shouldApplyDiscount = !itemName || 
+                                      name.toLowerCase().includes(itemName.toLowerCase()) || 
+                                      itemName === '' ||
+                                      itemName.toLowerCase() === 'all items';
+          
+          if (shouldApplyDiscount) {
+            const originalPrice = parseFloat(priceEl.dataset.originalPrice || priceEl.textContent.replace('$', ''));
+            if (!isNaN(originalPrice)) {
+              const discounted = originalPrice * (1 - discountPct / 100);
+              
+              // Create or update discount badge
+              if (!discountBadge) {
+                discountBadge = document.createElement('span');
+                discountBadge.className = 'menu-discount-badge';
+                priceEl.parentNode.insertBefore(discountBadge, priceEl.nextSibling);
+              }
+              discountBadge.textContent = `🔥 ${discountPct}% OFF`;
+              discountBadge.style.display = 'inline-block';
+              
+              // Update price
+              priceEl.textContent = `$${discounted.toFixed(2)}`;
+              priceEl.style.color = '#f4b93e';
+            }
+          }
+        }
+      });
+    }
+
+    function unmarkMenuItems() {
+      document.querySelectorAll('.menu-discount-badge').forEach(el => {
+        el.style.display = 'none';
+      });
+      document.querySelectorAll('.menu-item-price').forEach(el => {
+        el.style.color = '';
+        if (el.dataset.originalPrice) {
+          el.textContent = `$${parseFloat(el.dataset.originalPrice).toFixed(2)}`;
+        }
+      });
+    }
+
+    // ============================================================
+    // COUNTDOWN TICKER FOR DISCOUNTS (including special countdown)
+    // ============================================================
+    setInterval(() => {
+      if (activeDiscount) {
+        const now = new Date();
+        const end = new Date(activeDiscount.endDate);
+        const diff = Math.max(0, Math.floor((end - now) / 1000));
+        const countdown = fmtCountdown(diff);
+        
+        // Update all countdown displays
+        document.getElementById('discountNavCountdown').textContent = countdown;
+        document.getElementById('discountNavCountdownMobile').textContent = countdown;
+        document.getElementById('discountSpecialCountdown').textContent = countdown;
+        
+        // If discount expired, refresh the list
+        if (diff <= 0) {
+          listenDiscounts(); // Re-fetch to clear expired discount
+        }
+      }
+    }, 1000);
+
+    // ============================================================
     // MAIN COUNTDOWN + STATUS BADGE
     // ============================================================
     function computeStatus(schedule) {
@@ -1773,7 +2227,6 @@
       }
 
       renderScheduleGrid(schedule, status.isOpen);
-      renderFlashDeal(schedule);
     }
 
     // ============================================================
@@ -1814,29 +2267,6 @@
           `;
         grid.appendChild(card);
       });
-    }
-
-    // ============================================================
-    // FLASH DEAL BANNER
-    // ============================================================
-    function renderFlashDeal(schedule) {
-      const now = getMelbourneNow();
-      const todayKey = dayKeyFromDate(now.date);
-      const today = schedule[todayKey];
-      const nowMinutes = now.hour * 60 + now.minute + now.second / 60;
-      const openMin = timeStrToMinutes(today.open);
-      const dealEndMin = timeStrToMinutes('09:30');
-
-      const section = document.getElementById('flashDeal');
-      const clockEl = document.getElementById('flashDealClock');
-
-      if (nowMinutes >= openMin && nowMinutes < dealEndMin) {
-        section.classList.remove('hidden');
-        const secsLeft = Math.round((dealEndMin - nowMinutes) * 60);
-        clockEl.textContent = fmtCountdown(secsLeft);
-      } else {
-        section.classList.add('hidden');
-      }
     }
 
     // ============================================================
@@ -1929,9 +2359,9 @@
       desc: 'Toasted, salted butter, honey drizzle.',
       images: [
         'gallery2/Brick2.webp',
-        'gallery2/Brick8.webp',
-        'gallery2/Brick8.webp',
-        'gallery2/Brick8.webp',
+        'gallery2/Brick2.webp',
+        'gallery2/Brick2.webp',
+        'gallery2/Brick2.webp',
       ]
     }, ];
 
@@ -1940,7 +2370,8 @@
       grid.innerHTML = '';
       MENU_ITEMS.forEach((item, itemIndex) => {
         const card = document.createElement('div');
-        card.className = 'bg-char rounded-3xl border border-gold/10 overflow-hidden group';
+        card.className = 'bg-char rounded-3xl border border-gold/10 overflow-hidden group menu-item-card';
+        card.dataset.itemName = item.name;
         card.innerHTML = `
             <div class="relative">
               <div id="carousel-${itemIndex}" class="flex overflow-x-auto no-scrollbar snap-x-cards">
@@ -1959,8 +2390,8 @@
             </div>
             <div class="p-5">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="font-display text-xl">${item.name}</h3>
-                <span class="font-mono text-gold">$${item.price.toFixed(2)}</span>
+                <h3 class="font-display text-xl menu-item-name">${item.name}</h3>
+                <span class="font-mono text-gold menu-item-price" data-original-price="${item.price.toFixed(2)}">$${item.price.toFixed(2)}</span>
               </div>
               <p class="text-cream/60 text-sm mb-4">${item.desc}</p>
               <button data-item='${JSON.stringify(item)}' class="add-to-cart w-full bg-gold/10 text-gold border border-gold/30 rounded-full py-2 text-sm font-semibold hover:bg-gold hover:text-ink transition">Add to Order</button>
@@ -1983,22 +2414,34 @@
           addToCart(item);
         });
       });
+
+      // Re-apply discount marks after rendering
+      if (activeDiscount) markMenuItemsWithDiscount();
     }
 
     // ============================================================
     // CART FUNCTIONS
     // ============================================================
     function addToCart(item) {
+      // Check if there's an active discount and apply it
+      let price = item.price;
+      if (activeDiscount) {
+        const itemName = activeDiscount.itemName || '';
+        const shouldApplyDiscount = !itemName || 
+                                    item.name.toLowerCase().includes(itemName.toLowerCase()) || 
+                                    itemName === '' ||
+                                    itemName.toLowerCase() === 'all items';
+        if (shouldApplyDiscount) {
+          price = price * (1 - (activeDiscount.discountPercent || 0) / 100);
+          price = Math.round(price * 100) / 100;
+        }
+      }
       const existing = cart.find(i => i.name === item.name);
       if (existing) {
         existing.quantity += 1;
+        existing.price = price;
       } else {
-        cart.push({
-          name: item.name,
-          price: item.price,
-          quantity: 1,
-          desc: item.desc
-        });
+        cart.push({ name: item.name, price: price, quantity: 1, desc: item.desc });
       }
       updateCartUI();
       saveCartToLocalStorage();
@@ -2678,7 +3121,14 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     renderMenu();
     setupProfileLinks();
 
+    // Start discount listener
+    console.log('🔄 Starting discount listener...');
+    listenDiscounts();
+
     setInterval(renderStatus, 1000);
+    
+    // Log to confirm
+    console.log('✅ Brick Lane site initialized with discount support!');
   </script>
 </body>
 </html>
