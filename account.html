@@ -248,6 +248,7 @@
       padding: 6px 10px;
       border-radius: 40px;
       transition: background 0.2s;
+      cursor: pointer;
     }
     .dropdown-toggle-mobile:hover { background: rgba(255,255,255,0.05); }
     .dropdown-toggle-mobile i { color: var(--gold); }
@@ -262,7 +263,7 @@
       border: 1px solid rgba(244, 185, 62, 0.2);
       border-radius: 1.2rem;
       padding: 0.6rem 0;
-      min-width: 200px;
+      min-width: 220px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.8);
       display: none;
       z-index: 100;
@@ -272,13 +273,18 @@
       display: flex;
       align-items: center;
       gap: 0.7rem;
-      padding: 0.6rem 1.2rem;
+      padding: 0.7rem 1.2rem;
       color: rgba(245, 240, 230, 0.8);
       font-weight: 500;
       font-size: 0.9rem;
       transition: 0.2s;
       text-decoration: none;
       border-left: 2px solid transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dropdown-menu-mobile a:active {
+      background: rgba(244, 185, 62, 0.15);
     }
     .dropdown-menu-mobile a:hover {
       background: rgba(244, 185, 62, 0.08);
@@ -286,6 +292,16 @@
       border-left-color: var(--gold);
     }
     .dropdown-menu-mobile a i { width: 20px; color: var(--gold); }
+    .dropdown-menu-mobile .menu-divider {
+      border-top: 1px solid rgba(245, 240, 230, 0.08);
+      margin: 4px 12px;
+    }
+    .dropdown-menu-mobile a.menu-back {
+      color: var(--gold);
+    }
+    .dropdown-menu-mobile a.menu-back i {
+      color: var(--gold);
+    }
 
     /* Favourites styles */
     .fav-item-card {
@@ -394,23 +410,23 @@
           <i class="fas fa-chevron-down text-[10px]"></i>
         </button>
         <div id="dropdownMenu" class="dropdown-menu-mobile">
-          <a href="#" data-tab="account" onclick="goToTab('account'); closeDropdown();">
+          <a href="#" data-tab="account" class="menu-item">
             <i class="fas fa-user"></i> Account Information
           </a>
-          <a href="#" data-tab="favourites" onclick="goToTab('favourites'); closeDropdown();">
+          <a href="#" data-tab="favourites" class="menu-item">
             <i class="fas fa-heart"></i> Favourites
           </a>
-          <a href="#" data-tab="orders" onclick="goToTab('orders'); closeDropdown();">
+          <a href="#" data-tab="orders" class="menu-item">
             <i class="fas fa-shopping-bag"></i> My Orders
           </a>
-          <a href="#" data-tab="bookings" onclick="goToTab('bookings'); closeDropdown();">
+          <a href="#" data-tab="bookings" class="menu-item">
             <i class="fas fa-calendar-check"></i> Table Bookings
           </a>
-          <a href="#" onclick="doLogout(); closeDropdown();">
+          <a href="#" id="mobileLogoutBtn" class="menu-item">
             <i class="fas fa-sign-out-alt"></i> Log Out
           </a>
-          <div class="border-t border-cream/10 my-1"></div>
-          <a href="index.html" class="text-gold">
+          <div class="menu-divider"></div>
+          <a href="index.html" class="menu-back">
             <i class="fas fa-arrow-left"></i> Back to Main Site
           </a>
         </div>
@@ -733,21 +749,47 @@
     function hideToast() { document.getElementById('toast').classList.add('hidden'); }
 
     // ============================================================
-    // DROPDOWN TOGGLE (mobile)
+    // DROPDOWN TOGGLE (mobile) - FIXED
     // ============================================================
     function closeDropdown() {
       document.getElementById('dropdownMenu').classList.remove('open');
     }
+
+    // Toggle dropdown on button click
     document.getElementById('dropdownToggle').addEventListener('click', function(e) {
       e.stopPropagation();
-      document.getElementById('dropdownMenu').classList.toggle('open');
+      const menu = document.getElementById('dropdownMenu');
+      menu.classList.toggle('open');
     });
+
+    // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
       const menu = document.getElementById('dropdownMenu');
       const toggle = document.getElementById('dropdownToggle');
       if (!menu.contains(e.target) && !toggle.contains(e.target)) {
         menu.classList.remove('open');
       }
+    });
+
+    // Handle mobile menu item clicks - FIXED
+    document.querySelectorAll('.menu-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var tab = this.getAttribute('data-tab');
+        if (tab) {
+          goToTab(tab);
+        }
+        closeDropdown();
+      });
+    });
+
+    // Handle mobile logout
+    document.getElementById('mobileLogoutBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDropdown();
+      doLogout();
     });
 
     // ============================================================
@@ -763,19 +805,26 @@
     function renderTab() {
       const tab = (window.location.hash || '#account').replace('#', '');
       const finalTab = TABS.includes(tab) ? tab : 'account';
+      
+      // Update desktop sidebar tabs
       document.querySelectorAll('.side-tab').forEach(el => {
         el.classList.toggle('active', el.dataset.tab === finalTab);
       });
+      
+      // Update page sections
       document.querySelectorAll('.page-section').forEach(el => {
         el.classList.toggle('active', el.id === 'page-' + finalTab);
       });
-      document.querySelectorAll('.dropdown-menu-mobile a').forEach(el => {
+      
+      // Update mobile menu highlighting
+      document.querySelectorAll('.dropdown-menu-mobile .menu-item').forEach(el => {
         const tabAttr = el.getAttribute('data-tab');
         if (tabAttr) {
           el.style.borderLeftColor = (tabAttr === finalTab) ? 'var(--gold)' : 'transparent';
           el.style.color = (tabAttr === finalTab) ? 'var(--gold)' : 'rgba(245,240,230,0.8)';
         }
       });
+      
       // If favourites tab, render favourites
       if (finalTab === 'favourites') {
         renderFavourites();
@@ -865,7 +914,7 @@
       saveFavouritesToLocalStorage();
       saveFavouritesToFirestore();
       renderFavourites();
-      showToast('Removed', `${itemName} removed from favourites.`, '♡');
+      showToast('Removed', itemName + ' removed from favourites.', '♡');
     }
 
     function addFavouriteToCart(item) {
@@ -887,7 +936,7 @@
       if (typeof window.saveCartToFirestore === 'function') {
         window.saveCartToFirestore();
       }
-      showToast('Added to Cart', `${item.name} added to your order.`, '🛒');
+      showToast('Added to Cart', item.name + ' added to your order.', '🛒');
     }
 
     function renderFavourites() {
@@ -976,8 +1025,8 @@
     function showMapPreview(loc) {
       document.getElementById('mapPreviewWrap').classList.remove('hidden');
       document.getElementById('noLocationNote').classList.add('hidden');
-      document.getElementById('mapPreview').src = `https://www.google.com/maps?q=${loc.lat},${loc.lng}&output=embed`;
-      document.getElementById('openInMapsLink').href = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
+      document.getElementById('mapPreview').src = 'https://www.google.com/maps?q=' + loc.lat + ',' + loc.lng + '&output=embed';
+      document.getElementById('openInMapsLink').href = 'https://www.google.com/maps?q=' + loc.lat + ',' + loc.lng;
     }
 
     function useMyLocation() {
@@ -987,43 +1036,47 @@
       }
       showToast('Locating…', 'Requesting your current location.', '📍');
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
+        function(pos) {
           savedLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
           showMapPreview(savedLocation);
           showToast('Location Captured', 'Your current location was linked to Google Maps. Save changes to keep it.', '✅');
         },
-        (err) => {
+        function(err) {
           showToast('Location Blocked', 'Please allow location access in your browser to connect Google Maps.', '⚠️');
         }
       );
     }
 
-    document.getElementById('accountForm').addEventListener('focusin', () => { isEditingForm = true; });
-    document.getElementById('accountForm').addEventListener('focusout', () => {
-      setTimeout(() => { isEditingForm = false; }, 200);
+    document.getElementById('accountForm').addEventListener('focusin', function() { isEditingForm = true; });
+    document.getElementById('accountForm').addEventListener('focusout', function() {
+      setTimeout(function() { isEditingForm = false; }, 200);
     });
 
-    document.getElementById('accountForm').addEventListener('submit', async (e) => {
+    document.getElementById('accountForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       if (!currentUser) return;
 
-      const saveBtn = document.getElementById('saveAccountBtn');
-      const saveStatus = document.getElementById('saveStatus');
+      var saveBtn = document.getElementById('saveAccountBtn');
+      var saveStatus = document.getElementById('saveStatus');
       saveBtn.disabled = true;
       saveBtn.textContent = 'Saving…';
 
-      const firstName = document.getElementById('firstName').value.trim();
-      const lastName = document.getElementById('lastName').value.trim();
-      const phone = document.getElementById('phoneNumber').value.trim();
-      const whatsapp = document.getElementById('whatsappNumber').value.trim();
-      const newEmail = document.getElementById('emailAddress').value.trim();
-      const address = document.getElementById('addressLine').value.trim();
-      const postalCode = document.getElementById('postalCode').value.trim();
+      var firstName = document.getElementById('firstName').value.trim();
+      var lastName = document.getElementById('lastName').value.trim();
+      var phone = document.getElementById('phoneNumber').value.trim();
+      var whatsapp = document.getElementById('whatsappNumber').value.trim();
+      var newEmail = document.getElementById('emailAddress').value.trim();
+      var address = document.getElementById('addressLine').value.trim();
+      var postalCode = document.getElementById('postalCode').value.trim();
 
-      const payload = {
-        firstName, lastName,
+      var payload = {
+        firstName: firstName,
+        lastName: lastName,
         name: (firstName + ' ' + lastName).trim(),
-        phone, whatsapp, address, postalCode,
+        phone: phone,
+        whatsapp: whatsapp,
+        address: address,
+        postalCode: postalCode,
         email: currentUser.email,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
@@ -1080,30 +1133,32 @@
       ordersUnsub = db.collection('orders')
         .where('userId', '==', currentUser.uid)
         .orderBy('createdAt', 'desc')
-        .onSnapshot(snapshot => {
-          const active = [];
-          const completed = [];
-          snapshot.forEach(doc => {
-            const data = { ...doc.data(), id: doc.id };
-            if (data.status === 'Complete') completed.push(data); else active.push(data);
+        .onSnapshot(function(snapshot) {
+          var active = [];
+          var completed = [];
+          snapshot.forEach(function(doc) {
+            var data = doc.data();
+            data.id = doc.id;
+            if (data.status === 'Complete') completed.push(data);
+            else active.push(data);
           });
           renderOrderList(active, 'activeOrdersList', 'No active orders right now.');
           renderOrderList(completed, 'completedOrdersList', 'No past orders yet.');
-        }, err => {
+        }, function(err) {
           console.error('Error loading orders:', err);
           document.getElementById('activeOrdersList').innerHTML = '<p class="text-cream/40 text-sm">Could not load orders.</p>';
         });
     }
 
     function renderOrderList(orders, containerId, emptyText) {
-      const container = document.getElementById(containerId);
+      var container = document.getElementById(containerId);
       if (orders.length === 0) {
-        container.innerHTML = `<p class="text-cream/40 text-sm">${emptyText}</p>`;
+        container.innerHTML = '<p class="text-cream/40 text-sm">' + emptyText + '</p>';
         return;
       }
-      container.innerHTML = orders.map(order => {
-        const itemsList = (order.items || []).map(i => `${i.name} × ${i.quantity || 1}`).join(', ');
-        const date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleString() : 'Just now';
+      container.innerHTML = orders.map(function(order) {
+        var itemsList = (order.items || []).map(function(i) { return i.name + ' × ' + (i.quantity || 1); }).join(', ');
+        var date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleString() : 'Just now';
         return `
           <div class="bg-char2 rounded-2xl p-4 border border-cream/5">
             <div class="flex justify-between items-start gap-3">
@@ -1124,14 +1179,14 @@
     }
 
     function downloadOrderInvoice(order) {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const gold = [244, 185, 62];
-      const dark = [20, 20, 20];
+      var { jsPDF } = window.jspdf;
+      var doc = new jsPDF();
+      var gold = [244, 185, 62];
+      var dark = [20, 20, 20];
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(20);
-      doc.setTextColor(...dark);
+      doc.setTextColor(dark[0], dark[1], dark[2]);
       doc.text('BRICK LANE', 14, 20);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
@@ -1139,28 +1194,28 @@
       doc.text('33 Guildford Ln, Melbourne VIC 3000', 14, 26);
       doc.text('hello@bricklane.com  |  +61 3 7023 9333', 14, 31);
 
-      doc.setDrawColor(...gold);
+      doc.setDrawColor(gold[0], gold[1], gold[2]);
       doc.setLineWidth(0.6);
       doc.line(14, 36, 196, 36);
 
       doc.setFontSize(14);
-      doc.setTextColor(...dark);
+      doc.setTextColor(dark[0], dark[1], dark[2]);
       doc.setFont('helvetica', 'bold');
       doc.text('INVOICE', 14, 46);
 
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      const date = order.createdAt ? new Date(order.createdAt.seconds * 1000) : new Date();
-      doc.text(`Order ID: ${order.orderId || order.id}`, 14, 54);
-      doc.text(`Date: ${date.toLocaleString()}`, 14, 60);
-      doc.text(`Customer: ${order.userName || ''}`, 14, 66);
-      doc.text(`Email: ${order.userEmail || ''}`, 14, 72);
-      doc.text(`Branch: ${order.branch || ''}`, 120, 54);
-      doc.text(`Status: ${order.status || ''}`, 120, 60);
-      doc.text(`Type: ${order.orderType || 'Pickup'}`, 120, 66);
+      var date = order.createdAt ? new Date(order.createdAt.seconds * 1000) : new Date();
+      doc.text('Order ID: ' + (order.orderId || order.id), 14, 54);
+      doc.text('Date: ' + date.toLocaleString(), 14, 60);
+      doc.text('Customer: ' + (order.userName || ''), 14, 66);
+      doc.text('Email: ' + (order.userEmail || ''), 14, 72);
+      doc.text('Branch: ' + (order.branch || ''), 120, 54);
+      doc.text('Status: ' + (order.status || ''), 120, 60);
+      doc.text('Type: ' + (order.orderType || 'Pickup'), 120, 66);
 
-      let y = 84;
-      doc.setFillColor(...dark);
+      var y = 84;
+      doc.setFillColor(dark[0], dark[1], dark[2]);
       doc.rect(14, y - 6, 182, 8, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
@@ -1171,12 +1226,12 @@
       y += 8;
 
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...dark);
-      (order.items || []).forEach(item => {
+      doc.setTextColor(dark[0], dark[1], dark[2]);
+      (order.items || []).forEach(function(item) {
         doc.text(String(item.name || ''), 18, y);
         doc.text(String(item.quantity || 1), 140, y);
-        doc.text(`$${(item.price || 0).toFixed(2)}`, 160, y);
-        doc.text(`$${((item.price || 0) * (item.quantity || 1)).toFixed(2)}`, 178, y);
+        doc.text('$' + (item.price || 0).toFixed(2), 160, y);
+        doc.text('$' + ((item.price || 0) * (item.quantity || 1)).toFixed(2), 178, y);
         y += 7;
       });
 
@@ -1186,15 +1241,15 @@
       y += 8;
 
       doc.text('Subtotal', 140, y);
-      doc.text(`$${(order.subtotal || 0).toFixed(2)}`, 178, y);
+      doc.text('$' + (order.subtotal || 0).toFixed(2), 178, y);
       y += 7;
       doc.text('Service Fee', 140, y);
-      doc.text(`$${(order.serviceFee || 0).toFixed(2)}`, 178, y);
+      doc.text('$' + (order.serviceFee || 0).toFixed(2), 178, y);
       y += 8;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.text('TOTAL', 140, y);
-      doc.text(`$${(order.total || 0).toFixed(2)}`, 178, y);
+      doc.text('$' + (order.total || 0).toFixed(2), 178, y);
 
       y += 20;
       doc.setFont('helvetica', 'normal');
@@ -1202,7 +1257,7 @@
       doc.setTextColor(150, 150, 150);
       doc.text('Thank you for ordering from Brick Lane.', 14, y);
 
-      doc.save(`BrickLane-Invoice-${order.orderId || order.id}.pdf`);
+      doc.save('BrickLane-Invoice-' + (order.orderId || order.id) + '.pdf');
     }
 
     // ============================================================
@@ -1213,23 +1268,28 @@
       bookingsUnsub = db.collection('bookings')
         .where('uid', '==', currentUser.uid)
         .orderBy('createdAt', 'desc')
-        .onSnapshot(snapshot => {
-          const bookings = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        .onSnapshot(function(snapshot) {
+          var bookings = [];
+          snapshot.forEach(function(doc) {
+            var data = doc.data();
+            data.id = doc.id;
+            bookings.push(data);
+          });
           renderBookingsList(bookings);
-        }, err => {
+        }, function(err) {
           console.error('Error loading bookings:', err);
           document.getElementById('bookingsList').innerHTML = '<p class="text-cream/40 text-sm">Could not load bookings.</p>';
         });
     }
 
     function renderBookingsList(bookings) {
-      const container = document.getElementById('bookingsList');
+      var container = document.getElementById('bookingsList');
       if (bookings.length === 0) {
         container.innerHTML = '<p class="text-cream/40 text-sm">You have no table bookings yet.</p>';
         return;
       }
-      container.innerHTML = bookings.map(b => {
-        const date = b.createdAt ? new Date(b.createdAt.seconds * 1000).toLocaleString() : '';
+      container.innerHTML = bookings.map(function(b) {
+        var date = b.createdAt ? new Date(b.createdAt.seconds * 1000).toLocaleString() : '';
         return `
           <div class="bg-char2 rounded-2xl p-4 border border-cream/5">
             <div class="flex justify-between items-start gap-3">
@@ -1250,14 +1310,14 @@
     }
 
     function downloadBookingInvoice(booking) {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const gold = [244, 185, 62];
-      const dark = [20, 20, 20];
+      var { jsPDF } = window.jspdf;
+      var doc = new jsPDF();
+      var gold = [244, 185, 62];
+      var dark = [20, 20, 20];
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(20);
-      doc.setTextColor(...dark);
+      doc.setTextColor(dark[0], dark[1], dark[2]);
       doc.text('BRICK LANE', 14, 20);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
@@ -1265,27 +1325,27 @@
       doc.text('33 Guildford Ln, Melbourne VIC 3000', 14, 26);
       doc.text('hello@bricklane.com  |  +61 3 7023 9333', 14, 31);
 
-      doc.setDrawColor(...gold);
+      doc.setDrawColor(gold[0], gold[1], gold[2]);
       doc.setLineWidth(0.6);
       doc.line(14, 36, 196, 36);
 
       doc.setFontSize(14);
-      doc.setTextColor(...dark);
+      doc.setTextColor(dark[0], dark[1], dark[2]);
       doc.setFont('helvetica', 'bold');
       doc.text('TABLE BOOKING CONFIRMATION', 14, 46);
 
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      const date = booking.createdAt ? new Date(booking.createdAt.seconds * 1000) : new Date();
-      doc.text(`Booking ID: ${booking.bookingId || booking.id}`, 14, 56);
-      doc.text(`Booked On: ${date.toLocaleString()}`, 14, 62);
-      doc.text(`Guest Name: ${booking.name || ''}`, 14, 68);
-      doc.text(`Phone: ${booking.phone || ''}`, 14, 74);
-      doc.text(`Email: ${booking.email || ''}`, 14, 80);
+      var date = booking.createdAt ? new Date(booking.createdAt.seconds * 1000) : new Date();
+      doc.text('Booking ID: ' + (booking.bookingId || booking.id), 14, 56);
+      doc.text('Booked On: ' + date.toLocaleString(), 14, 62);
+      doc.text('Guest Name: ' + (booking.name || ''), 14, 68);
+      doc.text('Phone: ' + (booking.phone || ''), 14, 74);
+      doc.text('Email: ' + (booking.email || ''), 14, 80);
 
-      doc.text(`Date: ${booking.date || ''}`, 120, 56);
-      doc.text(`Time: ${booking.time || ''}`, 120, 62);
-      doc.text(`Guests: ${booking.guests || ''}`, 120, 68);
+      doc.text('Date: ' + (booking.date || ''), 120, 56);
+      doc.text('Time: ' + (booking.time || ''), 120, 62);
+      doc.text('Guests: ' + (booking.guests || ''), 120, 68);
 
       doc.setFont('helvetica', 'bold');
       doc.text('Special Requests:', 14, 92);
@@ -1301,7 +1361,7 @@
       doc.setTextColor(150, 150, 150);
       doc.text('We look forward to hosting you at Brick Lane.', 14, 135);
 
-      doc.save(`BrickLane-Booking-${booking.bookingId || booking.id}.pdf`);
+      doc.save('BrickLane-Booking-' + (booking.bookingId || booking.id) + '.pdf');
     }
   </script>
 </body>
