@@ -212,12 +212,7 @@
       pointer-events: auto;
     }
 
-    #profileDrawer {
-      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    #profileDrawer.translate-x-full {
-      transform: translateX(100%);
-    }
+    /* Removed profileDrawer styles entirely — we redirect instead */
 
     .schedule-card {
       transition: all 0.2s ease;
@@ -940,11 +935,11 @@
           <span id="cartCount" class="absolute -top-1.5 -right-1.5 bg-crimson text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
         </button>
 
-        <!-- Profile Trigger -->
-        <button id="profileTrigger" class="w-9 h-9 rounded-full bg-gradient-to-br from-gold to-crimson flex items-center justify-center font-bold text-ink text-sm hover:opacity-90 transition-opacity">
+        <!-- Profile Trigger – now redirects to account.html -->
+        <a href="account.html" class="w-9 h-9 rounded-full bg-gradient-to-br from-gold to-crimson flex items-center justify-center font-bold text-ink text-sm hover:opacity-90 transition-opacity">
           <svg id="profileIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a0b0d" stroke-width="2.4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           <span id="profileInitial" class="hidden"></span>
-        </button>
+        </a>
 
         <!-- Mobile Toggle -->
         <button id="mobileToggle" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-char/70 border border-gold/20 transition hover:border-gold/50">
@@ -968,10 +963,10 @@
       <div class="h-px bg-cream/10 my-2"></div>
 
       <div class="flex items-center justify-between mt-2">
-        <button id="mobileProfileTrigger" class="flex items-center gap-3 text-cream/80 hover:text-gold transition">
+        <a href="account.html" class="flex items-center gap-3 text-cream/80 hover:text-gold transition">
           <div class="mobile-account-icon" id="mobileProfileIcon">M</div>
-          <span id="mobileProfileText">Login</span>
-        </button>
+          <span id="mobileProfileText">Account</span>
+        </a>
         
         <button id="mobileOrderBtn" class="bg-crimson text-white font-bold px-6 py-2.5 rounded-full hover:brightness-110 transition shadow-lg shadow-crimson/20">
           Order Now
@@ -1207,7 +1202,7 @@
   </section>
 
   <!-- =========================================================
-  GALLERY (AUTO SLIDER ONLY - "Snapped by Customers" removed)
+  GALLERY (AUTO SLIDER ONLY)
   ========================================================= -->
   <section id="gallery" class="py-24 border-t border-brickline overflow-hidden">
     <!-- ===== AUTO SLIDER (food/restaurant) ===== -->
@@ -1378,7 +1373,7 @@
   </aside>
 
   <!-- =========================================================
-  AUTH MODAL
+  AUTH MODAL — kept for backward compatibility (e.g. checkout flow)
   ========================================================= -->
   <div id="authOverlay" class="hidden fixed inset-0 z-[100] bg-ink/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-nav w-full max-w-md rounded-3xl p-8 relative thin-scroll max-h-[90vh] overflow-y-auto">
@@ -1429,36 +1424,6 @@
       </button>
     </div>
   </div>
-
-  <!-- =========================================================
-  PROFILE DRAWER
-  ========================================================= -->
-  <div id="drawerOverlay" class="hidden fixed inset-0 z-[100] bg-ink/70 backdrop-blur-sm"></div>
-  <aside id="profileDrawer" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-char2 border-l border-gold/15 z-[101] translate-x-full transition-transform duration-300 thin-scroll overflow-y-auto">
-    <div class="p-6">
-      <button id="drawerClose" class="mb-6 text-cream/50 hover:text-gold flex items-center gap-1 text-sm">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg> Close
-      </button>
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gold to-crimson flex items-center justify-center font-display font-bold text-ink text-xl" id="drawerAvatar">B</div>
-        <div>
-          <p id="drawerName" class="font-semibold">—</p>
-          <p id="drawerEmail" class="text-cream/50 text-xs">—</p>
-        </div>
-      </div>
-
-      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Active Table Bookings</h4>
-      <div id="drawerBookings" class="space-y-3 mb-8"></div>
-
-      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Order Records</h4>
-      <div id="drawerOrders" class="space-y-3 mb-8"></div>
-
-      <h4 class="text-xs uppercase tracking-widest text-gold/80 mb-3">Completed Orders</h4>
-      <div id="drawerCompletedOrders" class="space-y-3 mb-8"></div>
-
-      <button id="logoutBtn" class="w-full border border-crimson/40 text-crimson font-semibold py-3 rounded-full hover:bg-crimson/10 transition">Log Out</button>
-    </div>
-  </aside>
 
   <!-- =========================================================
   JAVASCRIPT
@@ -2008,7 +1973,6 @@
     // ORDER NOTIFICATION (CUSTOM SLIDE DOWN NOTIFICATION)
     // ============================================================
     function showOrderNotification(title, message, icon = '✅', isSuccess = true) {
-      // Remove existing notification if any
       const existing = document.querySelector('.order-notification-success');
       if (existing) existing.remove();
 
@@ -2024,18 +1988,15 @@
       `;
       document.body.appendChild(notif);
 
-      // Auto dismiss after 8 seconds
       const timer = setTimeout(() => {
         if (notif.parentNode) notif.remove();
       }, 8000);
 
-      // Close button
       notif.querySelector('.notif-close').addEventListener('click', () => {
         clearTimeout(timer);
         if (notif.parentNode) notif.remove();
       });
 
-      // Click on notification to dismiss
       notif.addEventListener('click', (e) => {
         if (e.target === notif || e.target.closest('.notif-content')) {
           clearTimeout(timer);
@@ -2045,12 +2006,9 @@
     }
 
     // ============================================================
-    // PLACE ORDER - FIXED VERSION
+    // PLACE ORDER
     // ============================================================
     function placeOrder() {
-      console.log('placeOrder called, currentUser:', currentUser);
-      console.log('cart:', cart);
-
       if (!currentUser) {
         showOrderNotification('Authentication Required', 'Please log in to place your order.', '🔐', false);
         openAuthModal();
@@ -2069,7 +2027,6 @@
         quantity: item.quantity
       }));
 
-      // Generate a unique order ID
       const orderId = 'ORD-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
 
       const orderData = {
@@ -2094,10 +2051,6 @@
         }]
       };
 
-      console.log('Order data being sent:', orderData);
-
-      // Build the Telegram message BEFORE the Firestore call so it always
-      // fires, even if the Firestore write fails (same pattern as bookings).
       const telegramMessage = `
 🛎️ <b>New Order at Brick Lane!</b>
 
@@ -2119,8 +2072,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
 🔔 <i>Please prepare this order for pickup.</i>
       `;
 
-      // Always clear the cart once the order has been submitted, and always
-      // close the cart sidebar — this no longer waits on the Firestore result.
       function finishCartAfterOrder() {
         cart = [];
         updateCartUI();
@@ -2129,52 +2080,30 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
         closeCart();
       }
 
-      // Show loading notification
       showOrderNotification('Placing Order...', 'Please wait while we process your order.', '⏳', true);
 
       db.collection('orders').add(orderData)
         .then((docRef) => {
-          console.log('Order placed successfully! Document ID:', docRef.id);
-
           finishCartAfterOrder();
-
-          // Show success notification
           showOrderNotification(
             '🎉 Order Confirmed!',
             `Order #${orderId} placed successfully. Total: $${totals.total.toFixed(2)}. We'll notify you when it's ready.`,
             '✅',
             true
           );
-
-          // Send Telegram notification
           sendTelegramNotification(telegramMessage);
-
-          // Show the order success in cart sidebar
           document.getElementById('cartContent').classList.add('hidden');
           document.getElementById('orderSuccess').classList.remove('hidden');
-
-          // Auto hide success after 5 seconds
           setTimeout(() => {
             document.getElementById('orderSuccess').classList.add('hidden');
             document.getElementById('cartContent').classList.remove('hidden');
           }, 5000);
-
         })
         .catch((err) => {
-          // IMPORTANT: This is the block that was previously silent — if the
-          // Firestore write failed (e.g. permissions), NOTHING happened after
-          // it: no Telegram message, no admin panel entry, no cart clear.
-          console.error('Error placing order:', err);
-          console.error('Error code:', err.code);
-
-          // Still notify the kitchen via Telegram so the order isn't lost,
-          // and flag clearly that it was NOT saved to the system.
           sendTelegramNotification(
             `⚠️ <b>ORDER NOT SAVED TO SYSTEM</b> (Firestore error: ${err.code || err.message})\n` + telegramMessage
           );
-
           finishCartAfterOrder();
-
           showOrderNotification(
             '⚠️ Order Sent, But Not Saved',
             `We notified the kitchen directly, but this order could not be saved (${err.code || err.message}). Please tell staff your order ID: ${orderId}.`,
@@ -2243,10 +2172,9 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
-    // AUTH MODAL LOGIC
+    // AUTH MODAL LOGIC (kept for checkout flows)
     // ============================================================
     const authOverlay = document.getElementById('authOverlay');
-    const profileTrigger = document.getElementById('profileTrigger');
     const authClose = document.getElementById('authClose');
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
@@ -2268,13 +2196,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
 
     function closeAuthModal() { authOverlay.classList.add('hidden'); }
 
-    profileTrigger.addEventListener('click', () => {
-      if (currentUser) {
-        openProfileDrawer();
-      } else {
-        openAuthModal();
-      }
-    });
     authClose.addEventListener('click', closeAuthModal);
     authOverlay.addEventListener('click', (e) => { if (e.target === authOverlay) closeAuthModal(); });
 
@@ -2336,316 +2257,26 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
-    // PROFILE DRAWER
-    // ============================================================
-    const profileDrawer = document.getElementById('profileDrawer');
-    const drawerOverlay = document.getElementById('drawerOverlay');
-
-    function openProfileDrawer() {
-      drawerOverlay.classList.remove('hidden');
-      profileDrawer.classList.remove('translate-x-full');
-      if (currentUser) {
-        loadUserOrders();
-      }
-    }
-
-    function closeProfileDrawer() {
-      drawerOverlay.classList.add('hidden');
-      profileDrawer.classList.add('translate-x-full');
-      if (ordersUnsubscribe) {
-        ordersUnsubscribe();
-        ordersUnsubscribe = null;
-      }
-    }
-    document.getElementById('drawerClose').addEventListener('click', closeProfileDrawer);
-    drawerOverlay.addEventListener('click', closeProfileDrawer);
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      auth.signOut().then(() => {
-        closeProfileDrawer();
-        cart = [];
-        updateCartUI();
-        saveCartToLocalStorage();
-      });
-    });
-
-    // ============================================================
     // MOBILE MENU ACCOUNT & ORDER BUTTON LOGIC
     // ============================================================
-    document.getElementById('mobileProfileTrigger').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.add('hidden');
+    // The mobile profile now points to account.html (via <a> tag),
+    // but we still update the icon/text dynamically.
+    function updateMobileProfile() {
+      const mobileIcon = document.getElementById('mobileProfileIcon');
+      const mobileText = document.getElementById('mobileProfileText');
       if (currentUser) {
-        openProfileDrawer();
+        const initial = (currentUser.displayName || currentUser.email || 'G').charAt(0).toUpperCase();
+        mobileIcon.textContent = initial;
+        mobileText.textContent = 'Account';
       } else {
-        openAuthModal();
+        mobileIcon.textContent = 'M';
+        mobileText.textContent = 'Account';
       }
-    });
+    }
 
     document.getElementById('mobileOrderBtn').addEventListener('click', () => {
       document.getElementById('mobileMenu').classList.add('hidden');
       openCart();
-    });
-
-    auth.onAuthStateChanged((user) => {
-        const mobileIcon = document.getElementById('mobileProfileIcon');
-        const mobileText = document.getElementById('mobileProfileText');
-        if (user) {
-            const initial = (user.displayName || user.email || 'G').charAt(0).toUpperCase();
-            mobileIcon.textContent = initial;
-            mobileText.textContent = 'Account';
-        } else {
-            mobileIcon.textContent = 'M';
-            mobileText.textContent = 'Login';
-        }
-    });
-
-    // ============================================================
-    // LOAD USER ORDERS & BOOKINGS
-    // ============================================================
-    function loadUserOrders() {
-      if (!currentUser) return;
-      db.collection('bookings')
-        .where('uid', '==', currentUser.uid)
-        .orderBy('createdAt', 'desc')
-        .limit(5)
-        .get()
-        .then(snapshot => {
-          const container = document.getElementById('drawerBookings');
-          if (snapshot.empty) {
-            container.innerHTML = '<p class="text-cream/40 text-sm">No active bookings.</p>';
-            return;
-          }
-          container.innerHTML = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return `
-              <div class="bg-char rounded-xl p-3 text-sm">
-                <p class="font-semibold">Table Booking</p>
-                <p class="text-cream/50 text-xs">${data.branch || 'Melbourne CBD'}</p>
-              </div>
-            `;
-          }).join('');
-        })
-        .catch(err => console.error('Error loading bookings:', err));
-
-      if (ordersUnsubscribe) {
-        ordersUnsubscribe();
-        ordersUnsubscribe = null;
-      }
-
-      ordersUnsubscribe = db.collection('orders')
-        .where('userId', '==', currentUser.uid)
-        .orderBy('createdAt', 'desc')
-        .onSnapshot(snapshot => {
-          const activeOrders = [];
-          const completedOrders = [];
-
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const orderWithId = { ...data, id: doc.id };
-            if (data.status === 'Complete') {
-              completedOrders.push(orderWithId);
-            } else {
-              activeOrders.push(orderWithId);
-            }
-          });
-
-          renderOrders(activeOrders, 'drawerOrders');
-          renderCompletedOrders(completedOrders, 'drawerCompletedOrders');
-
-          snapshot.docChanges().forEach(change => {
-            if (change.type === 'modified') {
-              const data = change.doc.data();
-              checkOrderStatusChange(change.doc.id, data);
-            }
-          });
-        }, err => console.error('Error loading orders:', err));
-    }
-
-    let previousOrderStatuses = {};
-
-    function checkOrderStatusChange(orderId, data) {
-      const prevStatus = previousOrderStatuses[orderId];
-      const currentStatus = data.status;
-      if (prevStatus && prevStatus !== currentStatus) {
-        let message = '';
-        let icon = '📦';
-        let title = 'Order Update';
-        switch (currentStatus) {
-          case 'Packed':
-            message = 'Your order has been packed and is ready for pickup!';
-            icon = '📦';
-            break;
-          case 'Picked Up':
-            message = 'Thank you for picking up your order!';
-            icon = '✅';
-            break;
-          case 'Complete':
-            message = 'Your order is complete. Thanks for visiting Brick Lane!';
-            icon = '🎉';
-            title = 'Order Complete';
-            break;
-          default:
-            message = `Your order status is now: ${currentStatus}`;
-        }
-        showNotification(title, message, icon);
-      }
-      previousOrderStatuses[orderId] = currentStatus;
-    }
-
-    function renderOrders(orders, containerId) {
-      const container = document.getElementById(containerId);
-      if (orders.length === 0) {
-        container.innerHTML = '<p class="text-cream/40 text-sm">No active orders.</p>';
-        return;
-      }
-      container.innerHTML = orders.map(order => {
-        const statusClass = getStatusClass(order.status);
-        const itemsList = order.items ? order.items.map(item =>
-          `${item.name} (${item.quantity || 1})`
-        ).join(', ') : 'Order items';
-        return `
-          <div class="bg-char rounded-xl p-3 text-sm border border-cream/5">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="font-semibold">${itemsList}</p>
-                <p class="text-cream/50 text-xs">$${(order.total || 0).toFixed(2)}</p>
-              </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${statusClass}">
-                ${order.status}
-              </span>
-            </div>
-            <div class="mt-2 text-xs text-cream/40 flex gap-3">
-              <span>${order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Recent'}</span>
-              <span>•</span>
-              <span>Pickup</span>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderCompletedOrders(orders, containerId) {
-      const container = document.getElementById(containerId);
-      if (orders.length === 0) {
-        container.innerHTML = '<p class="text-cream/40 text-sm">No completed orders.</p>';
-        return;
-      }
-      container.innerHTML = orders.map(order => {
-        const itemsList = order.items ? order.items.map(item =>
-          `${item.name} (${item.quantity || 1})`
-        ).join(', ') : 'Order items';
-        const orderDate = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Recent';
-        return `
-          <div class="bg-char rounded-xl p-3 text-sm border border-cream/5">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="font-semibold">${itemsList}</p>
-                <p class="text-cream/50 text-xs">$${(order.total || 0).toFixed(2)} · ${orderDate}</p>
-              </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full status-complete">Complete</span>
-            </div>
-            <button class="buy-again-btn mt-2 text-gold text-xs font-semibold hover:underline" data-order-id="${order.id}">Buy Again →</button>
-          </div>
-        `;
-      }).join('');
-      container.querySelectorAll('.buy-again-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const orderId = this.dataset.orderId;
-          const order = orders.find(o => o.id === orderId);
-          if (order && order.items && order.items.length > 0) {
-            const firstItem = order.items[0];
-            const menuItem = MENU_ITEMS.find(item => item.name === firstItem.name);
-            if (menuItem) {
-              addToCart(menuItem);
-            } else {
-              addToCart({ name: firstItem.name, price: firstItem.price, desc: '' });
-            }
-          }
-        });
-      });
-    }
-
-    function getStatusClass(status) {
-      switch (status) {
-        case 'Confirmed': return 'status-confirmed';
-        case 'Packed': return 'status-packed';
-        case 'Picked Up': return 'status-picked';
-        case 'Complete': return 'status-complete';
-        default: return '';
-      }
-    }
-
-    // ============================================================
-    // BOOKING FORM
-    // ============================================================
-    const guestsSelect = document.getElementById('guestsSelect');
-    const customGuestsWrapper = document.getElementById('customGuestsWrapper');
-    const customGuestsInput = document.getElementById('customGuestsInput');
-
-    guestsSelect.addEventListener('change', function() {
-      if (this.value === 'custom') {
-        customGuestsWrapper.classList.remove('hidden');
-        customGuestsInput.focus();
-      } else {
-        customGuestsWrapper.classList.add('hidden');
-      }
-    });
-
-    document.getElementById('bookingForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const name = form.querySelector('input[type="text"]').value;
-      const phoneInput = form.querySelector('input[type="tel"]');
-      const countryCode = form.querySelector('#countryCode').value;
-      const phone = countryCode + phoneInput.value;
-      const dateInput = form.querySelector('input[type="date"]');
-      const timeInput = form.querySelector('input[type="time"]');
-      let guestsValue = guestsSelect.value;
-      if (guestsSelect.value === 'custom') {
-        const customVal = customGuestsInput.value.trim();
-        guestsValue = customVal ? `${customVal} Guests` : '2 Guests';
-      }
-      const specialRequest = form.querySelector('#bookingSpecialRequests').value || 'None';
-      const additionalRequests = form.querySelector('textarea').value || 'None';
-      const bookingId = 'BK-' + Date.now().toString().slice(-6);
-      const createdAt = new Date().toLocaleString('en-AU', {
-        timeZone: 'Australia/Melbourne',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-      const userEmail = currentUser ? currentUser.email : 'guest@example.com';
-      const userName = currentUser ? (currentUser.displayName || currentUser.email || 'Guest') : name;
-      const uid = currentUser ? currentUser.uid : 'guest';
-
-      const bookingData = {
-        name, phone, date: dateInput.value, time: timeInput.value, guests: guestsValue,
-        specialRequest, additionalRequests, bookingId, guestType: currentUser ? 'Logged In User' : 'Guest',
-        createdAt, userEmail, userName
-      };
-
-      db.collection('bookings').add({
-        uid, name, email: userEmail, phone, date: dateInput.value, time: timeInput.value,
-        guests: guestsValue, specialRequest, additionalRequests, bookingId,
-        branch: currentBranchKey, guestType: currentUser ? 'Logged In User' : 'Guest',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }).then(() => {
-        sendBookingTelegram(bookingData);
-      }).catch((err) => {
-        console.error('Booking error:', err);
-        sendBookingTelegram(bookingData);
-      });
-
-      document.getElementById('bookingSuccess').classList.remove('hidden');
-      setTimeout(() => {
-        document.getElementById('bookingSuccess').classList.add('hidden');
-      }, 5000);
-      form.reset();
-      customGuestsWrapper.classList.add('hidden');
-      guestsSelect.value = '2 Guests';
     });
 
     // ============================================================
@@ -2661,23 +2292,13 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
         icon.classList.add('hidden');
         initial.classList.remove('hidden');
         initial.textContent = displayName.charAt(0).toUpperCase();
-        document.getElementById('drawerAvatar').textContent = displayName.charAt(0).toUpperCase();
-        document.getElementById('drawerName').textContent = displayName;
-        document.getElementById('drawerEmail').textContent = user.email || '';
-
+        updateMobileProfile();
         loadCartFromFirestore();
-        loadUserOrders();
       } else {
         icon.classList.remove('hidden');
         initial.classList.add('hidden');
-        if (ordersUnsubscribe) {
-          ordersUnsubscribe();
-          ordersUnsubscribe = null;
-        }
+        updateMobileProfile();
         loadCartFromLocalStorage();
-        document.getElementById('drawerOrders').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see orders.</p>';
-        document.getElementById('drawerCompletedOrders').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see completed orders.</p>';
-        document.getElementById('drawerBookings').innerHTML = '<p class="text-cream/40 text-sm">Please log in to see bookings.</p>';
       }
     });
 
@@ -2769,6 +2390,79 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
       viewport.addEventListener('touchend', dragEnd);
       viewport.addEventListener('touchcancel', dragEnd);
     })();
+
+    // ============================================================
+    // BOOKING FORM
+    // ============================================================
+    const guestsSelect = document.getElementById('guestsSelect');
+    const customGuestsWrapper = document.getElementById('customGuestsWrapper');
+    const customGuestsInput = document.getElementById('customGuestsInput');
+
+    guestsSelect.addEventListener('change', function() {
+      if (this.value === 'custom') {
+        customGuestsWrapper.classList.remove('hidden');
+        customGuestsInput.focus();
+      } else {
+        customGuestsWrapper.classList.add('hidden');
+      }
+    });
+
+    document.getElementById('bookingForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.querySelector('input[type="text"]').value;
+      const phoneInput = form.querySelector('input[type="tel"]');
+      const countryCode = form.querySelector('#countryCode').value;
+      const phone = countryCode + phoneInput.value;
+      const dateInput = form.querySelector('input[type="date"]');
+      const timeInput = form.querySelector('input[type="time"]');
+      let guestsValue = guestsSelect.value;
+      if (guestsSelect.value === 'custom') {
+        const customVal = customGuestsInput.value.trim();
+        guestsValue = customVal ? `${customVal} Guests` : '2 Guests';
+      }
+      const specialRequest = form.querySelector('#bookingSpecialRequests').value || 'None';
+      const additionalRequests = form.querySelector('textarea').value || 'None';
+      const bookingId = 'BK-' + Date.now().toString().slice(-6);
+      const createdAt = new Date().toLocaleString('en-AU', {
+        timeZone: 'Australia/Melbourne',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      const userEmail = currentUser ? currentUser.email : 'guest@example.com';
+      const userName = currentUser ? (currentUser.displayName || currentUser.email || 'Guest') : name;
+      const uid = currentUser ? currentUser.uid : 'guest';
+
+      const bookingData = {
+        name, phone, date: dateInput.value, time: timeInput.value, guests: guestsValue,
+        specialRequest, additionalRequests, bookingId, guestType: currentUser ? 'Logged In User' : 'Guest',
+        createdAt, userEmail, userName
+      };
+
+      db.collection('bookings').add({
+        uid, name, email: userEmail, phone, date: dateInput.value, time: timeInput.value,
+        guests: guestsValue, specialRequest, additionalRequests, bookingId,
+        branch: currentBranchKey, guestType: currentUser ? 'Logged In User' : 'Guest',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }).then(() => {
+        sendBookingTelegram(bookingData);
+      }).catch((err) => {
+        console.error('Booking error:', err);
+        sendBookingTelegram(bookingData);
+      });
+
+      document.getElementById('bookingSuccess').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('bookingSuccess').classList.add('hidden');
+      }, 5000);
+      form.reset();
+      customGuestsWrapper.classList.add('hidden');
+      guestsSelect.value = '2 Guests';
+    });
 
     // ============================================================
     // INIT
