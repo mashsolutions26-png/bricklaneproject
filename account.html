@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brick Lane - Profile</title>
   <meta name="description" content="Manage your Brick Lane account — profile details, orders and table bookings." />
+    <link rel="icon" type="image/png" sizes="32x32" href="gallery2/logo.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="gallery2/logo.png" />
+  <link rel="apple-touch-icon" href="gallery2/logo.png" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -307,14 +310,24 @@
     /* Favourites styles */
     .fav-item-card {
       background: var(--char2);
-      border-radius: 1rem;
+      border-radius: 0;
       padding: 1rem 1.25rem;
-      border: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+    }
+    .fav-item-card:first-child {
+      border-radius: 1rem 1rem 0 0;
+    }
+    .fav-item-card:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-radius: 0 0 1rem 1rem;
+    }
+    .fav-item-card:only-child {
+      border-radius: 1rem;
     }
     .fav-item-card:hover {
       border-color: rgba(244, 185, 62, 0.2);
@@ -388,6 +401,15 @@
       font-size: 0.8rem;
       opacity: 0.6;
       margin-top: 0.25rem;
+    }
+
+    /* Favourites container - no gap between items */
+    .fav-items-container {
+      display: flex;
+      flex-direction: column;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
     }
   </style>
 </head>
@@ -966,24 +988,28 @@
         return;
       }
 
-      // ⭐ FIXED: Added space-y-4 for more gap between favourite items
-      container.innerHTML = favourites.map(item => `
-        <div class="fav-item-card">
-          <div class="fav-info">
-            <h4>${item.name}</h4>
-            <p>${item.desc || ''}</p>
-          </div>
-          <div class="fav-price">$${(item.price || 0).toFixed(2)}</div>
-          <div class="fav-actions">
-            <button class="fav-order-btn" onclick="window.addFavouriteToCart && window.addFavouriteToCart({name:'${item.name.replace(/'/g, "\\'")}', price:${item.price}, desc:'${(item.desc || '').replace(/'/g, "\\'")}'})">
-              Order
-            </button>
-            <button class="fav-remove-btn" onclick="window.removeFavourite && window.removeFavourite('${item.name.replace(/'/g, "\\'")}')">
-              ✕
-            </button>
-          </div>
+      // ⭐ FIXED: No gap between cards - like the screenshot
+      container.innerHTML = `
+        <div class="fav-items-container">
+          ${favourites.map(item => `
+            <div class="fav-item-card">
+              <div class="fav-info">
+                <h4>${item.name}</h4>
+                <p>${item.desc || ''}</p>
+              </div>
+              <div class="fav-price">$${(item.price || 0).toFixed(2)}</div>
+              <div class="fav-actions">
+                <button class="fav-order-btn" onclick="window.addFavouriteToCart && window.addFavouriteToCart({name:'${item.name.replace(/'/g, "\\'")}', price:${item.price}, desc:'${(item.desc || '').replace(/'/g, "\\'")}'})">
+                  Order
+                </button>
+                <button class="fav-remove-btn" onclick="window.removeFavourite && window.removeFavourite('${item.name.replace(/'/g, "\\'")}')">
+                  ✕
+                </button>
+              </div>
+            </div>
+          `).join('')}
         </div>
-      `).join('');
+      `;
 
       // Add function references to window so inline onclick works
       window.addFavouriteToCart = addFavouriteToCart;
