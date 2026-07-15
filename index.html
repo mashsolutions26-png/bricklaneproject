@@ -53,7 +53,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
-  <!-- Font Awesome (Icons for Footer) -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -145,8 +145,9 @@
     .thin-scroll::-webkit-scrollbar { width: 6px; }
     .thin-scroll::-webkit-scrollbar-thumb { background: rgba(244, 185, 62, 0.35); border-radius: 4px; }
 
+    /* Hero background - now uses lazy load via JS */
     .hero-bg {
-      background-image: url('gallery2/Brick8.webp');
+      background-color: var(--ink);
       background-size: cover;
       background-position: center 30%;
       background-repeat: no-repeat;
@@ -230,7 +231,6 @@
       transform: scale(1.05);
     }
 
-    /* Weekly Special row — grid layout so it reflows cleanly on mobile */
     .special-row {
       display: grid;
       grid-template-columns: 34px 1fr auto;
@@ -526,7 +526,6 @@
       .gallery-btn.next { right: 0.5rem; }
     }
     
-    /* Mobile Account Icon Styling */
     .mobile-account-icon {
       width: 36px;
       height: 36px;
@@ -547,7 +546,6 @@
       box-shadow: 0 0 15px rgba(244, 185, 62, 0.3);
     }
     
-    /* Mobile Location Selector */
     .mobile-location-selector {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -564,9 +562,7 @@
       border-color: rgba(244, 185, 62, 0.3);
     }
 
-    /* ----------------------------------------------------------------------------
-       NEW AUTO SLIDER (restaurant food slider) — integrated into gallery section
-       ---------------------------------------------------------------------------- */
+    /* AUTO SLIDER */
     .auto-slider-section {
       padding: 4vw 0 2vw;
       border-bottom: 1px solid #2a2a2a;
@@ -686,9 +682,7 @@
       }
     }
 
-    /* ============================================
-       NEW FOOTER STYLES (Added)
-       ============================================ */
+    /* NEW FOOTER */
     .minimal-footer {
       background: #1A1A1A;
       color: white;
@@ -709,7 +703,6 @@
       margin-bottom: 60px;
     }
 
-    /* Logo + Coffee Animation */
     .footer-logo {
       display: flex;
       align-items: center;
@@ -768,7 +761,6 @@
       margin-bottom: 20px;
     }
 
-    /* Social Links */
     .social-links {
       display: flex;
       gap: 16px;
@@ -793,7 +785,6 @@
       transform: translateY(-3px);
     }
 
-    /* Footer Headings */
     .footer-heading {
       font-size: 18px;
       font-weight: 600;
@@ -834,7 +825,6 @@
       color: #D4A574;
     }
 
-    /* Footer Bottom */
     .footer-bottom {
       padding-top: 40px;
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -853,7 +843,6 @@
       text-decoration: underline;
     }
 
-    /* Responsive */
     @media (max-width: 992px) {
       .footer-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -866,7 +855,6 @@
       }
     }
 
-    /* Order Status Notification - Success Styles */
     .order-notification-success {
       position: fixed;
       bottom: 30px;
@@ -929,7 +917,6 @@
       }
     }
 
-    /* Auth Modal Styles - clean and centered */
     #authOverlay {
       background: rgba(10, 11, 13, 0.85);
       backdrop-filter: blur(8px);
@@ -1062,7 +1049,6 @@
     #authOverlay .glass-nav .close-btn:hover {
       color: #f4b93e;
     }
-    /* apple btn style */
     .apple-btn {
       background: #000;
       color: #fff;
@@ -1089,10 +1075,6 @@
       transform: none;
     }
 
-    /* ============================================
-       DISCOUNT UI ADDITIONS
-       ============================================ */
-    /* Discount Nav Banner */
     .discount-nav-banner {
       background: linear-gradient(135deg, rgba(200, 16, 46, 0.2), rgba(244, 185, 62, 0.15));
       border: 1px solid rgba(244, 185, 62, 0.3);
@@ -1126,17 +1108,10 @@
       .discount-nav-banner .countdown-tag { font-size: 0.55rem; padding: 0.05rem 0.4rem; }
     }
 
-    /* Global Discount Banner (below nav) - now HIDDEN */
     .global-discount-banner {
       display: none !important;
     }
 
-    /* Flash Deal enhancements - REMOVED */
-    /* #flashDeal entirely removed from HTML */
-
-    /* ============================================
-       DISCOUNT BADGE ON IMAGE BOX (top-right corner of the card image)
-       ============================================ */
     .discount-badge-image {
       position: absolute;
       top: 14px;
@@ -1158,7 +1133,6 @@
       transform: rotate(3deg);
     }
 
-    /* Menu discount indicator */
     #menuDiscountIndicator {
       display: none;
     }
@@ -1166,7 +1140,6 @@
       display: inline-flex;
     }
 
-    /* ---- NEW: TWO‑COLUMN DISCOUNT SECTION (image + details) ---- */
     .discount-special-section {
       padding: 4rem 1.5rem;
       max-width: 1200px;
@@ -1313,9 +1286,6 @@
       }
     }
 
-    /* ============================================
-       FULL MENU BUTTON STYLES
-       ============================================ */
     .full-menu-btn {
       display: inline-flex;
       align-items: center;
@@ -1358,7 +1328,6 @@
       }
     }
 
-    /* Menu page specific styles */
     .menu-page .menu-item-card {
       background: #1a1c22;
       border-radius: 1.5rem;
@@ -1404,9 +1373,6 @@
       color: #f4b93e;
     }
 
-    /* ============================================
-       FAVOURITE BUTTON STYLES
-       ============================================ */
     .favourite-btn {
       background: none;
       border: none;
@@ -1447,7 +1413,6 @@
       flex-wrap: wrap;
     }
 
-    /* "Continue with Google" - coming soon style (matches Apple) */
     .google-btn.coming-soon {
       opacity: 0.6;
       cursor: not-allowed;
@@ -1458,16 +1423,12 @@
       transform: none !important;
     }
 
-    /* ============================================
-       NEW: CART BUTTON FLOATING ON MOBILE
-       (exactly like the screenshot: detached from nav, bottom-right of hero-ish)
-       ============================================ */
     .mobile-cart-float {
       position: fixed;
       bottom: 24px;
       right: 24px;
       z-index: 60;
-      display: none; /* hidden by default, shown on mobile */
+      display: none;
       width: 60px;
       height: 60px;
       border-radius: 9999px;
@@ -1508,11 +1469,9 @@
     }
 
     @media (max-width: 1023px) {
-      /* on tablets and phones, show floating cart, hide the nav cart button */
       .mobile-cart-float {
         display: flex;
       }
-      /* hide the cart button inside the nav on mobile/tablet */
       #cartTrigger {
         display: none !important;
       }
@@ -1534,6 +1493,21 @@
         right: -2px;
       }
     }
+
+    /* Lazy load image blur placeholder (optional, but improves UX) */
+    img.lazy-load {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    img.lazy-load.loaded {
+      opacity: 1;
+    }
+    .hero-bg.lazy-bg {
+      background-image: none !important;
+    }
+    .hero-bg.loaded {
+      background-image: url('gallery2/Brick8.webp');
+    }
   </style>
 </head>
 
@@ -1546,7 +1520,7 @@
     <nav class="glass-nav rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
       <!-- Logo -->
       <a href="index.html" class="flex items-center gap-2 shrink-0">
-        <img src="gallery2/logo.png" alt="Brick Lane Logo" class="h-8 w-auto sm:h-10 object-contain rounded-md bg-transparent">
+        <img src="gallery2/logo.png" alt="Brick Lane Logo" class="h-8 w-auto sm:h-10 object-contain rounded-md bg-transparent" loading="lazy">
       </a>
 
       <div class="hidden lg:flex items-center gap-8 font-medium text-sm text-cream/80">
@@ -1554,7 +1528,7 @@
         <a href="index.html#menu" class="nav-link">Menu</a>
         <a href="index.html#book" class="nav-link">Book a Table</a>
         <a href="index.html#gallery" class="nav-link">Gallery</a>
-        <!-- Discount Nav Banner (visible when active) -->
+        <!-- Discount Nav Banner -->
         <div id="discountNavBanner" class="discount-nav-banner" style="display:none;">
           <span>🔥</span>
           <span id="discountNavLabel">Limited Offer</span>
@@ -1564,7 +1538,7 @@
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Cart (hidden on mobile/tablet via CSS) -->
+        <!-- Cart -->
         <button id="cartTrigger" class="relative w-9 h-9 flex items-center justify-center rounded-full bg-char/70 border border-gold/20 hover:border-gold/50 transition-colors" aria-label="View cart">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
           <span id="cartCount" class="absolute -top-1.5 -right-1.5 bg-crimson text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
@@ -1594,7 +1568,6 @@
         <a href="index.html#book" class="nav-link">Book a Table</a>
         <a href="index.html#gallery" class="nav-link">Gallery</a>
         <a href="menu.html" class="nav-link text-gold">Full Menu →</a>
-        <!-- Mobile discount banner -->
         <div id="discountNavBannerMobile" class="discount-nav-banner" style="display:none; align-self:flex-start;">
           <span>🔥</span>
           <span id="discountNavLabelMobile">Limited Offer</span>
@@ -1619,7 +1592,7 @@
   </header>
 
   <!-- =========================================================
-  FLOATING CART BUTTON — MOBILE ONLY (like the screenshot)
+  FLOATING CART BUTTON — MOBILE ONLY
   ========================================================= -->
   <button id="mobileCartFloat" class="mobile-cart-float" aria-label="Open cart">
     🛒
@@ -1643,7 +1616,7 @@
   <!-- =========================================================
   HERO
   ========================================================= -->
-  <section id="home" class="relative min-h-screen flex items-center overflow-hidden hero-bg">
+  <section id="home" class="relative min-h-screen flex items-center overflow-hidden hero-bg lazy-bg" data-bg="gallery2/Brick8.webp">
     <div class="absolute inset-0 hero-overlay"></div>
     <div class="absolute inset-0 brick-texture opacity-20"></div>
 
@@ -1705,8 +1678,8 @@
         <p class="text-cream/70 leading-relaxed">We roast in small batches, bake daily, and keep the menu tight so everything on it is done properly. Come early, the good tables go fast.</p>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <img src="gallery2/Brick13.webp" class="rounded-2xl object-cover h-64 w-full" alt="cafe interior">
-        <img src="gallery2/Brick15.webp" class="rounded-2xl object-cover h-64 w-full mt-8" alt="coffee">
+        <img src="gallery2/Brick13.webp" class="rounded-2xl object-cover h-64 w-full lazy-load" alt="cafe interior" loading="lazy">
+        <img src="gallery2/Brick15.webp" class="rounded-2xl object-cover h-64 w-full mt-8 lazy-load" alt="coffee" loading="lazy">
       </div>
     </div>
   </section>
@@ -1726,10 +1699,10 @@
       </div>
 
       <div class="grid lg:grid-cols-[1fr_1.3fr] gap-8 items-start">
-        <!-- FEATURED CARD (today's special) -->
+        <!-- FEATURED CARD -->
         <div class="bg-char rounded-3xl border border-crimson/20 p-6 sm:p-7">
           <div class="relative">
-            <img id="specialImg" src="" alt="" class="rounded-2xl object-cover h-64 w-full fade-el">
+            <img id="specialImg" src="" alt="" class="rounded-2xl object-cover h-64 w-full fade-el lazy-load" loading="lazy">
             <span class="absolute top-4 left-4 bg-crimson text-white text-[11px] font-bold tracking-wide px-3 py-1.5 rounded-full">TODAY'S FEATURE</span>
           </div>
           <div class="mt-6">
@@ -1746,29 +1719,26 @@
           </div>
         </div>
 
-        <!-- WEEKLY LIST (Mon → Sun, today highlighted) -->
+        <!-- WEEKLY LIST -->
         <div id="weeklySpecialsList" class="bg-char rounded-3xl border border-brickline p-3 sm:p-4">
-          <!-- rows injected by JS, see renderDailySpecial() -->
+          <!-- injected by JS -->
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================
-  DISCOUNT SPECIAL — TWO COLUMN (image + details) 
+  DISCOUNT SPECIAL — TWO COLUMN
   ========================================================= -->
   <section id="discountSpecial" class="discount-special-section border-t border-brickline">
     <div class="discount-special-grid" id="discountSpecialGrid">
-      <!-- LEFT: IMAGE -->
       <div class="image-side">
-        <img id="discountSpecialImg" src="gallery2/Brick8.webp" alt="discount dish" class="rounded-[2rem]">
+        <img id="discountSpecialImg" src="gallery2/Brick8.webp" alt="discount dish" class="rounded-[2rem] lazy-load" loading="lazy">
       </div>
-      <!-- RIGHT: DETAILS -->
       <div class="details-side">
         <span class="badge-tag">🔥 Limited Offer</span>
         <h3 class="dish-name" id="discountSpecialName">Quesadilla with Tomatoes</h3>
         <p class="dish-desc" id="discountSpecialDesc">Grilled flour tortilla filled with melted cheese, fresh tomatoes, and a hint of chipotle. Served with salsa verde.</p>
-        
         <div class="discount-meta">
           <div class="meta-item">
             <strong>Discount</strong> <span class="value" id="discountSpecialPercent">20%</span>
@@ -1777,7 +1747,6 @@
             <strong>Ends</strong> <span class="value" id="discountSpecialEnds">2025-06-20 23:59</span>
           </div>
         </div>
-
         <div class="countdown-block">
           <span>⏳</span> 
           <span id="discountSpecialCountdown">--:--:--</span>
@@ -1787,20 +1756,17 @@
   </section>
 
   <!-- =========================================================
-  MENU (Landing Page - 6 items + Full Menu button)
+  MENU (Landing Page - 6 items)
   ========================================================= -->
   <section id="menu" class="py-24 px-6 sm:px-10 border-t border-brickline brick-texture">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-14">
         <span class="text-xs tracking-[0.25em] uppercase text-gold/80">The Menu</span>
         <h2 class="font-display text-4xl sm:text-5xl mt-3">Most Selling Menu Items</h2>
-        <!-- Discount indicator on menu -->
         <div id="menuDiscountIndicator" class="mt-3 inline-flex items-center gap-2 bg-crimson/10 border border-crimson/30 rounded-full px-4 py-1.5 text-sm text-crimson" style="display:none;">
           <span>🔥</span>
           <span id="menuDiscountText">Limited time discount!</span>
         </div>
-        
-        <!-- FULL MENU BUTTON - with arrow -->
         <div class="mt-8">
           <a href="menu.html" class="full-menu-btn">
             View Full Menu
@@ -1912,53 +1878,48 @@
   GALLERY (AUTO SLIDER ONLY)
   ========================================================= -->
   <section id="gallery" class="py-24 border-t border-brickline overflow-hidden">
-    <!-- ===== AUTO SLIDER (food/restaurant) ===== -->
     <div class="auto-slider-section mt-16">
       <div class="auto-slider-head">
       </div>
 
       <div class="viewport" id="autoSliderViewport">
         <div class="track" id="autoSliderTrack">
-          <!-- slides: images from gallery2 + loremflickr fallback -->
-          <div class="slide"><img src="gallery2/Brick8.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick9.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick10.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick11.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick12.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick13.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B10.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick15.webp" alt="dish"></div>
-          <!-- fallback extras to keep loop full -->
-          <div class="slide"><img src="gallery2/B2.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B3.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B5.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B4.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B6.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B7.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B8.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/B9.webp" alt="dish"></div>
-          <!-- duplicate first few to make seamless loop -->
-          <div class="slide"><img src="gallery2/Brick8.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick9.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick10.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick11.webp" alt="dish"></div>
-          <div class="slide"><img src="gallery2/Brick12.webp" alt="dish"></div>
+          <!-- All images with loading="lazy" -->
+          <div class="slide"><img src="gallery2/Brick8.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick9.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick10.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick11.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick12.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick13.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B10.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick15.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B2.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B3.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B5.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B4.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B6.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B7.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B8.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/B9.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick8.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick9.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick10.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick11.webp" alt="dish" loading="lazy"></div>
+          <div class="slide"><img src="gallery2/Brick12.webp" alt="dish" loading="lazy"></div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================
-  FOOTER - BRICK LANE (NEW)
+  FOOTER - BRICK LANE
   ========================================================= -->
   <footer class="minimal-footer">
     <div class="footer-container">
       <div class="footer-grid">
 
-        <!-- Column 1: Logo + BRICK LANE -->
         <div>
           <div class="footer-logo">
-            <!-- Coffee Animation -->
             <div class="coffee-animation">
               <i class="fas fa-mug-hot coffee-icon"></i>
               <div class="coffee-steam steam-1"></div>
@@ -1978,7 +1939,6 @@
           </div>
         </div>
 
-        <!-- Column 2: Explore -->
         <div>
           <h4 class="footer-heading">Explore</h4>
           <ul class="footer-links">
@@ -1990,7 +1950,6 @@
           </ul>
         </div>
 
-        <!-- Column 3: Legal -->
         <div>
           <h4 class="footer-heading">Legal</h4>
           <ul class="footer-links">
@@ -2000,7 +1959,6 @@
           </ul>
         </div>
 
-        <!-- Column 4: Follow + Contact Info -->
         <div>
           <h4 class="footer-heading">Follow</h4>
           <ul class="footer-links" style="list-style: none; color: #999;">
@@ -2014,7 +1972,6 @@
 
       </div>
 
-      <!-- Footer Bottom -->
       <div class="footer-bottom">
         <p>
           &copy; <span id="year"></span> Brick Lane. All rights reserved. |
@@ -2081,7 +2038,7 @@
   </aside>
 
   <!-- =========================================================
-  AUTH MODAL - Clean Sign In / Sign Up modal
+  AUTH MODAL
   ========================================================= -->
   <div id="authOverlay" class="hidden fixed inset-0 z-[1000] flex items-center justify-center p-4">
     <div class="glass-nav rounded-3xl p-8 relative max-h-[90vh] overflow-y-auto thin-scroll">
@@ -2126,14 +2083,12 @@
         <div class="divider-line"></div>
       </div>
 
-      <!-- GOOGLE BUTTON - coming soon -->
       <button id="googleAuthBtn" class="google-btn coming-soon" disabled>
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4c-7.4 0-13.8 4.2-17 10.4z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.5C29.5 34.7 26.9 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.6 5.1C9.1 39.6 16 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.5 5.5C40.5 36.6 44 30.8 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
         Continue with Google
         <span class="text-xs opacity-60 ml-1">(coming soon)</span>
       </button>
 
-      <!-- APPLE BUTTON (Coming Soon) -->
       <button id="appleAuthBtn" class="apple-btn mt-3" disabled>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         Sign in with Apple
@@ -2146,6 +2101,77 @@
   JAVASCRIPT
   ========================================================= -->
   <script>
+    // ============================================================
+    // LAZY LOAD: Intersection Observer + Hero Background
+    // ============================================================
+    (function lazyLoadImages() {
+      // 1) Hero background
+      const hero = document.querySelector('.hero-bg');
+      if (hero && hero.dataset.bg) {
+        const img = new Image();
+        img.src = hero.dataset.bg;
+        img.onload = function() {
+          hero.style.backgroundImage = `url('${hero.dataset.bg}')`;
+          hero.classList.remove('lazy-bg');
+          hero.classList.add('loaded');
+        };
+        // fallback: if image already cached, it may not fire onload
+        if (img.complete) {
+          hero.style.backgroundImage = `url('${hero.dataset.bg}')`;
+          hero.classList.remove('lazy-bg');
+          hero.classList.add('loaded');
+        }
+      }
+
+      // 2) All images with .lazy-load class
+      const lazyImages = document.querySelectorAll('img.lazy-load');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              // If src is empty or placeholder, set it from data-src or keep existing
+              // But we already have src set, we just need to mark as loaded
+              img.classList.add('loaded');
+              observer.unobserve(img);
+            }
+          });
+        }, { rootMargin: '200px' }); // start loading 200px before visible
+
+        lazyImages.forEach(img => {
+          // If image is already visible (e.g. above fold), load immediately
+          const rect = img.getBoundingClientRect();
+          const winHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (rect.top < winHeight + 200) {
+            img.classList.add('loaded');
+          } else {
+            observer.observe(img);
+          }
+        });
+
+        // Also observe images added dynamically later (e.g. menu items)
+        // We'll use a MutationObserver on the menu grid
+        const menuGrid = document.getElementById('menuGrid');
+        if (menuGrid) {
+          const mutationObserver = new MutationObserver(() => {
+            document.querySelectorAll('img.lazy-load:not(.loaded)').forEach(img => {
+              const rect = img.getBoundingClientRect();
+              const winHeight = window.innerHeight || document.documentElement.clientHeight;
+              if (rect.top < winHeight + 200) {
+                img.classList.add('loaded');
+              } else {
+                observer.observe(img);
+              }
+            });
+          });
+          mutationObserver.observe(menuGrid, { childList: true, subtree: true });
+        }
+      } else {
+        // Fallback: load all images immediately
+        lazyImages.forEach(img => img.classList.add('loaded'));
+      }
+    })();
+
     // ============================================================
     // FIREBASE INITIALISATION
     // ============================================================
@@ -2564,21 +2590,6 @@
 
     // ============================================================
     // DAILY SPECIAL
-    // ------------------------------------------------------------
-    // Photos are set here in code ONLY (per weekday) — they are not
-    // editable from the admin panel.
-    // Name / description / price below are DEFAULT fallback values.
-    // The live values are pulled from the Firestore collection
-    // 'dailySpecials' (one document per weekday, doc id = weekday
-    // name e.g. "Monday"), so they can be edited from the admin
-    // panel without touching this code. If a weekday has no
-    // Firestore document yet (or Firestore hasn't loaded), these
-    // defaults are shown instead.
-    //
-    // Admin panel doc shape (collection: dailySpecials, doc id = weekday):
-    //   { name: 'Monday Miso Mushroom Toast',
-    //     desc: 'Charred sourdough, miso-glazed mushrooms, soft egg, chilli oil.',
-    //     price: '$17' }
     // ============================================================
     const DAILY_SPECIALS = {
       Sunday: { name: 'Sunday Brick Stack', desc: 'Triple-stacked buttermilk pancakes, burnt-butter maple, seasonal fruit.',
@@ -2597,19 +2608,11 @@
         price: '$24', img: 'https://images.unsplash.com/photo-1533920379810-6bedac9e31f5?q=80&w=800&auto=format&fit=crop' },
     };
 
-    // Live overrides loaded from Firestore's 'dailySpecials' collection.
-    // Keyed by weekday name; each value is { name, desc, price } or undefined.
     let dailySpecialOverrides = {};
     let dailySpecialsUnsubscribe = null;
-
-    // Display order for the weekly list (Mon → Sun), independent of
-    // DAY_LABELS which is indexed off Date.getDay() (Sun-first).
     const WEEK_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const SHORT_DAY = { Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu', Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun' };
 
-    // Resolves the effective { name, desc, price, img } for a given
-    // weekday: admin/Firestore override for name/desc/price when present,
-    // code defaults otherwise. Image always comes from code.
     function getSpecialForDay(weekday) {
       const defaults = DAILY_SPECIALS[weekday];
       const override = dailySpecialOverrides[weekday] || {};
@@ -2626,7 +2629,6 @@
       const weekday = DAY_LABELS[now.date.getDay()];
       const today = getSpecialForDay(weekday);
 
-      // --- Featured card (today) ---
       document.getElementById('specialName').textContent = today.name;
       document.getElementById('specialDesc').textContent = today.desc;
       document.getElementById('specialPrice').textContent = today.price;
@@ -2639,7 +2641,6 @@
         addBtn.onclick = () => addToCart({ name: today.name, desc: today.desc, price: numericPrice });
       }
 
-      // --- Full week list (Mon → Sun), today highlighted ---
       const listEl = document.getElementById('weeklySpecialsList');
       if (listEl) {
         listEl.innerHTML = WEEK_ORDER.map((day) => {
@@ -2660,9 +2661,6 @@
       }
     }
 
-    // Real-time listener: whenever the admin panel edits a day's
-    // special in Firestore, this section updates automatically
-    // without a page reload.
     function listenDailySpecials() {
       if (dailySpecialsUnsubscribe) dailySpecialsUnsubscribe();
       dailySpecialsUnsubscribe = db.collection('dailySpecials').onSnapshot((snap) => {
@@ -2809,7 +2807,7 @@
               <div id="carousel-${itemIndex}" class="flex overflow-x-auto no-scrollbar snap-x-cards">
                 ${item.images.map(src => `
                   <div class="snap-card shrink-0 w-full h-56">
-                    <img src="${src}" class="w-full h-full object-cover" alt="${item.name}">
+                    <img src="${src}" class="w-full h-full object-cover lazy-load" alt="${item.name}" loading="lazy">
                   </div>
                 `).join('')}
               </div>
@@ -2837,6 +2835,15 @@
             </div>
           `;
         grid.appendChild(card);
+      });
+
+      // Re-run lazy load observer for new images
+      document.querySelectorAll('img.lazy-load:not(.loaded)').forEach(img => {
+        const rect = img.getBoundingClientRect();
+        const winHeight = window.innerHeight || document.documentElement.clientHeight;
+        if (rect.top < winHeight + 200) {
+          img.classList.add('loaded');
+        }
       });
 
       document.querySelectorAll('.carousel-arrow').forEach(btn => {
@@ -2928,7 +2935,6 @@
       const cartCount = document.getElementById('cartCount');
       const pickupBanner = document.getElementById('pickupBanner');
       
-      // Mobile floating badge
       const mobileBadge = document.getElementById('mobileCartBadge');
 
       if (cart.length === 0) {
@@ -2972,7 +2978,6 @@
       cartCount.textContent = totalItems;
       cartCount.classList.remove('hidden');
       
-      // Update mobile badge
       mobileBadge.textContent = totalItems;
       mobileBadge.classList.remove('hidden');
     }
@@ -3036,7 +3041,7 @@
     }
 
     // ============================================================
-    // ORDER NOTIFICATION (CUSTOM SLIDE DOWN NOTIFICATION)
+    // ORDER NOTIFICATION
     // ============================================================
     function showOrderNotification(title, message, icon = '✅', isSuccess = true) {
       const existing = document.querySelector('.order-notification-success');
@@ -3203,7 +3208,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
     document.getElementById('checkoutBtn').addEventListener('click', placeOrder);
 
-    // MOBILE FLOATING CART BUTTON
     document.getElementById('mobileCartFloat').addEventListener('click', openCart);
 
     // ============================================================
@@ -3325,15 +3329,12 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
-    // GOOGLE AUTH - disabled (coming soon)
+    // GOOGLE AUTH - disabled
     // ============================================================
     document.getElementById('googleAuthBtn').addEventListener('click', () => {
       showOrderNotification('Coming Soon', 'Google Sign-In will be available in a future update.', '🔜', false);
     });
 
-    // ============================================================
-    // APPLE BUTTON "Coming Soon"
-    // ============================================================
     document.getElementById('appleAuthBtn').addEventListener('click', function(e) {
       e.preventDefault();
       showOrderNotification('Coming Soon', 'Apple Sign-In will be available in a future update.', '🍎', false);
@@ -3590,8 +3591,8 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
 
     setInterval(renderStatus, 1000);
     
-    console.log('✅ Brick Lane site initialized with floating cart button on mobile!');
-    console.log('✅ Google Sign-In is now "coming soon" (disabled).');
+    console.log('✅ Brick Lane site initialized with LAZY LOADING for all images!');
+    console.log('✅ Images load only when scrolled to.');
   </script>
 </body>
 </html>
