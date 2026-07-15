@@ -230,6 +230,29 @@
       transform: scale(1.05);
     }
 
+    /* Weekly Special row — grid layout so it reflows cleanly on mobile */
+    .special-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      grid-template-areas: "day content price";
+      align-items: center;
+      column-gap: 0.75rem;
+      row-gap: 0.35rem;
+    }
+    .special-row .special-day     { grid-area: day; }
+    .special-row .special-content { grid-area: content; min-width: 0; }
+    .special-row .special-price   { grid-area: price; }
+
+    @media (max-width: 639px) {
+      .special-row {
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+          "day price"
+          "content content";
+      }
+      .special-row .special-price { justify-self: end; }
+    }
+
     .booking-extra-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1111,19 +1134,28 @@
     /* Flash Deal enhancements - REMOVED */
     /* #flashDeal entirely removed from HTML */
 
-    /* Menu discount badge */
-    .menu-discount-badge {
-      font-size: 0.65rem;
-      background: rgba(200, 16, 46, 0.2);
-      color: #c8102e;
-      border: 1px solid rgba(200, 16, 46, 0.3);
+    /* ============================================
+       DISCOUNT BADGE ON IMAGE BOX (top-right corner of the card image)
+       ============================================ */
+    .discount-badge-image {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: linear-gradient(135deg, #e21e3c, #a10d24);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 0.4rem 0.9rem;
       border-radius: 9999px;
-      padding: 0.1rem 0.6rem;
-      margin-left: 0.5rem;
-      display: inline-block;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      z-index: 5;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 6px 16px rgba(200, 16, 46, 0.5), 0 0 0 1px rgba(255,255,255,0.12) inset;
+      border: 1px solid rgba(255,255,255,0.2);
+      pointer-events: none;
+      transform: rotate(3deg);
     }
 
     /* Menu discount indicator */
@@ -1415,26 +1447,6 @@
       flex-wrap: wrap;
     }
 
-    /* ============================================
-       DISCOUNT BADGE ON IMAGE BOX (top-right corner of the card image)
-       ============================================ */
-    .discount-badge-image {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(200, 16, 46, 0.9);
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      z-index: 5;
-      letter-spacing: 0.04em;
-      box-shadow: 0 4px 12px rgba(200, 16, 46, 0.4);
-      border: 1px solid rgba(255,255,255,0.15);
-      pointer-events: none;
-    }
-
     /* "Continue with Google" - coming soon style (matches Apple) */
     .google-btn.coming-soon {
       opacity: 0.6;
@@ -1700,16 +1712,44 @@
   </section>
 
   <!-- =========================================================
-  DAILY SPECIAL
+  DAILY SPECIAL — WEEKLY LUNCH SPECIALS
   ========================================================= -->
-  <section class="py-16 px-6 sm:px-10 border-t border-brickline">
-    <div class="max-w-6xl mx-auto bg-char rounded-3xl border border-crimson/20 p-8 sm:p-10 grid md:grid-cols-[1fr_1.3fr] gap-8 items-center">
-      <img id="specialImg" src="" alt="" class="rounded-2xl object-cover h-56 w-full fade-el">
-      <div>
-        <span class="text-xs tracking-[0.25em] uppercase text-crimson">Today's Special · <span id="specialDay"></span></span>
-        <h3 id="specialName" class="font-display text-3xl sm:text-4xl mt-2 mb-3 fade-el">—</h3>
-        <p id="specialDesc" class="text-cream/70 mb-4 fade-el">—</p>
-        <span id="specialPrice" class="font-mono text-2xl text-gold">—</span>
+  <section id="dailySpecial" class="py-24 px-6 sm:px-10 border-t border-brickline">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-10">
+        <span class="text-xs tracking-[0.25em] uppercase text-gold/80">Every Day · Limited-Time Lunch Deals</span>
+        <h2 class="font-display text-4xl sm:text-5xl mt-3 leading-tight">
+          <span class="text-cream">Weekly Lunch</span><br>
+          <span class="text-crimson">Specials</span>
+        </h2>
+        <p class="text-cream/60 mt-4 max-w-xl">A different deal every day of the week — because lunch break shouldn't break the bank.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-[1fr_1.3fr] gap-8 items-start">
+        <!-- FEATURED CARD (today's special) -->
+        <div class="bg-char rounded-3xl border border-crimson/20 p-6 sm:p-7">
+          <div class="relative">
+            <img id="specialImg" src="" alt="" class="rounded-2xl object-cover h-64 w-full fade-el">
+            <span class="absolute top-4 left-4 bg-crimson text-white text-[11px] font-bold tracking-wide px-3 py-1.5 rounded-full">TODAY'S FEATURE</span>
+          </div>
+          <div class="mt-6">
+            <h3 id="specialName" class="font-display text-2xl sm:text-3xl mb-2 fade-el">—</h3>
+            <p id="specialDesc" class="text-cream/60 text-sm mb-5 fade-el">—</p>
+            <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+              <span id="specialPrice" class="font-mono text-3xl text-gold font-bold">—</span>
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-gold border border-gold/40 rounded-full px-3 py-1.5 shrink-0">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+                TODAY ONLY
+              </span>
+            </div>
+            <button id="specialAddBtn" class="w-full bg-crimson text-white font-bold py-3.5 rounded-full hover:brightness-110 transition shadow-lg shadow-crimson/20">Add to Order</button>
+          </div>
+        </div>
+
+        <!-- WEEKLY LIST (Mon → Sun, today highlighted) -->
+        <div id="weeklySpecialsList" class="bg-char rounded-3xl border border-brickline p-3 sm:p-4">
+          <!-- rows injected by JS, see renderDailySpecial() -->
+        </div>
       </div>
     </div>
   </section>
@@ -2369,14 +2409,6 @@
             if (!isNaN(originalPrice)) {
               const discounted = originalPrice * (1 - discountPct / 100);
               
-              if (!discountBadge) {
-                discountBadge = document.createElement('span');
-                discountBadge.className = 'menu-discount-badge';
-                priceEl.parentNode.insertBefore(discountBadge, priceEl.nextSibling);
-              }
-              discountBadge.textContent = `🔥 ${discountPct}% OFF`;
-              discountBadge.style.display = 'inline-block';
-              
               priceEl.textContent = `$${discounted.toFixed(2)}`;
               priceEl.style.color = '#f4b93e';
 
@@ -2386,11 +2418,10 @@
                 if (!imgBadge) {
                   imgBadge = document.createElement('div');
                   imgBadge.className = 'discount-badge-image';
-                  imageContainer.style.position = 'relative';
                   imageContainer.appendChild(imgBadge);
                 }
-                imgBadge.textContent = `🔥 ${discountPct}% OFF`;
-                imgBadge.style.display = 'block';
+                imgBadge.innerHTML = `<span>🔥</span><span>${discountPct}% OFF</span>`;
+                imgBadge.style.display = 'flex';
               }
             }
           }
@@ -2533,6 +2564,21 @@
 
     // ============================================================
     // DAILY SPECIAL
+    // ------------------------------------------------------------
+    // Photos are set here in code ONLY (per weekday) — they are not
+    // editable from the admin panel.
+    // Name / description / price below are DEFAULT fallback values.
+    // The live values are pulled from the Firestore collection
+    // 'dailySpecials' (one document per weekday, doc id = weekday
+    // name e.g. "Monday"), so they can be edited from the admin
+    // panel without touching this code. If a weekday has no
+    // Firestore document yet (or Firestore hasn't loaded), these
+    // defaults are shown instead.
+    //
+    // Admin panel doc shape (collection: dailySpecials, doc id = weekday):
+    //   { name: 'Monday Miso Mushroom Toast',
+    //     desc: 'Charred sourdough, miso-glazed mushrooms, soft egg, chilli oil.',
+    //     price: '$17' }
     // ============================================================
     const DAILY_SPECIALS = {
       Sunday: { name: 'Sunday Brick Stack', desc: 'Triple-stacked buttermilk pancakes, burnt-butter maple, seasonal fruit.',
@@ -2551,15 +2597,84 @@
         price: '$24', img: 'https://images.unsplash.com/photo-1533920379810-6bedac9e31f5?q=80&w=800&auto=format&fit=crop' },
     };
 
+    // Live overrides loaded from Firestore's 'dailySpecials' collection.
+    // Keyed by weekday name; each value is { name, desc, price } or undefined.
+    let dailySpecialOverrides = {};
+    let dailySpecialsUnsubscribe = null;
+
+    // Display order for the weekly list (Mon → Sun), independent of
+    // DAY_LABELS which is indexed off Date.getDay() (Sun-first).
+    const WEEK_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const SHORT_DAY = { Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu', Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun' };
+
+    // Resolves the effective { name, desc, price, img } for a given
+    // weekday: admin/Firestore override for name/desc/price when present,
+    // code defaults otherwise. Image always comes from code.
+    function getSpecialForDay(weekday) {
+      const defaults = DAILY_SPECIALS[weekday];
+      const override = dailySpecialOverrides[weekday] || {};
+      return {
+        name: override.name || defaults.name,
+        desc: override.desc || defaults.desc,
+        price: override.price || defaults.price,
+        img: defaults.img,
+      };
+    }
+
     function renderDailySpecial() {
       const now = getMelbourneNow();
       const weekday = DAY_LABELS[now.date.getDay()];
-      const special = DAILY_SPECIALS[weekday];
-      document.getElementById('specialDay').textContent = weekday;
-      document.getElementById('specialName').textContent = special.name;
-      document.getElementById('specialDesc').textContent = special.desc;
-      document.getElementById('specialPrice').textContent = special.price;
-      document.getElementById('specialImg').src = special.img;
+      const today = getSpecialForDay(weekday);
+
+      // --- Featured card (today) ---
+      document.getElementById('specialName').textContent = today.name;
+      document.getElementById('specialDesc').textContent = today.desc;
+      document.getElementById('specialPrice').textContent = today.price;
+      document.getElementById('specialImg').src = today.img;
+      document.getElementById('specialImg').alt = today.name;
+
+      const addBtn = document.getElementById('specialAddBtn');
+      if (addBtn) {
+        const numericPrice = parseFloat(String(today.price).replace(/[^0-9.]/g, '')) || 0;
+        addBtn.onclick = () => addToCart({ name: today.name, desc: today.desc, price: numericPrice });
+      }
+
+      // --- Full week list (Mon → Sun), today highlighted ---
+      const listEl = document.getElementById('weeklySpecialsList');
+      if (listEl) {
+        listEl.innerHTML = WEEK_ORDER.map((day) => {
+          const item = getSpecialForDay(day);
+          const isToday = day === weekday;
+          return `
+            <div class="special-row px-3 sm:px-4 py-4 ${isToday ? 'bg-crimson/10 border border-crimson/30 rounded-2xl' : 'border-b border-brickline/60 last:border-b-0'}">
+              <span class="special-day text-[11px] font-bold uppercase ${isToday ? 'text-gold' : 'text-crimson/70'}">${SHORT_DAY[day]}</span>
+              <div class="special-content flex items-baseline gap-x-2 gap-y-0.5 flex-wrap">
+                <span class="font-semibold text-cream">${item.name}</span>
+                ${isToday ? '<span class="text-[10px] font-bold text-gold uppercase tracking-wide">· Today</span>' : ''}
+                <span class="text-cream/50 text-sm sm:truncate">${item.desc}</span>
+              </div>
+              <span class="special-price font-mono text-gold font-bold">${item.price}</span>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Real-time listener: whenever the admin panel edits a day's
+    // special in Firestore, this section updates automatically
+    // without a page reload.
+    function listenDailySpecials() {
+      if (dailySpecialsUnsubscribe) dailySpecialsUnsubscribe();
+      dailySpecialsUnsubscribe = db.collection('dailySpecials').onSnapshot((snap) => {
+        const updated = {};
+        snap.forEach((doc) => {
+          updated[doc.id] = doc.data();
+        });
+        dailySpecialOverrides = updated;
+        renderDailySpecial();
+      }, (err) => {
+        console.error('❌ Daily special listener error:', err);
+      });
     }
 
     // ============================================================
@@ -3469,6 +3584,9 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
 
     console.log('🔄 Starting discount listener...');
     listenDiscounts();
+
+    console.log('🔄 Starting daily special listener...');
+    listenDailySpecials();
 
     setInterval(renderStatus, 1000);
     
