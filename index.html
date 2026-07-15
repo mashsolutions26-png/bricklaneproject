@@ -145,7 +145,6 @@
     .thin-scroll::-webkit-scrollbar { width: 6px; }
     .thin-scroll::-webkit-scrollbar-thumb { background: rgba(244, 185, 62, 0.35); border-radius: 4px; }
 
-    /* Hero background - now uses lazy load via JS */
     .hero-bg {
       background-color: var(--ink);
       background-size: cover;
@@ -1494,7 +1493,6 @@
       }
     }
 
-    /* Lazy load image blur placeholder (optional, but improves UX) */
     img.lazy-load {
       opacity: 0;
       transition: opacity 0.5s ease;
@@ -1509,7 +1507,6 @@
       background-image: url('gallery2/Brick8.webp');
     }
 
-    /* Booking validation styles */
     .booking-error {
       background: rgba(200, 16, 46, 0.12);
       border: 1px solid rgba(200, 16, 46, 0.25);
@@ -1958,8 +1955,8 @@
             A laneway café slinging honest breakfasts and slow-drip coffee from a hidden corner of the CBD. No pretense — just brick walls, good light, and a kitchen that opens early.
           </p>
           <div class="social-links">
-            <a href="#" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/bricklanemelbourne/" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/bricklane_melbourne/?hl=en" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
             <a href="#" target="_blank" class="social-link"><i class="fab fa-pinterest"></i></a>
             <a href="#" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
           </div>
@@ -1988,11 +1985,11 @@
         <div>
           <h4 class="footer-heading">Follow</h4>
           <ul class="footer-links" style="list-style: none; color: #999;">
-            <li><a href="#" class="footer-link-btn">Instagram</a></li>
-            <li><a href="#" class="footer-link-btn">Facebook</a></li>
+            <li><a href="https://www.instagram.com/bricklane_melbourne/?hl=en" class="footer-link-btn">Instagram</a></li>
+            <li><a href="https://www.facebook.com/bricklanemelbourne/" class="footer-link-btn">Facebook</a></li>
             <li><i class="fas fa-map-marker-alt"></i> 33 Guildford Ln, Melbourne</li>
-            <li><i class="fas fa-phone"></i> +61 3 7023 9333</li>
-            <li><i class="fas fa-envelope"></i> hello@bricklane.com</li>
+            <li><i class="fas fa-phone"></i> +61 3 9642 2203</li>
+            <li><i class="fas fa-envelope"></i>lindsay@thebricklane.com.au</li>
           </ul>
         </div>
 
@@ -2131,7 +2128,6 @@
     // LAZY LOAD: Intersection Observer + Hero Background
     // ============================================================
     (function lazyLoadImages() {
-      // 1) Hero background
       const hero = document.querySelector('.hero-bg');
       if (hero && hero.dataset.bg) {
         const img = new Image();
@@ -2141,7 +2137,6 @@
           hero.classList.remove('lazy-bg');
           hero.classList.add('loaded');
         };
-        // fallback: if image already cached, it may not fire onload
         if (img.complete) {
           hero.style.backgroundImage = `url('${hero.dataset.bg}')`;
           hero.classList.remove('lazy-bg');
@@ -2149,7 +2144,6 @@
         }
       }
 
-      // 2) All images with .lazy-load class
       const lazyImages = document.querySelectorAll('img.lazy-load');
       if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
@@ -2894,9 +2888,10 @@
     }
 
     // ============================================================
-    // CART FUNCTIONS
+    // CART FUNCTIONS - FIXED: Discount apply වූ price තමයි save වෙන්නේ
     // ============================================================
     function addToCart(item) {
+      // 1. Calculate the discounted price
       let price = item.price;
       if (activeDiscount) {
         const discountItemName = activeDiscount.itemName || '';
@@ -2905,15 +2900,23 @@
                                     item.name.toLowerCase() === discountItemName.toLowerCase();
         if (shouldApplyDiscount) {
           price = price * (1 - (activeDiscount.discountPercent || 0) / 100);
-          price = Math.round(price * 100) / 100;
+          price = Math.round(price * 100) / 100; // Round to 2 decimals
         }
       }
+      
+      // 2. Add to cart with the discounted price
       const existing = cart.find(i => i.name === item.name);
       if (existing) {
         existing.quantity += 1;
-        existing.price = price;
+        existing.price = price; // Update price in case discount changed
       } else {
-        cart.push({ name: item.name, price: price, quantity: 1, desc: item.desc });
+        cart.push({ 
+          name: item.name, 
+          price: price,  // ← DISCOUNTED PRICE is stored here
+          quantity: 1, 
+          desc: item.desc,
+          originalPrice: item.price // Keep original for reference
+        });
       }
       updateCartUI();
       saveCartToLocalStorage();
@@ -3096,7 +3099,7 @@
     }
 
     // ============================================================
-    // PLACE ORDER - FIXED
+    // PLACE ORDER - FIXED: Cart එකේ තියෙන price (discount apply වූ) තමයි යන්නේ
     // ============================================================
     function placeOrder() {
       if (!currentUser) {
@@ -3111,9 +3114,10 @@
       }
 
       const totals = getCartTotal();
+      // Cart එකේ තියෙන DISCOUNTED price තමයි මෙතනට එන්නේ
       const orderItems = cart.map(item => ({
         name: item.name,
-        price: item.price,
+        price: item.price,  // ← DISCOUNTED price from cart
         quantity: item.quantity
       }));
 
@@ -3141,6 +3145,7 @@
         }]
       };
 
+      // ✅ Telegram message එකටත් DISCOUNTED prices තමයි යන්නේ
       const telegramMessage = `
 🛎️ <b>New Order at Brick Lane!</b>
 
@@ -3172,7 +3177,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
 
       showOrderNotification('Placing Order...', 'Please wait while we process your order.', '⏳', true);
 
-      // First save to Firestore
       db.collection('orders').add(orderData)
         .then((docRef) => {
           console.log('✅ Order saved to Firestore with ID:', docRef.id);
@@ -3183,7 +3187,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
             '✅',
             true
           );
-          // Then send Telegram notification
           sendTelegramNotification(telegramMessage);
           document.getElementById('cartContent').classList.add('hidden');
           document.getElementById('orderSuccess').classList.remove('hidden');
@@ -3194,7 +3197,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
         })
         .catch((err) => {
           console.error('❌ Firestore save error:', err);
-          // If Firestore fails, still send Telegram notification so kitchen gets the order
           sendTelegramNotification(
             `⚠️ <b>ORDER NOT SAVED TO SYSTEM</b> (Firestore error: ${err.code || err.message})\n` + telegramMessage
           );
@@ -3528,21 +3530,17 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
       const bookingTime = document.getElementById('bookingTime');
       const bookingError = document.getElementById('bookingError');
 
-      // Set min date to today
       const now = getMelbourneNow();
       const todayStr = `${now.year}-${String(now.month).padStart(2, '0')}-${String(now.day).padStart(2, '0')}`;
       bookingDate.setAttribute('min', todayStr);
 
-      // Auto-set date to today if empty
       if (!bookingDate.value) {
         bookingDate.value = todayStr;
       }
 
-      // Auto-set time to current time + 1 hour (rounded up)
       if (!bookingTime.value) {
         let hour = now.hour + 1;
         let minute = now.minute;
-        // Round up to next 30 min interval
         if (minute > 0 && minute <= 30) {
           minute = 30;
         } else if (minute > 30) {
@@ -3570,7 +3568,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
         const selectedDateTime = new Date(year, month - 1, day, hour, minute);
         const nowDateTime = new Date(now.year, now.month - 1, now.day, now.hour, now.minute);
 
-        // Check if selected date is in the past
         if (selectedDateTime < nowDateTime) {
           bookingError.textContent = '❌ Please select a future date and time. Bookings cannot be made for past times.';
           bookingError.classList.add('show');
@@ -3584,19 +3581,15 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
       bookingDate.addEventListener('change', validateDateTime);
       bookingTime.addEventListener('change', validateDateTime);
 
-      // Also validate on form submit
       const bookingForm = document.getElementById('bookingForm');
-      const originalSubmit = bookingForm.onsubmit;
       bookingForm.addEventListener('submit', function(e) {
         if (!validateDateTime()) {
           e.preventDefault();
           return false;
         }
-        // Allow the original submit handler to run
         return true;
-      }, true); // Use capture phase to run before the original handler
+      }, true);
 
-      // Initial validation
       validateDateTime();
     }
 
@@ -3617,8 +3610,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
-      // Validation is already done in the capture phase
-      // But we need to check again because the capture phase handler might have been bypassed
       const bookingDate = document.getElementById('bookingDate');
       const bookingTime = document.getElementById('bookingTime');
       const bookingError = document.getElementById('bookingError');
@@ -3648,7 +3639,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
       
       bookingError.classList.remove('show');
 
-      // Proceed with booking
       const form = e.target;
       const name = form.querySelector('input[type="text"]').value;
       const phoneInput = form.querySelector('input[type="tel"]');
@@ -3703,7 +3693,6 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
       customGuestsWrapper.classList.add('hidden');
       guestsSelect.value = '2 Guests';
       
-      // Reset date and time to current values after reset
       const nowReset = getMelbourneNow();
       const todayStrReset = `${nowReset.year}-${String(nowReset.month).padStart(2, '0')}-${String(nowReset.day).padStart(2, '0')}`;
       document.getElementById('bookingDate').value = todayStrReset;
@@ -3722,104 +3711,93 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
-// CHECKOUT & TELEGRAM INTEGRATION
-// ============================================================
+    // CHECKOUT & TELEGRAM INTEGRATION
+    // ============================================================
 
-document.getElementById('checkoutBtn').addEventListener('click', async () => {
-  const checkoutBtn = document.getElementById('checkoutBtn');
-  
-  // Cart එක හිස් නම් ඉදිරියට යන්න නොදීම
-  if (cart.length === 0) {
-    alert('Your cart is empty!');
-    return;
-  }
+    document.getElementById('checkoutBtn').addEventListener('click', async () => {
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
 
-  // Button එක disable කිරීම (Double clicks වැළැක්වීමට)
-  checkoutBtn.disabled = true;
-  checkoutBtn.innerText = 'Placing Order...';
+      checkoutBtn.disabled = true;
+      checkoutBtn.innerText = 'Placing Order...';
 
-  // Cart එකේ එකතුව සහ විස්තර හැදීම
-  let subtotal = 0;
-  let itemsText = '';
-  
-  cart.forEach(item => {
-    // Discount එකක් ඇත්නම් එයද සහිතව මිල ගණනය කිරීම
-    let price = item.price;
-    if (activeDiscount && (activeDiscount.itemName.toLowerCase() === 'all items' || activeDiscount.itemName.toLowerCase() === item.name.toLowerCase())) {
-      price = price * (1 - (activeDiscount.discountPercent / 100));
-    }
-    const itemTotal = price * item.quantity;
-    subtotal += itemTotal;
-    itemsText += `• ${item.name} x ${item.quantity} - $${itemTotal.toFixed(2)}\n`;
-  });
+      let subtotal = 0;
+      let itemsText = '';
+      
+      cart.forEach(item => {
+        // item.price එකට තියෙන්නේ දැනටමත් DISCOUNT apply වූ price එක
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        itemsText += `• ${item.name} x ${item.quantity} - $${itemTotal.toFixed(2)}\n`;
+      });
 
-  const serviceFee = subtotal * 0.10;
-  const totalAmount = subtotal + serviceFee;
+      const serviceFee = subtotal * 0.10;
+      const totalAmount = subtotal + serviceFee;
 
-  // Order Data Object එක (Firestore සඳහා)
-  const orderData = {
-    userId: currentUser ? currentUser.uid : 'Guest',
-    customerName: currentUser ? (currentUser.displayName || 'Registered Customer') : 'Guest Customer',
-    items: cart,
-    subtotal: subtotal,
-    serviceFee: serviceFee,
-    total: totalAmount,
-    status: 'Pending',
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
+      const orderData = {
+        userId: currentUser ? currentUser.uid : 'Guest',
+        customerName: currentUser ? (currentUser.displayName || 'Registered Customer') : 'Guest Customer',
+        items: cart.map(item => ({
+          name: item.name,
+          price: item.price,  // ← DISCOUNTED price
+          quantity: item.quantity
+        })),
+        subtotal: subtotal,
+        serviceFee: serviceFee,
+        total: totalAmount,
+        status: 'Pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-  try {
-    // 1. Firebase Firestore වෙත Order එක Save කිරීම
-    const docRef = await db.collection('orders').add(orderData);
-    const orderId = docRef.id;
+      try {
+        const docRef = await db.collection('orders').add(orderData);
+        const orderId = docRef.id;
 
-    // 2. Telegram Message එක සකස් කිරීම
-    const telegramMessage = encodeURIComponent(
-      `🔔 *NEW ORDER RECEIVED!*\n\n` +
-      `🆔 *Order ID:* \`${orderId}\`\n` +
-      `👤 *Customer:* ${orderData.customerName}\n` +
-      `📍 *Type:* Pickup Only\n\n` +
-      `📦 *Items:* \n${itemsText}\n` +
-      `💵 *Subtotal:* $${subtotal.toFixed(2)}\n` +
-      `✨ *Service Fee (10%):* $${serviceFee.toFixed(2)}\n` +
-      `💰 *TOTAL AMOUNT:* $${totalAmount.toFixed(2)}\n\n` +
-      `📅 *Date:* ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}`
-    );
+        const telegramMessage = encodeURIComponent(
+          `🔔 *NEW ORDER RECEIVED!*\n\n` +
+          `🆔 *Order ID:* \`${orderId}\`\n` +
+          `👤 *Customer:* ${orderData.customerName}\n` +
+          `📍 *Type:* Pickup Only\n\n` +
+          `📦 *Items:* \n${itemsText}\n` +
+          `💵 *Subtotal:* $${subtotal.toFixed(2)}\n` +
+          `✨ *Service Fee (10%):* $${serviceFee.toFixed(2)}\n` +
+          `💰 *TOTAL AMOUNT:* $${totalAmount.toFixed(2)}\n\n` +
+          `📅 *Date:* ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}`
+        );
 
-    // 3. Telegram API එක හරහා Message එක Bot වෙත යැවීම
-    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${telegramMessage}&parse_mode=Markdown`;
-    
-    await fetch(telegramUrl);
+        const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${telegramMessage}&parse_mode=Markdown`;
+        
+        await fetch(telegramUrl);
 
-    // 4. සාර්ථක වූ පසු UI එක Update කිරීම
-    cart = []; // Cart එක හිස් කිරීම
-    saveCartToLocalStorage();
-    updateCartUI();
+        cart = [];
+        saveCartToLocalStorage();
+        updateCartUI();
 
-    // Success Popup එක පෙන්වීම
-    document.getElementById('emptyCart').classList.add('hidden');
-    document.getElementById('cartItems').classList.add('hidden');
-    document.getElementById('pickupBanner').classList.add('hidden');
-    document.getElementById('cartSummary').classList.add('hidden');
-    document.getElementById('checkoutBtn').classList.add('hidden');
-    document.getElementById('orderSuccess').classList.remove('hidden');
+        document.getElementById('emptyCart').classList.add('hidden');
+        document.getElementById('cartItems').classList.add('hidden');
+        document.getElementById('pickupBanner').classList.add('hidden');
+        document.getElementById('cartSummary').classList.add('hidden');
+        document.getElementById('checkoutBtn').classList.add('hidden');
+        document.getElementById('orderSuccess').classList.remove('hidden');
 
-  } catch (error) {
-    console.error('Order placement failed:', error);
-    alert('Something went wrong while placing your order. Please try again.');
-  } finally {
-    // Button එක යථා තත්ත්වයට පත් කිරීම
-    checkoutBtn.disabled = false;
-    checkoutBtn.innerText = 'Proceed to Order';
-  }
-});
+      } catch (error) {
+        console.error('Order placement failed:', error);
+        alert('Something went wrong while placing your order. Please try again.');
+      } finally {
+        checkoutBtn.disabled = false;
+        checkoutBtn.innerText = 'Proceed to Order';
+      }
+    });
 
-// Order Success Window එක Close කරන විට Sidebar එක Close වීමට
-document.getElementById('orderSuccessClose').addEventListener('click', () => {
-  document.getElementById('orderSuccess').classList.add('hidden');
-  document.getElementById('cartSidebar').classList.add('translate-x-full');
-  document.getElementById('cartOverlay').classList.add('hidden');
-});
+    document.getElementById('orderSuccessClose').addEventListener('click', () => {
+      document.getElementById('orderSuccess').classList.add('hidden');
+      document.getElementById('cartSidebar').classList.add('translate-x-full');
+      document.getElementById('cartOverlay').classList.add('hidden');
+    });
 
     // ============================================================
     // INIT
@@ -3849,7 +3827,7 @@ document.getElementById('orderSuccessClose').addEventListener('click', () => {
     console.log('✅ Brick Lane site initialized with LAZY LOADING for all images!');
     console.log('✅ Images load only when scrolled to.');
     console.log('✅ Booking date/time validation enabled - past dates/times are locked.');
-    console.log('✅ Order placement fixed - Firestore save + Telegram notification works!');
+    console.log('✅ Order placement fixed - DISCOUNTED price is sent to Telegram AND Firestore!');
   </script>
 </body>
 </html>
