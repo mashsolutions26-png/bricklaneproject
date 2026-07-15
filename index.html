@@ -3096,7 +3096,7 @@
     }
 
     // ============================================================
-    // PLACE ORDER
+    // PLACE ORDER - FIXED
     // ============================================================
     function placeOrder() {
       if (!currentUser) {
@@ -3172,8 +3172,10 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
 
       showOrderNotification('Placing Order...', 'Please wait while we process your order.', '⏳', true);
 
+      // First save to Firestore
       db.collection('orders').add(orderData)
         .then((docRef) => {
+          console.log('✅ Order saved to Firestore with ID:', docRef.id);
           finishCartAfterOrder();
           showOrderNotification(
             '🎉 Order Confirmed!',
@@ -3181,6 +3183,7 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
             '✅',
             true
           );
+          // Then send Telegram notification
           sendTelegramNotification(telegramMessage);
           document.getElementById('cartContent').classList.add('hidden');
           document.getElementById('orderSuccess').classList.remove('hidden');
@@ -3190,6 +3193,8 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
           }, 5000);
         })
         .catch((err) => {
+          console.error('❌ Firestore save error:', err);
+          // If Firestore fails, still send Telegram notification so kitchen gets the order
           sendTelegramNotification(
             `⚠️ <b>ORDER NOT SAVED TO SYSTEM</b> (Firestore error: ${err.code || err.message})\n` + telegramMessage
           );
@@ -3717,6 +3722,106 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     });
 
     // ============================================================
+// CHECKOUT & TELEGRAM INTEGRATION
+// ============================================================
+
+document.getElementById('checkoutBtn').addEventListener('click', async () => {
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  
+  // Cart එක හිස් නම් ඉදිරියට යන්න නොදීම
+  if (cart.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
+
+  // Button එක disable කිරීම (Double clicks වැළැක්වීමට)
+  checkoutBtn.disabled = true;
+  checkoutBtn.innerText = 'Placing Order...';
+
+  // Cart එකේ එකතුව සහ විස්තර හැදීම
+  let subtotal = 0;
+  let itemsText = '';
+  
+  cart.forEach(item => {
+    // Discount එකක් ඇත්නම් එයද සහිතව මිල ගණනය කිරීම
+    let price = item.price;
+    if (activeDiscount && (activeDiscount.itemName.toLowerCase() === 'all items' || activeDiscount.itemName.toLowerCase() === item.name.toLowerCase())) {
+      price = price * (1 - (activeDiscount.discountPercent / 100));
+    }
+    const itemTotal = price * item.quantity;
+    subtotal += itemTotal;
+    itemsText += `• ${item.name} x ${item.quantity} - $${itemTotal.toFixed(2)}\n`;
+  });
+
+  const serviceFee = subtotal * 0.10;
+  const totalAmount = subtotal + serviceFee;
+
+  // Order Data Object එක (Firestore සඳහා)
+  const orderData = {
+    userId: currentUser ? currentUser.uid : 'Guest',
+    customerName: currentUser ? (currentUser.displayName || 'Registered Customer') : 'Guest Customer',
+    items: cart,
+    subtotal: subtotal,
+    serviceFee: serviceFee,
+    total: totalAmount,
+    status: 'Pending',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  try {
+    // 1. Firebase Firestore වෙත Order එක Save කිරීම
+    const docRef = await db.collection('orders').add(orderData);
+    const orderId = docRef.id;
+
+    // 2. Telegram Message එක සකස් කිරීම
+    const telegramMessage = encodeURIComponent(
+      `🔔 *NEW ORDER RECEIVED!*\n\n` +
+      `🆔 *Order ID:* \`${orderId}\`\n` +
+      `👤 *Customer:* ${orderData.customerName}\n` +
+      `📍 *Type:* Pickup Only\n\n` +
+      `📦 *Items:* \n${itemsText}\n` +
+      `💵 *Subtotal:* $${subtotal.toFixed(2)}\n` +
+      `✨ *Service Fee (10%):* $${serviceFee.toFixed(2)}\n` +
+      `💰 *TOTAL AMOUNT:* $${totalAmount.toFixed(2)}\n\n` +
+      `📅 *Date:* ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}`
+    );
+
+    // 3. Telegram API එක හරහා Message එක Bot වෙත යැවීම
+    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${telegramMessage}&parse_mode=Markdown`;
+    
+    await fetch(telegramUrl);
+
+    // 4. සාර්ථක වූ පසු UI එක Update කිරීම
+    cart = []; // Cart එක හිස් කිරීම
+    saveCartToLocalStorage();
+    updateCartUI();
+
+    // Success Popup එක පෙන්වීම
+    document.getElementById('emptyCart').classList.add('hidden');
+    document.getElementById('cartItems').classList.add('hidden');
+    document.getElementById('pickupBanner').classList.add('hidden');
+    document.getElementById('cartSummary').classList.add('hidden');
+    document.getElementById('checkoutBtn').classList.add('hidden');
+    document.getElementById('orderSuccess').classList.remove('hidden');
+
+  } catch (error) {
+    console.error('Order placement failed:', error);
+    alert('Something went wrong while placing your order. Please try again.');
+  } finally {
+    // Button එක යථා තත්ත්වයට පත් කිරීම
+    checkoutBtn.disabled = false;
+    checkoutBtn.innerText = 'Proceed to Order';
+  }
+});
+
+// Order Success Window එක Close කරන විට Sidebar එක Close වීමට
+document.getElementById('orderSuccessClose').addEventListener('click', () => {
+  document.getElementById('orderSuccess').classList.add('hidden');
+  document.getElementById('cartSidebar').classList.add('translate-x-full');
+  document.getElementById('cartOverlay').classList.add('hidden');
+});
+
+    // ============================================================
     // INIT
     // ============================================================
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -3744,6 +3849,7 @@ ${orderItems.map(i => `  • ${i.name} x${i.quantity} = $${(i.price * i.quantity
     console.log('✅ Brick Lane site initialized with LAZY LOADING for all images!');
     console.log('✅ Images load only when scrolled to.');
     console.log('✅ Booking date/time validation enabled - past dates/times are locked.');
+    console.log('✅ Order placement fixed - Firestore save + Telegram notification works!');
   </script>
 </body>
 </html>
